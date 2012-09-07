@@ -1,0 +1,13 @@
+.menu{float:left;}
+.content{float:left;}
+
+.login input{height:25px;}
+
+#nav{cursor: pointer;cursor: hand/*For IE */}
+
+.create
+{
+	position:relative;
+	top:0px;
+	left:0px;
+}

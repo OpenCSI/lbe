@@ -30,7 +30,7 @@ class LBEObject(models.Model):
 	baseDN       	  = models.CharField(max_length=256)
 	rdnAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'rdnattribute')
 	approval		  = models.SmallIntegerField() # If > 0, this object need approvals
-#	attributes        = models.ManyToManyField(LBEAttributeInstance, null = True, default = None)
+	attributes        = models.ManyToManyField(LBEAttribute, through = 'LBEAttributeInstance',null = True, default = None)
 	objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
 	# get attribut class:
 	def __unicode__(self):
@@ -44,7 +44,7 @@ class LBEReference(models.Model):
 class LBEAttributeInstance(models.Model):
 	lbeAttribute      = models.ForeignKey(LBEAttribute)
 	lbeObject         = models.ForeignKey(LBEObject)
-	defaultValue      = models.CharField(max_length=64,default='', blank = True)
+	defaultValue      = models.CharField(max_length=64, default='', blank = True, null = True)
 	mandatory         = models.BooleanField(default = 0)
 	multivalue        = models.BooleanField(default = 0)
 	reference         = models.ForeignKey(LBEReference, null = True, blank = True, default = None)

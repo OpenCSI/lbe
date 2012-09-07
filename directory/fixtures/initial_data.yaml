@@ -8,3 +8,34 @@
   fields:
     name: sn
     displayName: Lastname
+- model: directory.LBEObjectClass
+  pk: 1
+  fields:
+    name: top
+- model: directory.LBEObjectClass
+  pk: 2
+  fields:
+    name: person
+- model: directory.LBEObjectClass
+  pk: 3
+  fields:
+    name: organizationalPerson  
+- model: directory.LBEObjectClass
+  pk: 4
+  fields:
+    name: inetOrgPerson
+- model: directory.LBEObject
+  pk: 1
+  fields:
+    name: employee
+    displayName: employees
+    baseDN: ou=Employees,ou=People,dc=opencsi,dc=com
+    rdnAttribute: 1
+    approval: 0
+- model: directory.LBEAttributeInstance
+  pk: 1
+  fields: 
+    lbeAttribute: 1
+    lbeObject: 1
+    multivalue: False
+    
