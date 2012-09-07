@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/lbe/!svn/ver/178/branches/issue-220/templates/manage/acl
+END
+edit.html
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/lbe/!svn/ver/178/branches/issue-220/templates/manage/acl/edit.html
+END
+index.html
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/lbe/!svn/ver/178/branches/issue-220/templates/manage/acl/index.html
+END
+loadConditions.html
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/lbe/!svn/ver/178/branches/issue-220/templates/manage/acl/loadConditions.html
+END
+info.html
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/lbe/!svn/ver/178/branches/issue-220/templates/manage/acl/info.html
+END

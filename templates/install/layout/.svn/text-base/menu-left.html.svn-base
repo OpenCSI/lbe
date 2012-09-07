@@ -1,0 +1,17 @@
+<div class="menu">
+		   <div class="container-fluid">
+			   <div class="row-fluid">
+				    <div class="well sidebar-nav">
+						 <ul class="nav nav-list">
+							 <li class="nav-header">Menu</li>
+							 <span class="stateMenu">
+								<li class="0">Introduction</li>
+								<li class="1">LDAP</li>
+								<li class="2">MONGO</li>
+								<li class="3">Completed</li>
+							 </span>
+						 </ul>
+					</div>
+			   </div>
+		   </div>
+	   </div>

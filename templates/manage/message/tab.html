@@ -1,0 +1,28 @@
+<ul class="nav nav-tabs">
+	<li {% if tab == 'ldap' %}class="active" {% endif %}>
+		<a href="#" onClick="showMessages('ldap');">LDAP</a>
+	</li>
+	<li {% if tab == 'mongo' %}class="active" {% endif %}>
+		<a href="#" onClick="showMessages('mongo');">MONGO</a>
+	</li>
+	<li {% if tab == 'crypto' %}class="active" {% endif %}>
+		<a href="#" onClick="showMessages('crypto');">Crypto</a>
+	</li>
+	<li {% if tab == 'template' %}class="active" {% endif %}>
+		<a href="#" onClick="showMessages('template');">Template</a>
+	</li>
+</ul>
+<form method="post" action="/admin/message/" name="Fdelete">
+<table style="width:600px" class="table table-condensed">
+	<input type="hidden" name="tab" value="{{tab}}"/>
+	<th>Select</th><th><center>username</center></th><th><center>message</center></th><th style="width:15%"><center>date</center></th>
+	{% for message in messages %}
+	<tr><td><center><input type="checkbox" name="select" value="{{message.id}}"/></center></td><td><center>{{message.username}}</center></td><td>{{message.message}}</td><td>{{message.date}}</td></tr>
+	{% empty %}
+	<tr><td colspan="4"><center>No value.</center></td></tr>
+	{% endfor %}
+	{% if messages %}
+	<tr><td><center><input type="checkbox" name="all" onClick="checkAll(document.getElementsByName('select'));"/></center></td><td colspan="3"><center><input type="submit" value="Delete"/></center></td></tr>
+	{% endif %}
+</table>
+</form>

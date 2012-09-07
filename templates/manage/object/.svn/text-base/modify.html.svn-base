@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LBE - Manage [Admin]</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+	{% load url from future %}
+	<body onLoad="loadObjectAttribute($('#objectName :checked').val());">
+	  {% include "menu.html" %}
+	  {% include "manage/menu.html" %}
+	   <div class="content">
+		   <div class='message alert'>
+			   {{ messageError }}
+			</div>
+			
+			<form action="#" >
+				{% include 'manage/object/form.html' %}
+		   </form>
+		   
+		   Objects attributes:
+		   <table class="table">
+			   <tr>
+			   	<th>Name</th>
+				<th>Default value</th>
+				<th>Reference</th><th>Script</th>
+			   </tr>
+			   {% for instance in attributeInstances %}
+			   <tr>
+			   		<td> {{ instance.lbeAttribute.name }} </td>
+					<td> {{ instance.defaultValue }} </td>
+					<td> {{ instance.reference }} </td>
+					<td> {{ instance.script }} </td>
+ 			   </tr>
+			   {% endfor %}
+		   </table>
+		   
+		   <div class="addAttribute">
+			   <form action="{% url 'viewManage.views.addAttribute' obj_id=lbeObject.id %}" method='post'>
+				   <table class="table table-condensed">
+							{% include 'manage/object/attributes/form.html' %}
+				   </table>
+			   </form>
+		   </div>
+		</div>
+		
+		<script type="text/javascript" src="/static/js/jquery.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-dropdown.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-modal.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-alert.js"></script>
+	    
+		<script type="text/javascript" src="/static/js/manage/create/attribute.js"></script>
+		<script type="text/javascript" src="/static/js/manage/modify/attribute.js"></script>
+		<script type="text/javascript" src="/static/js/manage/objects.js"></script>
+	</body>
+</html>

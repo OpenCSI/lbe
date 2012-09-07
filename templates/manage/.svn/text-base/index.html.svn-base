@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LBE - Manage [Admin]</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+	<body>
+	  {% include "menu.html" %}
+	  {% include "manage/menu.html" %}
+	  <div class="content">
+		<h3>Serveur LDAP - Status:</h3>
+		<div class="well">
+			<table>
+				{% if stateLDAP == 0 %}
+				<tr><td>
+					<span class="label label-success">Success</span></td><td> ldap://{{l_data.url}}:{{l_data.port}}
+				</td></tr>
+				<tr><td>
+					<span class="label label-success">Success</span></td><td> login : {{l_data.user}}
+				</td></tr>
+				<tr><td>
+					<span class="label label-success">Success</span></td><td> password : ******
+				</td></tr>
+				<tr><td>
+					<span class="label label-success">Success</span></td><td> base : {{l_data.base}}
+				</td></tr>
+				{% elif stateLDAP == -1 %}
+				<tr><td>
+					<span class="label label-important">Error</span></td><td> ldap://{{l_data.url}}:{{l_data.port}}
+				</td><td>
+					<span class="alert alert-error">Erreur de connexion au serveur LDAP, vérifiez l'url et le port.</span>
+				</td></tr>
+				<tr><td>
+					<span class="label">Unkown</span></td><td> login : {{l_data.user}}
+				</td></tr>
+				<tr><td>
+					<span class="label">Unkown</span></td><td> password : ******
+				</td></tr>
+				<tr><td>
+					<span class="label">Unkown</span></td><td> base : {{l_data.base}}
+				</td></tr>
+				{% elif stateLDAP == -4 %}
+				<tr><td>
+					<span class="label label-success">Success</span></td><td> ldap://{{l_data.url}}:{{l_data.port}}
+				</td></tr>
+				<tr><td>
+					<span class="label label-important">Error</span></td><td> login : {{l_data.user}}
+				<td>
+					<span class="alert alert-error">Erreur de connexion au serveur LDAP, vérifiez le login et le mot de passe.</span>
+				</td>
+				</td></tr>
+				<tr><td>
+					<span class="label label-important">Error</span></td><td> password : ******
+				</td></tr>
+				<tr><td>
+					<span class="label">Unkown</span></td><td> base : {{l_data.base}}
+				</td></tr>
+				{% elif stateLDAP == -2 %}
+				<tr><td>
+					<span class="label label-important">Error</span></td><td>
+					<span class="alert alert-error"> Aucune données de connexion pour le serveur LDAP dans la base de données.</span>
+				<td></tr>
+				{% elif stateLDAP == -3 %}
+				<tr><td>
+					<span class="label label-success">Success</span></td><td> ldap://{{l_data.url}}:{{l_data.port}}
+				</td></tr>
+				<tr><td>
+					<span class="label label-success">Success</span></td><td> login : {{l_data.user}}
+				</td></tr>
+				<tr><td>
+					<span class="label label-success">Success</span></td><td> password : ******
+				</td></tr>
+				<tr><td>
+					<span class="label label-important">Error</span></td><td> base : {{l_data.base}}
+					<td>
+					<span class="alert alert-error">La base pour le serveur LDAP est impossible à trouver.</span>
+				</td>
+				</td></tr>
+				{% endif %}
+			</table>
+		</div>
+		<h3>MONGO Server - Status:</h3>
+		<div class="well">
+			Online: 
+		{% if mongo %}
+		<span class="label label-success">On</span>
+		{% else %}
+		<span class="label label-important">Off</span>
+		{% endif %}
+		</div>
+		</div>
+		<script type="text/javascript" src="/static/js/jquery.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-dropdown.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-alert.js"></script>
+	</body>
+</html>

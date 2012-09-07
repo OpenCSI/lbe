@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LBE - Installation</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+	<body onLoad="upStep({{id}},'{{value}}');{{load}}">
+	  {% include "install/layout/menu-top.html" %}
+	  {% include "install/layout/menu-left.html" %}
+	  <div class="content" style="width:600px">
+		  {{body|safe}}
+	  </div>
+	 
+	  <script type="text/javascript" src="/static/js/jquery.js"></script>
+	  <script type="text/javascript" src="/static/js/bootstrap-dropdown.js"></script>
+	  <script type="text/javascript" src="/static/js/bootstrap-alert.js"></script>
+	  <script type="text/javascript" src="/static/js/install/step.js"></script>
+	  </body>
+</html>

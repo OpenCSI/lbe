@@ -8,7 +8,7 @@ class LBEObjectAdmin(admin.ModelAdmin):
 	pass
 
 class LBEObjectClassAdmin(admin.ModelAdmin):
-	pass
+	list_display = ('name', 'name')
 
 admin.site.register(LBEAttribute, LBEAttributeAdmin)
 admin.site.register(LBEObject, LBEObjectAdmin)

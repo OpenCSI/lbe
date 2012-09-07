@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LBE</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+	<body onLoad='showRootDirectory()'>
+		{% include "menu.html" %}
+	  <div id="modifyMB"></div>
+	  {% if messageError %}
+	  <div class="alert alert-error fade in">
+		<button class="close" data-dismiss="alert">×</button>
+		{{ messageError }}
+	  </div>
+	  {% endif %}
+	  <table class="table table-striped table-bordered table-condensed" style="width: 1024px;margin:auto;">
+		  <tr><td>
+	  <div id="index">
+	  </div>
+	  </td></tr>
+	  </table>
+	<script type="text/javascript" src="/static/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap-dropdown.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap-modal.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap-alert.js"></script>
+	<script type="text/javascript" src="/static/js/directory/directory.js"></script>
+	</body>
+</html>
+

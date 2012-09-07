@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>LBE - Connexion</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+	<body>
+		<div class="navbar">
+			<div class="navbar-inner">
+			  <div class="container">
+				  
+				<a class="brand" href="#">LBE</a>
+				<div class="nav-collapse">
+					
+				  <ul class="nav">
+					<li><a href="/">Index</a></li>
+				  </ul>
+				  
+				</div>
+				
+			  </div>
+			</div>
+	    </div>
+	    <div class="login">
+		<form action="/auth/login" method="post">
+			<input type="hidden" name="url" value="{{url}}"/>
+			<table>
+				{% if message %}<tr><td colspan="2"><center>{{ message }}</center></td></tr>{% endif %}
+				<tr><td>login :</td><td> <input type="textbox" name="login" value=""/></td></tr>
+				<tr><td>mot de passe :</td><td> <input type="password" name="password" value=""/></td></tr>
+				<tr><td colspan="2"><center><input type="submit" value="connexion"/></center></td></tr>
+			</table>
+		</form>
+		</div>
+	</body>
+</html>

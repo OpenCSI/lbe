@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LBE - Manage [Admin]</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+	blah
+	<body>
+	  {% include "menu.html" %}
+	  {% include "manage/menu.html" %}
+	   <div class="content">
+		   {% if message %}
+				{% if type == 'error' %}
+					<div class="alert alert-error fade in">
+					<button class="close" data-dismiss="alert">×</button>
+					{{ message|safe }}
+					</div>
+				{% elif type == 'success' %}
+					<div class="alert alert-success fade in">
+						<button class="close" data-dismiss="alert">×</button>
+						{{ message }}
+					</div>
+				{% endif %}
+			{% endif %}
+		   <form method="post" action="">
+			<table>
+				<th>Create an Object Manually:</th>
+				<tr><td>Name (can't be modified later)</td><td><input type="textbox" name="objectName" value=""/></td><td><span id="error_objectName"></span></td></tr>
+				<tr><td>Object display name</td><td><input type="textbox" name="objectDisplayName" value=""/></td><td><span id="error_objectName"></span></td></tr>
+				<tr><td>Base DN</td><td><input type="textbox" name="basedn" id="DN" value=""/>{{DN}}<a href="#" class="icon-cog" onClick="showDN();"></a></td><td><span id="error_DN"></span></td></tr>
+				<tr><td>RDN attribute</td><td><input type="" name="rdnattribute" value=""/></td></tr>
+				<tr><td COLSPAN="2"><center><input type="submit" value="Create" class="btn"/></center></td></tr>
+			</table>
+			</form>
+		</div>
+		<div id="showDN"></div>
+		<script type="text/javascript" src="/static/js/jquery.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-dropdown.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-modal.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-alert.js"></script>
+	    
+	    <script type="text/javascript" src="/static/js/manage/create/object.js"></script>
+	    <script type="text/javascript" src="/static/js/manage/DN.js"></script>
+	</body>
+</html>

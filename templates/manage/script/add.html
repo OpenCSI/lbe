@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LBE - Manage [Admin]</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+	<body>
+	  {% include "menu.html" %}
+	  {% include "manage/menu.html" %}
+	   <div class="content">
+		   {% if message %}
+				{% if type == 'error' %}
+					<div class="alert alert-error fade in">
+					<button class="close" data-dismiss="alert">×</button>
+					{{ message }}
+					</div>
+				{% elif type == 'success' %}
+					<div class="alert alert-success fade in">
+						<button class="close" data-dismiss="alert">×</button>
+						{{ message }}
+					</div>
+				{% endif %}
+			{% endif %}
+			<h4>Add Script File:</h4>
+			<form method="post" action="" enctype="multipart/form-data">
+			   {% include 'manage/script/form.html' %}
+				<input type="submit" value="Upload" class="btn"/>
+			</form>
+	   </div>
+		<script type="text/javascript" src="/static/js/jquery.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-dropdown.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-modal.js"></script>
+	    <script type="text/javascript" src="/static/js/bootstrap-alert.js"></script>
+	</body>
+</html>

@@ -1,0 +1,25 @@
+<style>
+#attribute td {text-align: center;}
+</style>
+
+<h3>{{object.name}}</h3>
+<table id="attribute" class="table table-condensed">
+	<thead>
+		<th>Attributes:</th>
+		<tr><td><i>RDN</i></td><td><i>Display Name</i></td><td><i>LDAP Name</i></td><td>Default</td><td>Format</td><td><i>Mandatory</i></td><td><i>MultiValue</i></td><td>Virtual</td><td>Reference</td><td>Encrypt</td><td colspan="3"><i>Action</i></td></tr>
+	</thead>
+	 <tbody>
+		{% for att in attribute %}
+		<tr><td>{% if att.LBEObjectAttribut.LDAPname == object.RDNAttribut %} <b>Yes</b>{%endif %}</td><td>{{att.LBEObjectAttribut.name}}</td><td>{{att.LBEObjectAttribut.LDAPname}}</td><td>{{att.LBEObjectAttribut.defaultValue}}</td><td>{% if att.Format %}{{att.Format.name}}{% else %}<b>None</b>{% endif %}</td><td>{{att.LBEObjectAttribut.mandatory}}</td><td>{{att.LBEObjectAttribut.multivalue}}</td><td>{% if att.LBEObjectAttribut.virtual %}{{att.LBEObjectAttribut.virtual.name}}{% else %}<b>None</b>{% endif %}</td><td>{% if att.LBEReference.name %} {{att.LBEReference.name}} {% else %}<b>None</b>{% endif %}</td><td>{% if att.crypt %}Yes{% else %}No{% endif %}</td><td><a href="#" onClick="modifyAttribute({{att.LBEObjectAttribut.id}});"><i class="icon-pencil"></i></a></td><td><a href="#" onClick="deleteAttribute({{att.LBEObjectAttribut.id}});"><i class="icon-trash"></i></a></td></tr>
+		{% endfor %}
+	 </tbody>
+</table>
+<table class="table">
+	<thead>
+		<th>Approval:</th>
+	</thead>
+   <form onSubmit="return false;">
+	<tr><td>Need to be approve:</td><td><center><input type="checkbox" name="approve" id="approve" {% if object.approval %} checked="checked"{% endif %}/></center></td></tr>
+	<tr><td colspan="2"><center><input type="submit" value="Save" onClick="saveApprove($('#approve').attr('checked'));"/></center></td></tr>
+   </form>
+</table>

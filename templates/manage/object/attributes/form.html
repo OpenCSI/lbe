@@ -1,0 +1,27 @@
+{# Include the hidden fields #}
+{% for hidden in attributeForm.hidden_fields %}
+{{ hidden }}
+{% endfor %}
+{# Include the visible fields #}
+
+<input type="hidden" name="lbeObject" value="{{ lbeObject.id }}">
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Default value</th>
+		<th>Flags</th>
+		<th>Reference</th>
+		<th>Script</th>
+	</tr>
+	<tr>
+		<!-- TODO replace this field by an ajax autocompletion -->
+		<td>{{attributeForm.lbeAttribute}}</td>
+		<td>{{attributeForm.defaultValue}}</td>
+		<td>Mandatory: {{attributeForm.mandatory}}<br/>
+			Multivalued: {{attributeForm.multivalue}}<br/>
+			Ciphered: {{attributeForm.crypt}}</td>
+		<td>{{attributeForm.reference}}</td>
+	</tr>		
+	<td><input type="submit" value="Add" class="btn"/></td>
+	</tr>
+</table>
