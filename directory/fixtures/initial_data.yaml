@@ -1,0 +1,10 @@
+- model: directory.LBEAttribute
+  pk: 1
+  fields:
+    name: cn
+    displayName: Fullname
+- model: directory.LBEAttribute
+  pk: 2
+  fields:
+    name: sn
+    displayName: Lastname
