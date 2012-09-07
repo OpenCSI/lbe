@@ -7,9 +7,13 @@ class LBEAttribute(models.Model):
 	displayName       = models.CharField(unique = True, max_length=64)
 	name         	  = models.CharField(unique = True, max_length=64)
 	# some fields (like syntax, max size) will be added later
+	def __unicode__(self):
+		return str(self.displayName + ":" + self.name)
 
 class LBEObjectClass(models.Model):
 	name        	  = models.CharField(unique = True, max_length=64)
+	def __unicode__(self):
+		return str(self.name)
 
 class LBEScript(models.Model):
 	name      = models.CharField(max_length=64)
@@ -29,14 +33,8 @@ class LBEObject(models.Model):
 #	attributes        = models.ManyToManyField(LBEAttributeInstance, null = True, default = None)
 	objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
 	# get attribut class:
-	def getName(self):
-		return self.name
-	def getDisplayName(self):
-		return self.displayName
-	def getBaseDN(self):
-		return self.baseDN
-	def getRDNAttribut(self):
-		return self.RDNAttribut
+	def __unicode__(self):
+		return str(self.displayName)
 
 class LBEReference(models.Model):
 	name              = models.CharField(max_length=24)
@@ -53,7 +51,6 @@ class LBEAttributeInstance(models.Model):
 	script         	  = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
 	# If true, this attribute will be stored crypted (by a key defined in LBE/settings.py)
 	crypt		      = models.BooleanField(default = 0)
-
 
 class LBEDirectoryACL(models.Model):
 	object = models.CharField(max_length=25) # Why it's not a foreign key?
