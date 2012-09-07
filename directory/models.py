@@ -23,7 +23,7 @@ class LBEScript(models.Model):
 	#tab       = models.CharField(max_length=64)
 	def __unicode__(self):
 		return str(self.name)
-	
+
 class LBEObject(models.Model):
 	displayName  	  = models.CharField(unique = True, max_length=32)
 	name         	  = models.CharField(unique = True, max_length=32)

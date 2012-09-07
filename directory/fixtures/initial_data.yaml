@@ -38,4 +38,9 @@
     lbeAttribute: 1
     lbeObject: 1
     multivalue: False
-    
+- model: directory.LBEAttributeInstance
+  pk: 2
+  fields:
+    lbeAttribute: 2
+    lbeObject: 1
+    multivalue: False
