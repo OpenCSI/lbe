@@ -6,8 +6,12 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-	url(r'^directory/', 'directory.views.index'),
 	url(r'^$', 'directory.views.index'),
+	url(r'^directory/', 'directory.views.index'),
+	url(r'^config/?$', 'directory.views.index'),
+	url(r'^config/object/add/?$', 'config.views.addObject'),
+	url(r'^config/object/list/?$', 'config.views.listObjects'),
+	url(r'^config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObject'),
     # Examples:
     # url(r'^$', 'lbe.views.home', name='home'),
     # url(r'^lbe/', include('lbe.foo.urls')),

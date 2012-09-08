@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% block content %}
+    <table class='table'>
+       <tr>
+    	   <th>Name</th><th>Display name</th>
+       </tr>
+        {% for object in objects %}
+        <tr>
+            <td><a href="{% url 'config.views.modifyObject' obj_id=object.id %}">{{object.name}}</a></td>
+            <td>{{object.displayName}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
