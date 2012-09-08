@@ -3,11 +3,26 @@
   fields:
     name: cn
     displayName: Fullname
-- model: directory.LBEAttribute
+- model: directory.lbeattribute
   pk: 2
   fields:
     name: sn
-    displayName: Lastname
+    displayname: lastname
+- model: directory.lbeattribute
+  pk: 3
+  fields:
+    name: givenName
+    displayname: Firstname
+- model: directory.lbeattribute
+  pk: 4
+  fields:
+    name: mail
+    displayname: Email address
+- model: directory.lbeattribute
+  pk: 5
+  fields:
+    name: uid
+    displayname: Unique identifier
 - model: directory.LBEObjectClass
   pk: 1
   fields:
@@ -42,5 +57,23 @@
   pk: 2
   fields:
     lbeAttribute: 2
+    lbeObject: 1
+    multivalue: False
+- model: directory.LBEAttributeInstance
+  pk: 3
+  fields:
+    lbeAttribute: 3
+    lbeObject: 1
+    multivalue: False
+- model: directory.LBEAttributeInstance
+  pk: 4
+  fields:
+    lbeAttribute: 4
+    lbeObject: 1
+    multivalue: False
+- model: directory.LBEAttributeInstance
+  pk: 5
+  fields:
+    lbeAttribute: 5
     lbeObject: 1
     multivalue: False
