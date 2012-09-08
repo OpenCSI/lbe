@@ -31,7 +31,9 @@ LDAP_SERVER = {
 }
 
 MONGODB_SERVER = {
-	
+	'HOST': 'localhost',
+	'PORT': 27017,
+	'DATABASE': 'lbe',
 }
 
 # Local time zone for this installation. Choices can be found here:
