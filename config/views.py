@@ -2,6 +2,9 @@ from django.shortcuts import render_to_response, redirect
 from directory.models import *
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
+import logging
+
+logger = logging.getLogger(__name__)
 
 def addObject(request):
 	if request.method == 'POST':
@@ -16,7 +19,7 @@ def addObject(request):
 def listObjects(request):
 	return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
 
-def modifyObject(request, obj_id = None):
+def modifyObject(request, obj_id = None, instance_id = None):
 	if request.method == 'POST':
 		form = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
 		if form.is_valid():
