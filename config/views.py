@@ -11,7 +11,7 @@ def addObject(request):
 			return redirect('/config/object/list')
 	else:
 		form = LBEObjectForm()
-	return render_to_response('config/object/create.html', { 'objectForm': form })
+	return render_to_response('config/object/create.html', { 'objectForm': form }, context_instance=RequestContext(request))
 
 def listObjects(request):
 	return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
