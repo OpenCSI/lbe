@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from directory.models import LBEAttribute, LBEObjectClass
 from django.db.utils import IntegrityError
-from services.configuration import BackendSchema, ConnectionError
+from services.target import TargetSchema, TargetConnectionError, TargetInvalidCredentials
 
 import sys
 
@@ -33,7 +33,7 @@ class Command(BaseCommand):
 			global error, success
 			# Create a DAO 
 			try:
-				schema = BackendSchema()
+				schema = TargetSchema()
 			except ConnectionError:
 				print >> sys.stderr, 'Connecting to backend failed, check lbe/settings.py'
 				sys.exit (1)
