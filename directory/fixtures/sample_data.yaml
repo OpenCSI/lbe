@@ -7,22 +7,22 @@
   pk: 2
   fields:
     name: sn
-    displayname: lastname
+    displayName: lastname
 - model: directory.lbeattribute
   pk: 3
   fields:
     name: givenName
-    displayname: Firstname
+    displayName: Firstname
 - model: directory.lbeattribute
   pk: 4
   fields:
     name: mail
-    displayname: Email address
+    displayName: Email address
 - model: directory.lbeattribute
   pk: 5
   fields:
     name: uid
-    displayname: Unique identifier
+    displayName: Unique identifier
 - model: directory.LBEObjectClass
   pk: 1
   fields:
