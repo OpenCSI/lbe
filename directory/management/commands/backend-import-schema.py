@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from directory.models import LBEAttribute, LBEObjectClass
 from django.db.utils import IntegrityError
-from services.target import TargetSchema, TargetConnectionError, TargetInvalidCredentials
+from services.target import TargetDao, TargetConnectionError, TargetInvalidCredentials
 
 import sys
 
@@ -33,16 +33,16 @@ class Command(BaseCommand):
 			global error, success
 			try:
 				# TargetSchema is a service to access to the backend schema (cn=schema for LDAP)
-				schema = TargetSchema()
+				target = TargetDao()
 			except ConnectionError:
 				print >> sys.stderr, 'Connecting to backend failed, check lbe/settings.py'
 				sys.exit (1)
-			for attribute in schema.getAttributes():
+			for attribute in target.getAttributes():
 				addAttribute(attribute)
 			print success, " attributes added. ", error, " errors (duplicateEntry)"
 			success = 0
 			error = 0
-			for objectClass in schema.getObjectClasses():
+			for objectClass in target.getObjectClasses():
 				addOC(objectClass)
 			print success, " objectclasses added. ", error, " errors (duplicateEntry)"
 	
