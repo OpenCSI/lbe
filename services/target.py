@@ -3,6 +3,7 @@ from directory.models import LBEObject, LBEObjectInstance
 
 import ldap
 
+# TODO: Think to use same exceptions than backend?
 class TargetConnectionError(Exception):
 	def __init__(self, value):
 		self.value = value
@@ -77,12 +78,9 @@ class TargetDaoLDAP():
 			# Add attributes
 			for attributeInstance in LBEObject.lbeattributeinstance_set.all():
 				objectInstance.addAttribute(attributeInstance.lbeAttribute.name, entry[attributeInstance.lbeAttribute.name] )
-			result_set.append(objectInstance)			
+			result_set.append(objectInstance)
 		return result_set
 	
-	def addObject(self, LBEObjectInstance):
-		pass
-
 class TargetDao(TargetDaoLDAP):
 	pass
 	

@@ -91,3 +91,4 @@ class LBEObjectInstance:
 
 	def addAttribute(self, name, values):
 		self.attributes[name] = values
+			

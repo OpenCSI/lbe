@@ -19,4 +19,4 @@ class Command(BaseCommand):
 			for lbeObjectDefinition in LBEObject.objects.all():
 				for lbeObject in target.searchObjects(lbeObjectDefinition):
 					print lbeObject
-					target.addObject(lbeObject)
+					backend.addObject(lbeObject)
