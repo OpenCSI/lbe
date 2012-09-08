@@ -1,5 +1,5 @@
-from directory.models import *
 from dao.LdapDao import LDAPService
+from directory.models import LBEObject
 
 import ldap
 
@@ -14,6 +14,10 @@ class TargetInvalidCredentials(Exception):
 		self.value = value
 	def __str__(self):
 		return repr(self.value)
+
+class TargetObjectInstance():
+	def __init__(self):
+		self.dn = ''
 
 class TargetDaoLDAP():
 	def __init__(self):
@@ -36,7 +40,7 @@ class TargetDaoLDAP():
 		result_set = []
 		for dn,entry in self.schema:
 			for attribute in entry['attributeTypes']:
-				# Skip aliases to prevend schema violations
+				# Skip aliases to prevent schema violations
 				aBuffer = attribute.rsplit(' ')
 				if aBuffer[3] != '(':
 					result_set.append(aBuffer[3].replace('\'', ''))
@@ -49,13 +53,21 @@ class TargetDaoLDAP():
 		result_set = []
 		for dn,entry in self.schema:
 			for attribute in entry['objectClasses']:
-				# Skip aliases to prevend schema violations
+				# Skip aliases to prevent schema violations
 				aBuffer = attribute.rsplit(' ')
 				if aBuffer[3] != '(':
 					result_set.append(aBuffer[3].replace('\'', ''))
 				else:
 					result_set.append(aBuffer[4].replace('\'', ''))
 		return result_set
+	
+	def searchObjects(self, LBEObject, start = 0, page = 0, page_size = 0):
+		filter = '(&'
+		for oc in LBEObject.objectClasses.all():
+			filter += '(objectClass=' + oc.name + ')'
+		filter += ')'
+		for dn, entry in self.handler.search(LBEObject.baseDN, filter, ldap.SCOPE_SUBTREE):
+			print dn
 
 class TargetDao(TargetDaoLDAP):
 	pass
