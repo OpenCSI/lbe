@@ -19,11 +19,11 @@ def listObjects(request):
 def modifyObject(request, obj_id = None):
 	if request.method == 'POST':
 		form = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
-		print LBEObjectForm.__class__
 		if form.is_valid():
 			form.save()
 			return redirect('/config/object/modify/' + obj_id)
 		else:
+			# Send errors in the console for the moment
 			print form.errors
 	else:
 		if (obj_id == None):
@@ -36,4 +36,11 @@ def modifyObject(request, obj_id = None):
 		context_instance=RequestContext(request))
 
 def addObjectAttribute(request, obj_id):
-	return redirect('/')
+	if request.method == 'POST':
+		form = LBEAttributeInstanceForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('/config/object/modify/' + obj_id)
+		else:
+			print form.errors
+	return redirect('/config/object/modify/' + obj_id)

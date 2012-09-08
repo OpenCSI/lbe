@@ -31,6 +31,7 @@ def addOC(name):
 
 class Command(BaseCommand):
         def handle(self, *args, **options):
+			global error, success
 			# Create a DAO 
 			try:
 				ldaph = LDAPService()
@@ -43,34 +44,21 @@ class Command(BaseCommand):
 			for dn,entry in ldaph.search('cn=schema', '(objectClass=*)', ldap.SCOPE_BASE, ['+']):
 				# Ugly way to parse a schema entry...
 				for attribute in entry['attributeTypes']:
-					i = 3
-					line = attribute.rsplit(' ') 
-					buf = line[i]
-					i += 1
-					if buf != "(":
-						addAttribute(buf)
+					# Skip aliases to prevend schema violations
+					aBuffer = attribute.rsplit(' ')
+					if aBuffer[3] != '(':
+						addAttribute(aBuffer[3])
 					else:
-						buf = line[i]
-						while (buf != ")"):
-							addAttribute(buf)
-							i += 1
-							buf = line[i]
-				global error, success
+						addAttribute(aBuffer[4])
 				print success, " attributes added. ", error, " errors (duplicateEntry)"
 				error = 0
 				success = 0
 				for attribute in entry['objectClasses']:
-					i = 3
-					line = attribute.rsplit(' ') 
-					buf = line[i]
-					i += 1
-					if buf != "(":
-						addOC(buf)
+					# Skip aliases to prevend schema violations
+					aBuffer = attribute.rsplit(' ')
+					if aBuffer[3] != '(':
+						addAttribute(aBuffer[3])
 					else:
-						buf = line[i]
-						while (buf != ")"):
-							addOC(buf)
-							i += 1
-							buf = line[i]
+						addAttribute(aBuffer[4])
 				print success, " objectClasses added. ", error, " errors (duplicateEntry)"
 				
