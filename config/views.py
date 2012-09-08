@@ -18,15 +18,22 @@ def listObjects(request):
 
 def modifyObject(request, obj_id = None):
 	if request.method == 'POST':
-		print 'do nothing atm'
-		# add current object in the path
-		return HttpResponseRedirect('/admin/object/modify')
+		form = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
+		print LBEObjectForm.__class__
+		if form.is_valid():
+			form.save()
+			return redirect('/config/object/modify/' + obj_id)
+		else:
+			print form.errors
 	else:
 		if (obj_id == None):
-			return render_to_response('manage/object/list.html', { 'objects': LBEObject.objects.all() })
-		lbeObject = LBEObject.objects.get(id = obj_id)
-		objectForm = LBEObjectForm(instance = lbeObject)
-		attForm = LBEAttributeInstanceForm()
-		instances = LBEAttributeInstance.objects.filter(lbeObject = lbeObject)
-	return render_to_response('manage/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject,'objectForm': objectForm, 'attributeForm': attForm, \
-	'admin':request.user.is_superuser,'ldapState':cLBELDAP.state(),'mongoState':cLBENoSQL.state(),'username':request.user } )
+			return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
+	lbeObject = LBEObject.objects.get(id = obj_id)
+	objectForm = LBEObjectForm(instance = lbeObject)
+	attForm = LBEAttributeInstanceForm()
+	instances = LBEAttributeInstance.objects.filter(lbeObject = lbeObject)
+	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject, 'objectForm': objectForm, 'attributeForm': attForm},\
+		context_instance=RequestContext(request))
+
+def addObjectAttribute(request, obj_id):
+	return redirect('/')
