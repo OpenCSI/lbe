@@ -8,13 +8,17 @@
 	<body>
 	  {% include "header.html" %}
 	  {% include "menu.html" %}
-	  {% if messageError %}
+      <div class="content">
+	  {% if messages %}
 	  <div class="alert alert-error fade in">
 		<button class="close" data-dismiss="alert">×</button>
-		{{ messageError }}
-	  </div>
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        </div>
 	  {% endif %}
-      <div class="content">
           {% block content %}{% endblock %}
       </div>
 	<script type="text/javascript" src="/static/js/jquery.js"></script>
