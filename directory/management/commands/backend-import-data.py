@@ -4,6 +4,7 @@ from services.Mongo import MongoService
 from directory.models import LBEObject
 from django.conf import settings
 import sys
+
 class Command(BaseCommand):
         def handle(self, *args, **options):
 			try:
