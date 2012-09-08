@@ -24,13 +24,13 @@ class LBEScript(models.Model):
 	def __unicode__(self):
 		return str(self.name)
 
+# Use lbeobject.lbeattributeinstance_set.all() to get all attributes instance for a LBEObject
 class LBEObject(models.Model):
 	displayName  	  = models.CharField(unique = True, max_length=32)
 	name         	  = models.CharField(unique = True, max_length=32)
 	baseDN       	  = models.CharField(max_length=256)
 	rdnAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'rdnattribute')
 	approval		  = models.SmallIntegerField() # If > 0, this object need approvals
-	attributes        = models.ManyToManyField(LBEAttribute, through = 'LBEAttributeInstance',null = True, default = None)
 	objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
 	# get attribut class:
 	def __unicode__(self):
