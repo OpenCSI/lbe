@@ -1,5 +1,5 @@
 # Django settings for lbe project.
-import os, django
+import os
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 DEBUG = True
@@ -20,6 +20,18 @@ DATABASES = {
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
+}
+
+LDAP_SERVER = {
+	'host': 'localhost',
+	'port': 1389,
+	'baseDN': 'dc=opencsi,dc=com',
+	'bindDN': 'cn=Directory Manager',
+	'bindpwd': 'toto' 
+}
+
+MONGODB_SERVER = {
+	
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -123,6 +135,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+	'django_extensions',
     'directory',
     'config',
     # Uncomment the next line to enable admin documentation:

@@ -7,6 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 	url(r'^directory/', 'directory.views.index'),
+	url(r'^$', 'directory.views.index'),
     # Examples:
     # url(r'^$', 'lbe.views.home', name='home'),
     # url(r'^lbe/', include('lbe.foo.urls')),
