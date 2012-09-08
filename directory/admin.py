@@ -6,7 +6,7 @@ class LBEAttributeAdmin(admin.ModelAdmin):
 
 class LBEObjectAdmin(admin.ModelAdmin):
 	pass
-
+	
 class LBEObjectClassAdmin(admin.ModelAdmin):
 	list_display = ('name', 'name')
 
