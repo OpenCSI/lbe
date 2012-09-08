@@ -16,5 +16,7 @@ class Command(BaseCommand):
 			except Exception as e:
 				print >> sys.stderr, e
 				sys.exit (1)
-			for lbeObject in LBEObject.objects.all():
-				print target.searchObjects(lbeObject)
+			for lbeObjectDefinition in LBEObject.objects.all():
+				for lbeObject in target.searchObjects(lbeObjectDefinition):
+					print lbeObject
+					target.addObject(lbeObject)

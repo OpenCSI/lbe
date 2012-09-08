@@ -1,5 +1,5 @@
 from dao.LdapDao import LDAPService
-from directory.models import LBEObject
+from directory.models import LBEObject, LBEObjectInstance
 
 import ldap
 
@@ -62,12 +62,26 @@ class TargetDaoLDAP():
 		return result_set
 	
 	def searchObjects(self, LBEObject, start = 0, page = 0, page_size = 0):
+		result_set = []
 		filter = '(&'
 		for oc in LBEObject.objectClasses.all():
 			filter += '(objectClass=' + oc.name + ')'
 		filter += ')'
 		for dn, entry in self.handler.search(LBEObject.baseDN, filter, ldap.SCOPE_SUBTREE):
-			print dn
+			objectInstance = LBEObjectInstance(dn, LBEObject.name)
+			# Add objectClasses
+			objectClasses = []
+			for oc in LBEObject.objectClasses.all():
+				objectClasses.append(oc.name)
+			objectInstance.addAttribute('objectClass', objectClasses)
+			# Add attributes
+			for attributeInstance in LBEObject.lbeattributeinstance_set.all():
+				objectInstance.addAttribute(attributeInstance.lbeAttribute.name, entry[attributeInstance.lbeAttribute.name] )
+			result_set.append(objectInstance)			
+		return result_set
+	
+	def addObject(self, LBEObjectInstance):
+		pass
 
 class TargetDao(TargetDaoLDAP):
 	pass
