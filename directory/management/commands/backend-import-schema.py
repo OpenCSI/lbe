@@ -31,8 +31,8 @@ def addOC(name):
 class Command(BaseCommand):
         def handle(self, *args, **options):
 			global error, success
-			# Create a DAO 
 			try:
+				# TargetSchema is a service to access to the backend schema (cn=schema for LDAP)
 				schema = TargetSchema()
 			except ConnectionError:
 				print >> sys.stderr, 'Connecting to backend failed, check lbe/settings.py'
