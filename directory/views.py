@@ -7,5 +7,5 @@ from django.template import RequestContext
 
 
 def index(request):
-	messages.add_message(request, messages.ERROR, 'Welcome')
+	messages.add_message(request, messages.INFO, 'Welcome')
 	return render_to_response('index.html', None, context_instance=RequestContext(request))
