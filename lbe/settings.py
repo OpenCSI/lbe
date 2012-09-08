@@ -23,11 +23,11 @@ DATABASES = {
 }
 
 LDAP_SERVER = {
-	'host': 'localhost',
-	'port': 1389,
-	'baseDN': 'dc=opencsi,dc=com',
-	'bindDN': 'cn=Directory Manager',
-	'bindpwd': 'toto' 
+	'HOST': 'localhost',
+	'PORT': 1389,
+	'BASE_DN': 'dc=opencsi,dc=com',
+	'BIND_DN': 'cn=Directory Manager',
+	'BIND_PWD': 'toto' 
 }
 
 MONGODB_SERVER = {
