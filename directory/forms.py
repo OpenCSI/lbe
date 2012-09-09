@@ -1,3 +1,4 @@
+from django import forms
 from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
 from django.forms.util import ErrorList
@@ -30,4 +31,11 @@ class LBEAttributeInstanceForm(ModelForm):
 class LBEScriptForm(ModelForm):
 	class Meta:
 		model = LBEScript
+		
+class LBEObjectInstanceForm(forms.Form):
+	displayName = forms.CharField()
+
+class LBEObjectInstanceAttributeForm(forms.Form):
+	name = forms.CharField()
+	values = forms.MultiValueField()
 

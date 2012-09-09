@@ -7,7 +7,7 @@
   pk: 2
   fields:
     name: sn
-    displayName: lastname
+    displayName: Lastname
 - model: directory.lbeattribute
   pk: 3
   fields:
