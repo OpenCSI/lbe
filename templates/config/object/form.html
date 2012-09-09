@@ -3,9 +3,16 @@
 {{ hidden }}
 {% endfor %}
 {# Include the visible fields #}
+<table class='table'>
 {% for field in objectForm.visible_fields %}
+    <tr>
     <div class="fieldWrapper">
-        {{ field.errors }}
-        {{ field.label_tag }}: {{ field }}
+        <th> {{ field.label }} </th>
+        <td> {{ field }} {{ field.errors }}</td>
     </div>
-{% endfor %}
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan=2><input type='submit' name='Submit' class='btn'></td>
+    </tr>
+</table>

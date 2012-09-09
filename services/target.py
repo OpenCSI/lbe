@@ -62,12 +62,14 @@ class TargetDaoLDAP():
 					result_set.append(aBuffer[4].replace('\'', ''))
 		return result_set
 	
-	def searchObjects(self, LBEObject, start = 0, page = 0, page_size = 0):
+	def searchObjects(self, LBEObject, start = 0, page = 0):
 		result_set = []
+		# Include all objectClass in LDAP filter
 		filter = '(&'
 		for oc in LBEObject.objectClasses.all():
 			filter += '(objectClass=' + oc.name + ')'
 		filter += ')'
+		# Search in object's basedn TODO: add a scope property to LBEObject
 		for dn, entry in self.handler.search(LBEObject.baseDN, filter, ldap.SCOPE_SUBTREE):
 			objectInstance = LBEObjectInstance(dn, LBEObject.name)
 			# Add objectClasses

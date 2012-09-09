@@ -11,3 +11,9 @@
 	top:0px;
 	left:0px;
 }
+
+.errorlist
+{
+    color: red;
+    margin: 0;
+}

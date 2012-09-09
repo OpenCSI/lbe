@@ -30,7 +30,7 @@ class LBEObject(models.Model):
 	name         	  = models.CharField(unique = True, max_length=32)
 	baseDN       	  = models.CharField(max_length=256)
 	rdnAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'rdnattribute')
-	approval		  = models.SmallIntegerField() # If > 0, this object need approvals
+	approval		  = models.SmallIntegerField() # If > 0, this object need approvals. Must be positive
 	objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
 	def __unicode__(self):
 		return str(self.displayName)

@@ -4,7 +4,6 @@
 			
 			<form action="{% url 'config.views.modifyObject' obj_id=lbeObject.id %}" method='POST'>{% csrf_token %}
 				{% include 'config/object/form.html' %}
-                <input type='submit' name='Submit' class='btn'>
 		   </form>
 		   
 		   Objects attributes:
