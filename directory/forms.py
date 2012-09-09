@@ -30,4 +30,4 @@ class LBEAttributeInstanceForm(ModelForm):
 class LBEScriptForm(ModelForm):
 	class Meta:
 		model = LBEScript
-		
+

@@ -15,7 +15,8 @@ def index(request):
 # Create an instance of LBEObjectInstance from LBEObject definition. Save it into MongoDB with status AWAITING_SYNC
 def addObjectInstance(request, lbeObject_id):
 	if (request.method == 'POST'):
-		pass
+		print request.POST
+		return render_to_response('directory/default/object/add.html', { 'lbeObject': LBEObject.objects.get(id=lbeObject_id), }, context_instance=RequestContext(request))
 	else:
 		pass
 	return render_to_response('directory/default/object/add.html', { 'lbeObject': LBEObject.objects.get(id=lbeObject_id), }, context_instance=RequestContext(request))
