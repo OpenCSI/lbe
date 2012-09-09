@@ -1,5 +1,7 @@
 # Django settings for lbe project.
 import os
+from django.contrib import messages
+
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 DEBUG = True
@@ -171,4 +173,13 @@ LOGGING = {
             'propagate': True,
         },
     }
+}
+
+# Overriding HTML classes used by messages framework to be compliant with Twitter Bootstrap
+MESSAGE_TAGS = {
+	messages.DEBUG: 'label label-inverse',
+	messages.INFO: 'label label-info',
+	messages.SUCCESS: 'label label-success',
+	messages.WARNING: 'label label-warning',
+	messages.ERROR: 'label label-important',
 }
