@@ -16,17 +16,11 @@ ul.messages {
     margin: 0 0 0 25px;
 }
 
-.errorlist
-{
-    color: red;
-    margin: 0;
-}
-
 ul.errorlist
 {
     list-style: none;
 }
 
-.label {
-    margin: 10;
+.label-important .errorList {
+    text-align: right;
 }

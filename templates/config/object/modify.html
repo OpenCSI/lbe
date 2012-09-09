@@ -3,44 +3,44 @@
 {% block content %}
     <div class='row-fluid'>
         <div class='span6'>
-    <form action="{% url 'config.views.modifyObject' obj_id=lbeObject.id %}" method='POST'>{% csrf_token %}
-        {% include 'config/object/form.html' %}
-    </form>
-    </div>
-    <div class='span6'>
-        ObjectClasses:
-        <ul>
-        {% for objectClass in lbeObject.objectClasses.all %}
-            <li> {{ objectClass }}</li>
-        {% endfor %}
-        </ul>
-    </div>
-    </div>
-   <div class='span12'> 
-   Objects attributes:
-   <table class="table">
-	   <tr>
-	   	<th>Name</th>
-		<th>Default value</th>
-		<th>Reference</th><th>Script</th>
-	   </tr>
-	   {% for instance in attributeInstances %}
-	   <tr>
-	   		<td> {{ instance.lbeAttribute.name }} </td>
-			<td> {{ instance.defaultValue }} </td>
-			<td> {{ instance.reference }} </td>
-			<td> {{ instance.script }} </td>
-	   </tr>
-	   {% endfor %}
-   </table>
+            <form action="{% url 'config.views.modifyObject' obj_id=lbeObject.id %}" method='POST'>{% csrf_token %}
+                {% include 'config/object/form.html' %}
+            </form>
+        </div>
+        <div class='span6'>
+            ObjectClasses:
+            <ul>
+                {% for objectClass in lbeObject.objectClasses.all %}
+                    <li> {{ objectClass }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+     </div>
+     <div class='row-fluid'>
+            Objects attributes:
+            <table class="table">
+               <tr>
+               	<th>Name</th>
+            	<th>Default value</th>
+            	<th>Reference</th><th>Script</th>
+               </tr>
+               {% for instance in attributeInstances %}
+               <tr>
+               		<td> {{ instance.lbeAttribute.name }} </td>
+            		<td> {{ instance.defaultValue }} </td>
+            		<td> {{ instance.reference }} </td>
+            		<td> {{ instance.script }} </td>
+               </tr>
+               {% endfor %}
+            </table>
 		   
-   <div class="addAttribute">
-	   <form action="{% url 'config.views.addObjectAttribute' obj_id=lbeObject.id %}" method='post'>
-           {% csrf_token %}
-		   <table class="table table-condensed">
-					{% include 'config/object/attributes/form.html' %}
-		   </table>
-	   </form>
-   </div>
-   </div>
+            <div class="addAttribute">
+               <form action="{% url 'config.views.addObjectAttribute' obj_id=lbeObject.id %}" method='post'>
+                   {% csrf_token %}
+            	   <table class="table table-condensed">
+            				{% include 'config/object/attributes/form.html' %}
+            	   </table>
+               </form>
+            </div>
+      </div>
 {% endblock %}
