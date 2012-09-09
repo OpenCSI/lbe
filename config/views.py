@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from directory.models import *
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib import messages
 from django.template import RequestContext
 import logging
 
@@ -20,19 +21,20 @@ def listObjects(request):
 	return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
 
 def modifyObject(request, obj_id = None, instance_id = None):
+	objectForm = None
+	lbeObject = LBEObject.objects.get(id = obj_id)
 	if request.method == 'POST':
-		form = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
-		if form.is_valid():
-			form.save()
+		objectForm = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
+		if objectForm.is_valid():
+			objectForm.save()
 			return redirect('/config/object/modify/' + obj_id)
 		else:
-			# Send errors in the console for the moment
-			print form.errors
+			messages.add_message(request, messages.ERROR, 'Error while saving object')
 	else:
 		if (obj_id == None):
 			return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
-	lbeObject = LBEObject.objects.get(id = obj_id)
-	objectForm = LBEObjectForm(instance = lbeObject)
+		else:
+			objectForm = LBEObjectForm(instance= lbeObject)
 	attForm = LBEAttributeInstanceForm()
 	instances = LBEAttributeInstance.objects.filter(lbeObject = lbeObject)
 	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject, 'objectForm': objectForm, 'attributeForm': attForm},\

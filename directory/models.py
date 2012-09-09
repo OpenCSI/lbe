@@ -53,7 +53,7 @@ class LBEAttributeInstance(models.Model):
 
 class LBEDirectoryACL(models.Model):
 	object = models.CharField(max_length=25) # TODO: Why it's not a foreign key?
-	type = models.CharField(max_length=10) # TODO: DOCUMENT
+	type = models.CharField(max_length=10) # TODO: DOCUMENT probably use constants
 	attribut = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
 	condition = models.CharField(max_length=100)
 
@@ -73,7 +73,7 @@ class LBEObjectForm(ModelForm):
 	def clean_approval(self):
 		approval = self.cleaned_data['approval']
 		if (approval < 0):
-			raise forms.ValidationError("This integer must be positive")
+			raise forms.ValidationError("This field must be positive")
 		return approval
 
 class LBEAttributeInstanceForm(ModelForm):
