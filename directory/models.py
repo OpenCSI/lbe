@@ -14,7 +14,7 @@ class LBEAttribute(models.Model):
 	name         	  = models.CharField(unique = True, max_length=64)
 	# some fields (like syntax, max size) will be added later
 	def __unicode__(self):
-		return str(self.displayName + ":" + self.name)
+		return str(self.displayName)
 
 class LBEObjectClass(models.Model):
 	name        	  = models.CharField(unique = True, max_length=64)
