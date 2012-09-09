@@ -21,7 +21,7 @@ class BackendDaoMongo:
 				print >> sys.stderr, "Can't connect to MongoDB server (", settings.MONGODB_SERVER['HOST'], ' ',  settings.MONGODB_SERVER['PORT'], " )"
 	
 	def addObject(self, lbeObjectInstance):
-		self.handler.create('collection', lbeObjectInstance)
+		self.handler.create(lbeObjectInstance.object_type, lbeObjectInstance)
 
 class BackendDao(BackendDaoMongo):
 	pass
