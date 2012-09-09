@@ -27,6 +27,7 @@ def modifyObject(request, obj_id = None, instance_id = None):
 		objectForm = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
 		if objectForm.is_valid():
 			objectForm.save()
+			messages.add_message(request, messages.INFO, 'Object saved')
 			return redirect('/config/object/modify/' + obj_id)
 		else:
 			messages.add_message(request, messages.ERROR, 'Error while saving object')

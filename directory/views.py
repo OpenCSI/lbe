@@ -8,4 +8,4 @@ from django.template import RequestContext
 
 def index(request):
 	messages.add_message(request, messages.INFO, 'Welcome')
-	return render_to_response('index.html', None, context_instance=RequestContext(request))
+	return render_to_response('directory/default/index.html', None, context_instance=RequestContext(request))

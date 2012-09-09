@@ -18,6 +18,8 @@
         <span {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
         {% endfor %}
 	  {% endif %}
+      </div>
+      <div class='span10'>
           {% block content %}{% endblock %}
       </div>
 	<script type="text/javascript" src="/static/js/jquery.js"></script>
