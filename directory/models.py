@@ -9,6 +9,10 @@ OBJECT_AWAITING_SYNC = 1
 OBJECT_AWAITING_APPROVAL = 2
 OBJECT_IMPORTED = 1
 
+OBJECT_TYPE_FINAL = 0
+OBJECT_TYPE_REFERENCE = 1
+OBJECT_TYPE_VIRTUAL = 2
+
 class LBEAttribute(models.Model):
 	displayName       = models.CharField(unique = True, max_length=64)
 	name         	  = models.CharField(unique = True, max_length=64)
@@ -36,8 +40,10 @@ class LBEObject(models.Model):
 	name         	  = models.CharField(unique = True, max_length=32)
 	baseDN       	  = models.CharField(max_length=256)
 	rdnAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'rdnattribute')
-	approval		  = models.SmallIntegerField() # If > 0, this object need approvals. Must be positive
+	approval		  = models.SmallIntegerField(default = 0) # If > 0, this object need approvals. Must be positive
 	objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
+	# To increment each time an object is changed. TODO: add this field in backend
+	version           = models.SmallIntegerField(default = 0)
 	def __unicode__(self):
 		return str(self.displayName)
 
@@ -50,12 +56,15 @@ class LBEAttributeInstance(models.Model):
 	lbeAttribute      = models.ForeignKey(LBEAttribute)
 	lbeObject         = models.ForeignKey(LBEObject)
 	defaultValue      = models.CharField(max_length=64, default='', blank = True, null = True)
-	mandatory         = models.BooleanField(default = 0)
-	multivalue        = models.BooleanField(default = 0)
+	mandatory         = models.BooleanField(default = False)
+	multivalue        = models.BooleanField(default = False)
 	reference         = models.ForeignKey(LBEReference, null = True, blank = True, default = None)
 	script         	  = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
-	# If true, this attribute will be stored crypted (by a key defined in LBE/settings.py)
-	crypt		      = models.BooleanField(default = 0)
+	# If true, this attribute will be stored enciphered (by a symmetric key defined in LBE/settings.py) TODO: implement
+	secure		      = models.BooleanField(default = 0)
+	objectType        = models.SmallIntegerField(default = OBJECT_TYPE_FINAL)
+	# The HTML widget used to display/edit attribute. We'll inject classname
+	attributeWidget   = models.CharField(max_length=64, default = 'CharField')
 
 class LBEDirectoryACL(models.Model):
 	object = models.CharField(max_length=25) # TODO: Why it's not a foreign key?

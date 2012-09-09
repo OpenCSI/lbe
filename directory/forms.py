@@ -15,7 +15,7 @@ class LBEObjectForm(ModelForm):
 	rdnAttribute =  LBEAttributeChoiceField(queryset = LBEAttribute.objects.all())
 	class Meta:
 		model = LBEObject
-		exclude = ( 'attributes', 'objectClasses' )
+		exclude = ( 'attributes', 'objectClasses', 'version' )
 	# Implements validator for approval field (must >= 0)
 	def clean_approval(self):
 		approval = self.cleaned_data['approval']
