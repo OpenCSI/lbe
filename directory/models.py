@@ -3,6 +3,13 @@ from django.db import models
 from django.forms import ModelForm, ModelChoiceField
 from django import forms
 
+# Object status
+OBJECT_INVALID = -1
+OBJECT_AWAITING_SYNC = 0
+OBJECT_SYNC = 1
+OBJECT_AWAITING_APPROVAL = 2
+OBJECT_IMPORTED = 3
+
 class LBEAttribute(models.Model):
 	displayName       = models.CharField(unique = True, max_length=64)
 	name         	  = models.CharField(unique = True, max_length=64)
@@ -92,6 +99,7 @@ class LBEObjectInstance:
 		self.dn = dn
 		self.object_type = name
 		self.attributes = {}
+		self.status = OBJECT_INVALID
 		# Attributes will be stored a { cn: ['Bruno Bonfils'], mail: [ 'bruno@opencsi.com', 'bbonfils@opencsi.com' ] }
 
 	def addAttribute(self, name, values):

@@ -1,9 +1,13 @@
 from pymongo import Connection, errors
 from django.conf import settings
-from directory.models import LBEObjectInstance
+from directory.models import LBEObjectInstance, OBJECT_IMPORTED
 
 def LbeObjectInstanceToJson(lbeObjectInstance):
-	return { '_id': lbeObjectInstance.dn, 'attributes': lbeObjectInstance.attributes, 'objectType': lbeObjectInstance.object_type }
+	return { '_id': lbeObjectInstance.dn, 
+		'attributes': lbeObjectInstance.attributes, 
+		'objectType': lbeObjectInstance.object_type,
+		'status': OBJECT_IMPORTED
+	}
 
 class MongoService:
 	def __init__(self):
@@ -14,10 +18,10 @@ class MongoService:
 		pass
 
 	def create(self, collectionName, lbeObjectInstance):
-		# self.db[collectionName].insert(json.dumps(lbeObjectInstance, default=convertLbeObjectInstanceToJson))		
 		db = self.db[collectionName]
 		document = LbeObjectInstanceToJson(lbeObjectInstance)
 		try:
+			print document
 			id = db.insert(document)
 			print 'Inserting ', id
 		except Exception as e:
