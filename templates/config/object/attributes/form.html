@@ -5,23 +5,22 @@
 {# Include the visible fields #}
 
 <input type="hidden" name="lbeObject" value="{{ lbeObject.id }}">
-<table>
+<table class='table'>
 	<tr>
 		<th>Name</th>
 		<th>Default value</th>
 		<th>Flags</th>
 		<th>Reference</th>
-		<th>Script</th>
 	</tr>
 	<tr>
 		<!-- TODO replace this field by an ajax autocompletion -->
-		<td>{{attributeForm.lbeAttribute}}</td>
-		<td>{{attributeForm.defaultValue}}</td>
+		<td>{{attributeForm.lbeAttribute}} {% for error in attributeForm.lbeAttribute.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
+		<td>{{attributeForm.defaultValue}} {% for error in attributeForm.defaultValue.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
 		<td>Mandatory: {{attributeForm.mandatory}}<br/>
 			Multivalued: {{attributeForm.multivalue}}<br/>
-			Ciphered: {{attributeForm.crypt}}</td>
-		<td>{{attributeForm.reference}}</td>
+			Ciphered: {{attributeForm.secure}}</td>
+		<td>{{attributeForm.reference}} {% for error in attributeForm.reference.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
 	</tr>		
-	<td><input type="submit" value="Add" class="btn"/></td>
+	<td colspan="4" style='text-align: center;'><input type="submit" value="Add" class="btn"/></td>
 	</tr>
 </table>

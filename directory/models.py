@@ -57,11 +57,11 @@ class LBEAttributeInstance(models.Model):
 	lbeObject         = models.ForeignKey(LBEObject)
 	defaultValue      = models.CharField(max_length=64, default='', blank = True, null = True)
 	mandatory         = models.BooleanField(default = False)
-	multivalue        = models.BooleanField(default = False)
+	multivalue        = models.BooleanField(default = True)
 	reference         = models.ForeignKey(LBEReference, null = True, blank = True, default = None)
 	script         	  = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
 	# If true, this attribute will be stored enciphered (by a symmetric key defined in LBE/settings.py) TODO: implement
-	secure		      = models.BooleanField(default = 0)
+	secure		      = models.BooleanField(default = False)
 	objectType        = models.SmallIntegerField(default = OBJECT_TYPE_FINAL)
 	# The HTML widget used to display/edit attribute. We'll inject classname
 	attributeWidget   = models.CharField(max_length=64, default = 'CharField')

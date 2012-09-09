@@ -28,11 +28,13 @@ class LBEAttributeInstanceForm(ModelForm):
 	lbeObject = LBEObjectChoiceField(queryset = LBEObject.objects.all())
 	class Meta:
 		model = LBEAttributeInstance
+		exclude = ( 'lbeObject' )
 
 class LBEScriptForm(ModelForm):
 	class Meta:
 		model = LBEScript
 		
+# Following forms are not used at the moment
 class LBEObjectInstanceForm(forms.Form):
 	displayName = forms.CharField()
 	attributes = forms.MultiValueField()
