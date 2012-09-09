@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.forms import ModelForm, ModelChoiceField
 from django import forms
 
 # Object status
@@ -64,35 +63,6 @@ class LBEDirectoryACL(models.Model):
 	attribut = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
 	condition = models.CharField(max_length=100)
 
-class LBEAttributeChoiceField(ModelChoiceField):
-	def label_from_instance(self, obj):
-		return obj.name
-
-class LBEObjectChoiceField(ModelChoiceField):
-	def label_from_instance(self, obj):
-		return obj.name
-
-class LBEObjectForm(ModelForm):
-	rdnAttribute =  LBEAttributeChoiceField(queryset = LBEAttribute.objects.all())
-	class Meta:
-		model = LBEObject
-		exclude = ( 'attributes', 'objectClasses' )
-	def clean_approval(self):
-		approval = self.cleaned_data['approval']
-		if (approval < 0):
-			raise forms.ValidationError("This field must be positive")
-		return approval
-
-class LBEAttributeInstanceForm(ModelForm):
-	lbeAttribute = LBEAttributeChoiceField(queryset = LBEAttribute.objects.all())
-	lbeObject = LBEObjectChoiceField(queryset = LBEObject.objects.all())
-	class Meta:
-		model = LBEAttributeInstance
-
-class LBEScriptForm(ModelForm):
-	class Meta:
-		model = LBEScript
-		
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance:
 	def __init__(self, dn, object_type, name, attributes = {}):

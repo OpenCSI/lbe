@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response, redirect
 from directory.models import *
+from directory.forms import *
 from django.core.context_processors import csrf
 
 from django.contrib import messages
