@@ -1,0 +1,34 @@
+<div id="index">
+	<h4></h4>
+	<table class="table table-striped table-bordered table-condensed" style="width: 1024px;margin:auto;">
+	{% spaceless %}
+		{% for key,displayKey in attributes.items %}
+			<th><center>{{displayKey}}</center></th>
+		{% endfor %}
+			<th><center>Options</center></th>
+		{% for val in values %}<tr>
+			{% for key,displayKey in attributes.items %}
+				{% for K,V in val.items %}
+					{% if K == key %}
+						<td><center>{{V|safe}}</center></td>
+					{% endif %}
+				{% endfor %}
+			{% endfor %}
+				<td><center><a href="#" onClick="showUserInformation('{{val.RDN}}','{{objectID}}');"><i class="icon-edit"></i></a></center></td>
+			</tr>	
+			{% empty %}
+				<tr><td COLSPAN="{{attributes|length}}"><center><i>No Values.</i></center></td><td><center><i class="icon-exclamation-sign"></i></center></td></tr>
+		{% endfor %}
+	{% endspaceless %}
+	</table>
+</div>
+{% if ACLs.create or ACLs.approvale %}
+<div class="create">
+	<center><table class="table-bordered table-condensed table-striped" style="width:100px;">
+		<th>Option</th>
+		{% if ACLs.create %}<tr><td><center><a href="/directory/add/{{objectID}}">Add</a></center></td></tr>{% endif %}
+		{% if ACLs.approvale %}<tr><td><center><a href="/directory/approvale/{{objectID}}">Approve ({{nbApprovale}})</a></center></td></tr>{% endif %}
+		{% if ACLs.delete %}<tr><td><center><a href="/directory/delete/{{objectID}}">Delete</a></center></td></tr>{% endif %}
+	</table></center>
+</div>
+{% endif %}
