@@ -14,11 +14,11 @@ class MongoService:
 		self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
 		self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
 
-	def search(self):
-		pass
+	def search(self, collection, filters = {}):
+		return self.db[collection].find(filters)
 
-	def create(self, collectionName, lbeObjectInstance):
-		db = self.db[collectionName]
+	def create(self, collection, lbeObjectInstance):
+		db = self.db[collection]
 		document = LbeObjectInstanceToJson(lbeObjectInstance)
 		try:
 			print document

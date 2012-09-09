@@ -5,10 +5,10 @@ from django import forms
 
 # Object status
 OBJECT_INVALID = -1
-OBJECT_AWAITING_SYNC = 0
-OBJECT_SYNC = 1
+OBJECT_SYNC = 0
+OBJECT_AWAITING_SYNC = 1
 OBJECT_AWAITING_APPROVAL = 2
-OBJECT_IMPORTED = 3
+OBJECT_IMPORTED = 1
 
 class LBEAttribute(models.Model):
 	displayName       = models.CharField(unique = True, max_length=64)
@@ -95,13 +95,12 @@ class LBEScriptForm(ModelForm):
 		
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance:
-	def __init__(self, dn, name, attributes = {}):
+	def __init__(self, dn, object_type, attributes = {}):
 		self.dn = dn
-		self.object_type = name
-		self.attributes = {}
+		self.object_type = object_type
+		self.attributes = attributes
 		self.status = OBJECT_INVALID
 		# Attributes will be stored a { cn: ['Bruno Bonfils'], mail: [ 'bruno@opencsi.com', 'bbonfils@opencsi.com' ] }
 
 	def addAttribute(self, name, values):
 		self.attributes[name] = values
-			
