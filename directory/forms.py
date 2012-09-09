@@ -16,10 +16,11 @@ class LBEObjectForm(ModelForm):
 	class Meta:
 		model = LBEObject
 		exclude = ( 'attributes', 'objectClasses' )
+	# Implements validator for approval field (must >= 0)
 	def clean_approval(self):
 		approval = self.cleaned_data['approval']
 		if (approval < 0):
-			raise forms.ValidationError("This field must be positive.")
+			raise forms.ValidationError("This field must be null or positive.")
 		return approval
 
 class LBEAttributeInstanceForm(ModelForm):
@@ -34,6 +35,7 @@ class LBEScriptForm(ModelForm):
 		
 class LBEObjectInstanceForm(forms.Form):
 	displayName = forms.CharField()
+	attributes = forms.MultiValueField()
 
 class LBEObjectInstanceAttributeForm(forms.Form):
 	name = forms.CharField()

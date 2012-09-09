@@ -3,6 +3,7 @@
 {% block content %}
 
 <form action='#' method='POST'>
+    {{ form.as_table }}
     {% csrf_token %}
     <table class='table'>
         {% for attrInstance in lbeObject.lbeattributeinstance_set.all %}

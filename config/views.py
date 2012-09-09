@@ -47,6 +47,6 @@ def addObjectAttribute(request, obj_id):
 			form.save()
 			return redirect('/config/object/modify/' + obj_id)
 		else:
-			# Handle
+			# TODO: manage errors
 			print form.errors
 	return redirect('/config/object/modify/' + obj_id)
