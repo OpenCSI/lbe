@@ -8,6 +8,5 @@ from services.backend import BackendDao
 
 def index(request):
 	backend = BackendDao()
-	objects = backend.searchObject(LBEObject.objects.get(name='employee'))
-	messages.add_message(request, messages.DEBUG, 'test')
-	return render_to_response('directory/default/index.html', None, context_instance=RequestContext(request))
+	objects = backend.searchObjects(LBEObject.objects.get(name='employee'))
+	return render_to_response('directory/default/index.html', { 'objects': objects }, context_instance=RequestContext(request))

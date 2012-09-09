@@ -105,3 +105,6 @@ class LBEObjectInstance:
 
 	def addAttribute(self, name, values):
 		self.attributes[name] = values
+	
+	def setStatus(self, status):
+		self.status = status

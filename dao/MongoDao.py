@@ -13,7 +13,9 @@ def LbeObjectInstanceToJson(lbeObjectInstance):
 def DocumentsToLBEObjectInstance(documents):
 	result_set = []
 	for document in documents:
-		instance = LBEObjectInstance(document['_id'], document['objectType'], document['attributes'])
+		instance = LBEObjectInstance(document['_id'], document['objectType'], document['displayName'], document['attributes'])
+		# Must be override by hand
+		instance.setStatus(document['status'])
 		result_set.append(instance)
 	return result_set
 
@@ -22,7 +24,7 @@ class MongoService:
 		self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
 		self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
 
-	def searchObject(self, collection, filters = {}):
+	def searchObjects(self, collection, filters = {}):
 		return DocumentsToLBEObjectInstance(self.db[collection].find(filters))
 
 	def createObject(self, lbeObjectInstance):

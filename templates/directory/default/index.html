@@ -1,5 +1,18 @@
 {% extends "index.html" %}
 {% load url from future %}
 {% block content %}
- List of objects
+<table class='table'>
+    <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    {% for object in objects %}
+    <tr>
+        <td> {{ object.displayName }} </td>
+        <td> {{ object.status }} </td>
+        <td> N/A </td>
+     </tr>
+    {% endfor %}
+</table>
 {% endblock %}
