@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+{% load url from future %}
+{% block content %}
+
+<form action='#' method='POST'>
+    <table>
+        {% for attrInstance in lbeObject.lbeattributeinstance_set.all %}
+            <tr> 
+                <th>{{ attrInstance.lbeAttribute.displayName }} </th>
+                <td><input type='text' name='lbeObject.attributes.{{ attrInstance.lbeAttribute.name }}'></td>
+            </tr>
+        {% endfor %}
+    </table>
+</form>
+{% endblock %}

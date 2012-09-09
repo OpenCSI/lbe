@@ -7,7 +7,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 	url(r'^$', 'directory.views.index'),
-	url(r'^directory/', 'directory.views.index'),
+	url(r'^directory/?$', 'directory.views.index'),
+	url(r'^directory/object/add/(?P<lbeObject_id>\d+)$', 'directory.views.addObjectInstance'),
 	url(r'^config/?$', 'directory.views.index'),
 	url(r'^config/object/add/?$', 'config.views.addObject'),
 	url(r'^config/object/list/?$', 'config.views.listObjects'),

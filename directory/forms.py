@@ -18,7 +18,7 @@ class LBEObjectForm(ModelForm):
 	def clean_approval(self):
 		approval = self.cleaned_data['approval']
 		if (approval < 0):
-			raise forms.ValidationError("This field must be positive")
+			raise forms.ValidationError("This field must be positive.")
 		return approval
 
 class LBEAttributeInstanceForm(ModelForm):
