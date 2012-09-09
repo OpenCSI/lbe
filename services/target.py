@@ -71,7 +71,7 @@ class TargetDaoLDAP():
 		filter += ')'
 		# Search in object's basedn TODO: add a scope property to LBEObject
 		for dn, entry in self.handler.search(LBEObject.baseDN, filter, ldap.SCOPE_SUBTREE):
-			objectInstance = LBEObjectInstance(dn, LBEObject.name)
+			objectInstance = LBEObjectInstance(dn, LBEObject.name, entry[LBEObject.rdnAttribute.name][0])
 			# Add objectClasses
 			objectClasses = []
 			for oc in LBEObject.objectClasses.all():

@@ -95,12 +95,13 @@ class LBEScriptForm(ModelForm):
 		
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance:
-	def __init__(self, dn, object_type, attributes = {}):
+	def __init__(self, dn, object_type, name, attributes = {}):
 		self.dn = dn
-		self.object_type = object_type
+		self.objectType = object_type
+		self.displayName = name
+		# Attributes will be stored a { cn: ['Bruno Bonfils'], mail: [ 'bruno@opencsi.com', 'bbonfils@opencsi.com' ] }
 		self.attributes = attributes
 		self.status = OBJECT_INVALID
-		# Attributes will be stored a { cn: ['Bruno Bonfils'], mail: [ 'bruno@opencsi.com', 'bbonfils@opencsi.com' ] }
 
 	def addAttribute(self, name, values):
 		self.attributes[name] = values

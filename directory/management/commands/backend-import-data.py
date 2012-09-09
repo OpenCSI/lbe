@@ -18,4 +18,4 @@ class Command(BaseCommand):
 				sys.exit (1)
 			for lbeObjectDefinition in LBEObject.objects.all():
 				for lbeObject in target.searchObjects(lbeObjectDefinition):
-					backend.addObject(lbeObject)
+					backend.createObject(lbeObject)
