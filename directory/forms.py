@@ -1,5 +1,6 @@
 from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
+from django.forms.util import ErrorList
 
 class LBEAttributeChoiceField(ModelChoiceField):
 	def label_from_instance(self, obj):

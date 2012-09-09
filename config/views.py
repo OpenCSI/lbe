@@ -31,6 +31,7 @@ def modifyObject(request, obj_id = None, instance_id = None):
 			messages.add_message(request, messages.ERROR, 'Error while saving object')
 	else:
 		if (obj_id == None):
+			messages.add_message(request, messages.INFO, 'object id is missing')
 			return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
 		else:
 			objectForm = LBEObjectForm(instance= lbeObject)
@@ -46,5 +47,6 @@ def addObjectAttribute(request, obj_id):
 			form.save()
 			return redirect('/config/object/modify/' + obj_id)
 		else:
+			# Handle
 			print form.errors
 	return redirect('/config/object/modify/' + obj_id)
