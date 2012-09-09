@@ -70,6 +70,11 @@ class LBEObjectForm(ModelForm):
 	class Meta:
 		model = LBEObject
 		exclude = ( 'attributes', 'objectClasses' )
+	def clean_approval(self):
+		approval = self.cleaned_data['approval']
+		if (approval < 0):
+			raise forms.ValidationError("This integer must be positive")
+		return approval
 
 class LBEAttributeInstanceForm(ModelForm):
 	lbeAttribute = LBEAttributeChoiceField(queryset = LBEAttribute.objects.all())
