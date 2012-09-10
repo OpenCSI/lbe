@@ -13,6 +13,7 @@ urlpatterns = patterns('',
 	url(r'^config/object/add/?$', 'config.views.addObject'),
 	url(r'^config/object/list/?$', 'config.views.listObjects'),
 	url(r'^config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObject'),
+	url(r'^ajax/config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObjectAJAX'),
 	url(r'^config/object/addattribute/(?P<obj_id>\d+)$', 'config.views.addObjectAttribute'),
     # Examples:
     # url(r'^$', 'lbe.views.home', name='home'),

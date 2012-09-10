@@ -1,8 +1,8 @@
-function showMBAddAttribute(id)
+function showModalBox(url)
 {
 	$.ajax({
 	   type: "GET",
-	   url: "/ajax/config/object/modify/" + id,
+	   url: url,
 	   async:false,
 	   success: function(data){
 		    $('.addAttribute').html(data);

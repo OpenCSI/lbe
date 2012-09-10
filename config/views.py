@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.template import RequestContext
 from directory.models import *
 from directory.forms import *
+from django.views.decorators.csrf import csrf_exempt
 
 def addObject(request):
 	if request.method == 'POST':
@@ -40,6 +41,19 @@ def modifyObject(request, obj_id = None, instance_id = None):
 	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject, 'objectForm': objectForm, 'attributeForm': attForm},\
 		context_instance=RequestContext(request))
 
+def modifyObjectAJAX(request,obj_id = None):
+	if request.is_ajax():
+		lbeObject = LBEObject.objects.get(id = obj_id)
+		if (obj_id == None):
+			messages.add_message(request, messages.INFO, 'object id is missing')
+			return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
+		else:
+			objectForm = LBEObjectForm(instance=lbeObject)
+		attForm = LBEAttributeInstanceForm()
+		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObject,'objectForm': objectForm, 'attributeForm': attForm})
+	
+	
+@csrf_exempt
 def addObjectAttribute(request, obj_id):
 	if request.method == 'POST':
 		form = LBEAttributeInstanceForm(request.POST)
