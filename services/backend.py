@@ -1,6 +1,8 @@
 from dao.MongoDao import MongoService
 from pymongo import errors
 from directory.models import LBEObjectInstance, OBJECT_INVALID
+import sys
+from django.conf import settings
 
 class BackendConnectionError(Exception):
 	def __init__(self, value):
