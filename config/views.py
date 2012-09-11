@@ -60,7 +60,7 @@ def modifyObjectAJAX(request,obj_id = None):
 		else:
 			objectForm = LBEObjectForm(instance=lbeObject)
 		attForm = LBEAttributeInstanceForm()
-		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObject,'objectForm': objectForm, 'attributeForm': attForm})
+		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObject,'objectForm': objectForm, 'attributeForm': attForm}, context_instance=RequestContext(request))
 	
 def showAttributeAJAX(request,attribute = None,value = None):
 	if request.is_ajax():
@@ -70,7 +70,6 @@ def showAttributeAJAX(request,attribute = None,value = None):
 			attr = LBEAttribute.objects.filter(name__contains=value)[:5] # LIKE '%attribute%'
 		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute})
 
-@csrf_exempt
 def addObjectAttribute(request, obj_id):
 	if request.method == 'POST':
 		form = LBEAttributeInstanceForm(request.POST)
