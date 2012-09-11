@@ -40,9 +40,9 @@ def modifyObject(request, obj_id = None, instance_id = None):
 			messages.add_message(request, messages.INFO, 'Object id is missing.')
 			return render_to_response('config/object/list.html', { 'objects': LBEObjectTemplate.objects.all() })
 		else:
-			objectForm = LBEObjectForm(instance= lbeObjectTemplate)
+			objectForm = LBEObjectTemplateForm(instance= lbeObjectTemplate)
 	attForm = LBEAttributeInstanceForm()
-	instances = LBEAttributeInstance.objects.filter(lbeObjectTemplate = lbeObjectDefinition)
+	instances = LBEAttributeInstance.objects.filter(lbeObjectTemplate = lbeObjectTemplate)
 	# which attribute have ajax request:
 	ajaxAttribute = 'rdnAttribute'
 	defaultValue = lbeObjectTemplate.rdnAttribute.name
