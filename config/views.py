@@ -64,7 +64,6 @@ def showAttributeAJAX(request,attribute = None,value = None):
 			attr = []
 		else:
 			attr = LBEAttribute.objects.filter(name__contains=value)[:5] # LIKE '%attribute%'
-		print attribute
 		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute})
 
 @csrf_exempt
