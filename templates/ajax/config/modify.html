@@ -1,10 +1,11 @@
+{% load url from future %}
 <div id="MBAddAttribute" class="modal hide fade">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">×</button>
 		<h3><span id="AttrTitle">Add an attribute</span></h3>
 	</div>
 	<div class="modal-body">
-		<form action="{% url config.views.addObjectAttribute obj_id=lbeObject.id %}" method='post'>
+		<form action="{% url 'config.views.addObjectAttribute' obj_id=lbeObject.id %}" method='post'>
 			{% csrf_token %}
 			<table class="table table-condensed">
 				{% include 'config/object/attributes/form.html' %}
