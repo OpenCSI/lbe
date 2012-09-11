@@ -5,6 +5,7 @@ from django.template import RequestContext
 from directory.models import *
 from directory.forms import *
 from django.views.decorators.csrf import csrf_exempt
+from django.core.urlresolvers import reverse
 
 def addObject(request):
 	if request.method == 'POST':
@@ -23,7 +24,6 @@ def modifyObject(request, obj_id = None, instance_id = None):
 	objectForm = None
 	lbeObject = LBEObject.objects.get(id = obj_id)
 	if request.method == 'POST':
-		print request.POST
 		objectForm = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
 		if objectForm.is_valid():
 			objectForm.save()
@@ -39,7 +39,11 @@ def modifyObject(request, obj_id = None, instance_id = None):
 			objectForm = LBEObjectForm(instance= lbeObject)
 	attForm = LBEAttributeInstanceForm()
 	instances = LBEAttributeInstance.objects.filter(lbeObject = lbeObject)
-	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject, 'objectForm': objectForm, 'attributeForm': attForm},\
+	# which attribute have ajax request:
+	ajaxAttribute = 'rdnAttribute'
+	# Ajax function to call (js):
+	ajaxFunction = 'selectFrom(\'' + reverse('config.views.showAttributeAJAX') +'\',\''+ajaxAttribute+'\');'
+	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject, 'objectForm': objectForm, 'attributeForm': attForm,'ajaxAttribute':ajaxAttribute,'ajaxFunction':ajaxFunction},\
 		context_instance=RequestContext(request))
 
 def modifyObjectAJAX(request,obj_id = None):
@@ -53,6 +57,9 @@ def modifyObjectAJAX(request,obj_id = None):
 		attForm = LBEAttributeInstanceForm()
 		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObject,'objectForm': objectForm, 'attributeForm': attForm})
 	
+def showAttributeAJAX(request,attribute = None):
+	if request.is_ajax():
+		print attribute
 	
 @csrf_exempt
 def addObjectAttribute(request, obj_id):

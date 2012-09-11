@@ -7,7 +7,12 @@
 {% for field in objectForm.visible_fields %}
     <tr>
         <th> {{ field.label }} </th>
-        <td> {{ field }}
+        <td> {% if ajaxAttribute == field.name %}
+				<input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="" onKeyUp='{{ajaxFunction}}'/>
+				<div class="show"></div>
+			{% else %}
+			{{ field }}
+			{% endif %}
             {% for error in field.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
         </td>
     </tr>
@@ -16,3 +21,6 @@
         <td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn'></td>
     </tr>
 </table>
+{% if ajaxAttribute %}
+<script type="text/javascript" src="/static/js/common/crud.js"></script>
+{% endif %}
