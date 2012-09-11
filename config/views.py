@@ -83,7 +83,7 @@ def addAttribute(request):
 		form = LBEAttributeForm(request.POST)
 		if form.is_valid():
 			form.save()
-			messages.add_message(request, messages.INFO, 'Attribute created')
+			messages.add_message(request, messages.SUCCESS, 'Attribute created.')
 			return redirect('/config/attribute/add')
 	else:
 		form = LBEAttributeForm()
