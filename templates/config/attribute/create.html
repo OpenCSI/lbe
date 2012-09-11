@@ -1,0 +1,7 @@
+{% extends "index.html" %}
+{% block content %}
+	<h4>Create an attribute:</h4>
+    <form method="post" action="">{% csrf_token %}
+       {% include 'config/attribute/form.html' %}
+    </form>
+{% endblock %}
