@@ -23,6 +23,7 @@ def modifyObject(request, obj_id = None, instance_id = None):
 	objectForm = None
 	lbeObject = LBEObject.objects.get(id = obj_id)
 	if request.method == 'POST':
+		print request.POST
 		objectForm = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
 		if objectForm.is_valid():
 			objectForm.save()
