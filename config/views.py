@@ -60,7 +60,11 @@ def modifyObjectAJAX(request,obj_id = None):
 	
 def showAttributeAJAX(request,attribute = None):
 	if request.is_ajax():
-		print attribute
+		if attribute == None or attribute == '':
+			attr = []
+		else:
+			attr = LBEAttribute.objects.filter(name__contains=attribute)[:5] # LIKE '%attribute%'
+		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute})
 
 @csrf_exempt
 def addObjectAttribute(request, obj_id):

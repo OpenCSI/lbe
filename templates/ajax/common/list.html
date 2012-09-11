@@ -1,0 +1,7 @@
+{% for attributeValue in attributes %}
+	<ul class="search" onClick=";">{{attributeValue.name}}</ul>
+{% empty %}
+	{% if value %}
+	<ul class="list"><i>No Value</i></ul>
+	{% endif %}
+{% endfor %}
