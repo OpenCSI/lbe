@@ -40,10 +40,10 @@ class LBEScriptForm(ModelForm):
 		model = LBEScript
 		
 # Following forms are not used at the moment
-class LBEObjectInstanceForm(forms.Form):
+class LBEObjectInstanceForm(forms.Form, LBEObject):
 	displayName = forms.CharField()
 	attributes = forms.MultiValueField()
-
+	
 class LBEObjectInstanceAttributeForm(forms.Form):
 	name = forms.CharField()
 	values = forms.MultiValueField()

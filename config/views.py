@@ -31,7 +31,7 @@ def modifyObject(request, obj_id = None, instance_id = None):
 		objectForm = LBEObjectForm(request.POST, instance = LBEObject.objects.get(id = obj_id))
 		if objectForm.is_valid():
 			objectForm.save()
-			messages.add_message(request, messages.INFO, 'Object saved')
+			messages.add_message(request, messages.SUCCESS, 'Object saved')
 			return redirect('/config/object/modify/' + obj_id)
 		else:
 			messages.add_message(request, messages.ERROR, 'Error while saving object.')
@@ -78,6 +78,7 @@ def addObjectAttribute(request, obj_id):
 			return redirect('/config/object/modify/' + obj_id)
 		else:
 			# TODO: manage errors
+			messages.add_message(request, messages.ERROR, 'Error while adding attribute.')
 			print form.errors
 	return redirect('/config/object/modify/' + obj_id)
 
