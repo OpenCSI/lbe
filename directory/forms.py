@@ -43,10 +43,8 @@ class LBEObjectInstanceForm(forms.Form):
 	def __init__(self, lbeObjectTemplate, *args, **kwargs):
 		super(forms.Form, self).__init__(*args, **kwargs)
 		for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
-			self.fields[attributeInstance.lbeAttribute.name] = forms.CharField()
-	
-	displayName = forms.CharField()
-	attributes = forms.MultiValueField()
+			# TODO: There is probably a better way than exec
+			exec 'self.fields["lbe." + attributeInstance.lbeAttribute.displayName] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
 	
 class LBEObjectInstanceAttributeForm(forms.Form):
 	name = forms.CharField()

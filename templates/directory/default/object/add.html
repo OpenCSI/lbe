@@ -2,12 +2,9 @@
 {% load url from future %}
 {% block content %}
 
-<form action='#' method='POST'>
+<form action='{% url 'directory.views.addObjectInstance' %}' method='POST'>
     {{ form.as_table }}
     {% csrf_token %}
-    a {{ attributesForm.management_form }} b
-    {% for form in attributesForm.forms %}
-        {{ form.as_table }}
-    {% endfor %}
+    <input type='submit' value='Submit' class='btn' name='Submit'>
 </form>
 {% endblock %}

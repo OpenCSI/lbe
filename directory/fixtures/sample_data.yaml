@@ -23,6 +23,12 @@
   fields:
     name: uid
     displayName: Unique identifier
+- model: directory.lbeattribute
+  pk: 6
+  fields:
+    name: gender
+    displayName: Gender
+
 - model: directory.LBEObjectClass
   pk: 1
   fields:
@@ -39,6 +45,7 @@
   pk: 4
   fields:
     name: inetOrgPerson
+
 - model: directory.LBEAttributeInstance
   pk: 1
   fields: 
@@ -69,6 +76,15 @@
     lbeAttribute: 5
     lbeObjectTemplate: 1
     multivalue: False
+- model: directory.LBEAttributeInstance
+  pk: 6
+  fields:
+    lbeAttribute: 6
+    lbeObjectTemplate: 1
+    widget: forms.ChoiceField
+    widgetArgs: "(('M', 'Male'), ('F', 'Female'))"
+    multivalue: False
+
 - model: directory.LBEObjectTemplate
   pk: 1
   fields:
