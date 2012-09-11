@@ -41,9 +41,10 @@ def modifyObject(request, obj_id = None, instance_id = None):
 	instances = LBEAttributeInstance.objects.filter(lbeObject = lbeObject)
 	# which attribute have ajax request:
 	ajaxAttribute = 'rdnAttribute'
+	defaultValue = lbeObject.rdnAttribute.name
 	# Ajax function to call (js):
 	ajaxFunction = 'selectFrom(\'' + reverse('config.views.showAttributeAJAX') +'\',\''+ajaxAttribute+'\');'
-	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject, 'objectForm': objectForm, 'attributeForm': attForm,'ajaxAttribute':ajaxAttribute,'ajaxFunction':ajaxFunction},\
+	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject, 'objectForm': objectForm, 'attributeForm': attForm,'ajaxAttribute':ajaxAttribute,'ajaxFunction':ajaxFunction,'defaultValue':defaultValue},\
 		context_instance=RequestContext(request))
 
 def modifyObjectAJAX(request,obj_id = None):
@@ -60,7 +61,7 @@ def modifyObjectAJAX(request,obj_id = None):
 def showAttributeAJAX(request,attribute = None):
 	if request.is_ajax():
 		print attribute
-	
+
 @csrf_exempt
 def addObjectAttribute(request, obj_id):
 	if request.method == 'POST':

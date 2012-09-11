@@ -30,7 +30,7 @@ class LBEObjectForm(ModelForm):
 			rdnAttribute = LBEAttribute.objects.get(name__iexact=value)
 		except BaseException:
 			rdnAttribute = LBEAttribute()
-			raise forms.ValidationError("This field must be an valid attribute.")
+			raise forms.ValidationError("This field must be a valid attribute.")
 		return rdnAttribute
 
 class LBEAttributeInstanceForm(ModelForm):

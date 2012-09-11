@@ -8,10 +8,10 @@
     <tr>
         <th> {{ field.label }} </th>
         <td> {% if ajaxAttribute == field.name %}
-				<input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="" onKeyUp='{{ajaxFunction}}'/>
+				<input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="{{defaultValue}}" onKeyUp='{{ajaxFunction}}'/>
 				<div class="show"></div>
 			{% else %}
-			{{ field }}
+				{{ field }}
 			{% endif %}
             {% for error in field.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
         </td>
