@@ -15,7 +15,11 @@ def addObject(request):
 			return redirect('/config/object/list')
 	else:
 		form = LBEObjectForm()
-	return render_to_response('config/object/create.html', { 'objectForm': form }, context_instance=RequestContext(request))
+	# which attribute have ajax request:
+	ajaxAttribute = 'rdnAttribute'
+	# Ajax function to call (js):
+	ajaxFunction = 'selectFrom(\'' + reverse('config.views.showAttributeAJAX')[:-1] +'\',\''+ajaxAttribute+'\');'
+	return render_to_response('config/object/create.html', { 'objectForm': form,'ajaxAttribute':ajaxAttribute,'ajaxFunction':ajaxFunction }, context_instance=RequestContext(request))
 
 def listObjects(request):
 	return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
