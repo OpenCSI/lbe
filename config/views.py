@@ -34,10 +34,10 @@ def modifyObject(request, obj_id = None, instance_id = None):
 			messages.add_message(request, messages.INFO, 'Object saved')
 			return redirect('/config/object/modify/' + obj_id)
 		else:
-			messages.add_message(request, messages.ERROR, 'Error while saving object')
+			messages.add_message(request, messages.ERROR, 'Error while saving object.')
 	else:
 		if (obj_id == None):
-			messages.add_message(request, messages.INFO, 'object id is missing')
+			messages.add_message(request, messages.INFO, 'Object id is missing.')
 			return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
 		else:
 			objectForm = LBEObjectForm(instance= lbeObject)
@@ -55,7 +55,7 @@ def modifyObjectAJAX(request,obj_id = None):
 	if request.is_ajax():
 		lbeObject = LBEObject.objects.get(id = obj_id)
 		if (obj_id == None):
-			messages.add_message(request, messages.INFO, 'object id is missing')
+			messages.add_message(request, messages.INFO, 'Object id is missing.')
 			return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() }, context_instance=RequestContext(request))
 		else:
 			objectForm = LBEObjectForm(instance=lbeObject)
@@ -88,6 +88,8 @@ def addAttribute(request):
 			form.save()
 			messages.add_message(request, messages.SUCCESS, 'Attribute created.')
 			return redirect('/config/attribute/add')
+		else:
+			messages.add_message(request, messages.ERROR, 'Error while creating attribute.')
 	else:
 		form = LBEAttributeForm()
 	return render_to_response('config/attribute/create.html',{'attributeForm':form},context_instance=RequestContext(request))

@@ -3,11 +3,7 @@ from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
 from django.forms.util import ErrorList
 
-class LBEAttributeChoiceField(ModelChoiceField):
-	def label_from_instance(self, obj):
-		return obj.name
-
-class LBEObjectChoiceField(ModelChoiceField):
+class LBEModelChoiceField(ModelChoiceField):
 	def label_from_instance(self, obj):
 		return obj.name
 
@@ -34,8 +30,7 @@ class LBEObjectForm(ModelForm):
 		return rdnAttribute
 
 class LBEAttributeInstanceForm(ModelForm):
-	lbeAttribute = LBEAttributeChoiceField(queryset = LBEAttribute.objects.all())
-	lbeObject = LBEObjectChoiceField(queryset = LBEObject.objects.all())
+	lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
 	class Meta:
 		model = LBEAttributeInstance
 		exclude = ( 'lbeObject' )
