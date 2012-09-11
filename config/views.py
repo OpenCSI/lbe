@@ -43,7 +43,7 @@ def modifyObject(request, obj_id = None, instance_id = None):
 	ajaxAttribute = 'rdnAttribute'
 	defaultValue = lbeObject.rdnAttribute.name
 	# Ajax function to call (js):
-	ajaxFunction = 'selectFrom(\'' + reverse('config.views.showAttributeAJAX') +'\',\''+ajaxAttribute+'\');'
+	ajaxFunction = 'selectFrom(\'' + reverse('config.views.showAttributeAJAX')[:-1] +'\',\''+ajaxAttribute+'\');'
 	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObject, 'objectForm': objectForm, 'attributeForm': attForm,'ajaxAttribute':ajaxAttribute,'ajaxFunction':ajaxFunction,'defaultValue':defaultValue},\
 		context_instance=RequestContext(request))
 
@@ -58,13 +58,14 @@ def modifyObjectAJAX(request,obj_id = None):
 		attForm = LBEAttributeInstanceForm()
 		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObject,'objectForm': objectForm, 'attributeForm': attForm})
 	
-def showAttributeAJAX(request,attribute = None):
+def showAttributeAJAX(request,attribute = None,value = None):
 	if request.is_ajax():
-		if attribute == None or attribute == '':
+		if value == None or value == '':
 			attr = []
 		else:
-			attr = LBEAttribute.objects.filter(name__contains=attribute)[:5] # LIKE '%attribute%'
-		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute})
+			attr = LBEAttribute.objects.filter(name__contains=value)[:5] # LIKE '%attribute%'
+		print attribute
+		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute})
 
 @csrf_exempt
 def addObjectAttribute(request, obj_id):
