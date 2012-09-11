@@ -49,8 +49,6 @@ class LBEObjectTemplate(models.Model):
 
 class LBEReference(models.Model):
 	name              = models.CharField(max_length=24)
-#	objectDefinition  = models.ForeignKey(LBEObjectTemplate,null = True)
-	value              = models.CharField(max_length=32) # LDAP attribute
 
 class LBEAttributeInstance(models.Model):
 	lbeAttribute      = models.ForeignKey(LBEAttribute)

@@ -44,7 +44,12 @@ class LBEObjectInstanceForm(forms.Form):
 		super(forms.Form, self).__init__(*args, **kwargs)
 		for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
 			# TODO: There is probably a better way than exec
-			exec 'self.fields["lbe." + attributeInstance.lbeAttribute.displayName] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
+			exec 'self.fields[attributeInstance.lbeAttribute.displayName] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
+			try:
+				print bool(attributeInstance.mandatory)
+				self.fields[attributeInstance.lbeAttribute.displayName].required = bool(attributeInstance.mandatory)
+			except e:
+				print e
 	
 class LBEObjectInstanceAttributeForm(forms.Form):
 	name = forms.CharField()

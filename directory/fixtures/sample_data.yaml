@@ -58,12 +58,14 @@
     lbeAttribute: 2
     lbeObjectTemplate: 1
     multivalue: False
+    mandatory: True
 - model: directory.LBEAttributeInstance
   pk: 3
   fields:
     lbeAttribute: 3
     lbeObjectTemplate: 1
     multivalue: False
+    mandatory: True
 - model: directory.LBEAttributeInstance
   pk: 4
   fields:
