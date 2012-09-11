@@ -25,7 +25,6 @@ class LBEObjectTemplateForm(ModelForm):
 		try:
 			rdnAttribute = LBEAttribute.objects.get(name__iexact=value)
 		except BaseException:
-			rdnAttribute = LBEAttribute()
 			raise forms.ValidationError("This field must be a valid attribute.")
 		return rdnAttribute
 
