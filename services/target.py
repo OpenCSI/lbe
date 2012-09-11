@@ -1,5 +1,5 @@
 from dao.LdapDao import LDAPService
-from directory.models import LBEObject, LBEObjectInstance
+from directory.models import LBEObjectTemplate, LBEObjectInstance
 
 import ldap
 
@@ -62,23 +62,23 @@ class TargetDaoLDAP():
 					result_set.append(aBuffer[4].replace('\'', ''))
 		return result_set
 	
-	def searchObjects(self, LBEObject, start = 0, page = 0):
+	def searchObjects(self, LBEObjectTemplate, start = 0, page = 0):
 		result_set = []
 		# Include all objectClass in LDAP filter
 		filter = '(&'
-		for oc in LBEObject.objectClasses.all():
+		for oc in LBEObjectTemplate.objectClasses.all():
 			filter += '(objectClass=' + oc.name + ')'
 		filter += ')'
 		# Search in object's basedn TODO: add a scope property to LBEObject
-		for dn, entry in self.handler.search(LBEObject.baseDN, filter, ldap.SCOPE_SUBTREE):
-			objectInstance = LBEObjectInstance(dn, LBEObject.name, entry[LBEObject.rdnAttribute.name][0])
+		for dn, entry in self.handler.search(LBEObjectTemplate.baseDN, filter, ldap.SCOPE_SUBTREE):
+			objectInstance = LBEObjectInstance(dn, LBEObjectTemplate.name, entry[LBEObjectDefinition.rdnAttribute.name][0])
 			# Add objectClasses
 			objectClasses = []
-			for oc in LBEObject.objectClasses.all():
+			for oc in LBEObjectTemplate.objectClasses.all():
 				objectClasses.append(oc.name)
 			objectInstance.addAttribute('objectClass', objectClasses)
 			# Add attributes
-			for attributeInstance in LBEObject.lbeattributeinstance_set.all():
+			for attributeInstance in LBEObjectTemplate.lbeattributeinstance_set.all():
 				objectInstance.addAttribute(attributeInstance.lbeAttribute.name, entry[attributeInstance.lbeAttribute.name] )
 			result_set.append(objectInstance)
 		return result_set

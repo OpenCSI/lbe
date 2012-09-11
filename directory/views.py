@@ -10,7 +10,7 @@ from services.backend import BackendDao
 
 def index(request):
 	backend = BackendDao()
-	objects = backend.searchObjects(LBEObject.objects.get(name='employee'))
+	objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
 	return render_to_response('directory/default/index.html', { 'objects': objects }, context_instance=RequestContext(request))
 
 # Create an instance of LBEObjectInstance from LBEObject definition. Save it into MongoDB with status AWAITING_SYNC
@@ -18,8 +18,8 @@ def addObjectInstance(request, lbeObject_id):
 	form = None
 	if (request.method == 'POST'):
 		print request.POST
-		return render_to_response('directory/default/object/add.html', { 'lbeObject': LBEObject.objects.get(id=lbeObject_id), }, context_instance=RequestContext(request))
+		return render_to_response('directory/default/object/add.html', { 'lbeObject': LBEObjectTemplate.objects.get(id=lbeObject_id), }, context_instance=RequestContext(request))
 	else:
 		form = LBEObjectInstanceForm()
 		attributesFactory = formset_factory(LBEObjectInstanceAttributeForm, extra = 2)
-	return render_to_response('directory/default/object/add.html', { 'lbeObject': LBEObject.objects.get(id=lbeObject_id), 'form': form, 'attributesForm': attributesFactory }, context_instance=RequestContext(request))
+	return render_to_response('directory/default/object/add.html', { 'lbeObject': LBEObjectTemplate.objects.get(id=lbeObject_id), 'form': form, 'attributesForm': attributesFactory }, context_instance=RequestContext(request))

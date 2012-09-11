@@ -43,33 +43,33 @@
   pk: 1
   fields: 
     lbeAttribute: 1
-    lbeObject: 1
+    lbeObjectTemplate: 1
     multivalue: False
 - model: directory.LBEAttributeInstance
   pk: 2
   fields:
     lbeAttribute: 2
-    lbeObject: 1
+    lbeObjectTemplate: 1
     multivalue: False
 - model: directory.LBEAttributeInstance
   pk: 3
   fields:
     lbeAttribute: 3
-    lbeObject: 1
+    lbeObjectTemplate: 1
     multivalue: False
 - model: directory.LBEAttributeInstance
   pk: 4
   fields:
     lbeAttribute: 4
-    lbeObject: 1
+    lbeObjectTemplate: 1
     multivalue: False
 - model: directory.LBEAttributeInstance
   pk: 5
   fields:
     lbeAttribute: 5
-    lbeObject: 1
+    lbeObjectTemplate: 1
     multivalue: False
-- model: directory.LBEObject
+- model: directory.LBEObjectTemplate
   pk: 1
   fields:
     name: employee

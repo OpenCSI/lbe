@@ -35,7 +35,7 @@ class LBEScript(models.Model):
 		return str(self.name)
 
 # Use lbeobject.lbeattributeinstance_set.all() to get all attributes instance for a LBEObject
-class LBEObject(models.Model):
+class LBEObjectTemplate(models.Model):
 	displayName  	  = models.CharField(unique = True, max_length=32)
 	name         	  = models.CharField(unique = True, max_length=32)
 	baseDN       	  = models.CharField(max_length=256)
@@ -49,12 +49,12 @@ class LBEObject(models.Model):
 
 class LBEReference(models.Model):
 	name              = models.CharField(max_length=24)
-	LBEObject         = models.ForeignKey(LBEObject,null = True)
-	value             = models.CharField(max_length=32) # LDAP attribute
+#	objectDefinition  = models.ForeignKey(LBEObjectTemplate,null = True)
+	value              = models.CharField(max_length=32) # LDAP attribute
 
 class LBEAttributeInstance(models.Model):
 	lbeAttribute      = models.ForeignKey(LBEAttribute)
-	lbeObject         = models.ForeignKey(LBEObject)
+	lbeObjectTemplate = models.ForeignKey(LBEObjectTemplate)
 	defaultValue      = models.CharField(max_length=64, default='', blank = True, null = True)
 	mandatory         = models.BooleanField(default = False)
 	multivalue        = models.BooleanField(default = True)

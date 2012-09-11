@@ -7,11 +7,11 @@ class LBEModelChoiceField(ModelChoiceField):
 	def label_from_instance(self, obj):
 		return obj.name
 
-class LBEObjectForm(ModelForm):
+class LBEObjectTemplateForm(ModelForm):
 	rdnAttribute =  forms.CharField(max_length=100)
 	#rdnAttribute =  LBEAttributeChoiceField(queryset = LBEAttribute.objects.all())
 	class Meta:
-		model = LBEObject
+		model = LBEObjectTemplate
 		exclude = ( 'attributes', 'objectClasses', 'version' )
 	# Implements validator for approval field (must >= 0)
 	def clean_approval(self):
@@ -33,14 +33,14 @@ class LBEAttributeInstanceForm(ModelForm):
 	lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
 	class Meta:
 		model = LBEAttributeInstance
-		exclude = ( 'lbeObject' )
+		exclude = ( 'lbeObjectTemplate' )
 
 class LBEScriptForm(ModelForm):
 	class Meta:
 		model = LBEScript
 		
 # Following forms are not used at the moment
-class LBEObjectInstanceForm(forms.Form, LBEObject):
+class LBEObjectInstanceForm(forms.Form):
 	displayName = forms.CharField()
 	attributes = forms.MultiValueField()
 	

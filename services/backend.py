@@ -27,8 +27,8 @@ class BackendDaoMongo:
 		self.handler.createObject(lbeObjectInstance)
 	
 	# TODO: Implement per page search
-	def searchObjects(self, LBEObject, index = 0, size = 0):
-		collection = LBEObject.name
+	def searchObjects(self, LBEObjectTemplate, index = 0, size = 0):
+		collection = LBEObjectTemplate.name
 		filter = { 'status': { '$gt': OBJECT_INVALID } }
 		return self.handler.searchObjects(collection, filter)
 

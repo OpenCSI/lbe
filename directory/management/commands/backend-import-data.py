@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from pymongo import Connection, errors
 from services.Mongo import MongoService
-from directory.models import LBEObject
+from directory.models import LBEObjectTemplate
 from django.conf import settings
 from services.target import TargetDao
 from services.backend import BackendDao
@@ -16,6 +16,6 @@ class Command(BaseCommand):
 			except Exception as e:
 				print >> sys.stderr, e
 				sys.exit (1)
-			for lbeObjectDefinition in LBEObject.objects.all():
-				for lbeObject in target.searchObjects(lbeObjectDefinition):
+			for lbeObjectTemplate in LBEObjectTemplate.objects.all():
+				for lbeObject in target.searchObjects(lbeObjectTemplate):
 					backend.createObject(lbeObject)
