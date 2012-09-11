@@ -77,3 +77,14 @@ def addObjectAttribute(request, obj_id):
 			# TODO: manage errors
 			print form.errors
 	return redirect('/config/object/modify/' + obj_id)
+
+def addAttribute(request):
+	if request.method == 'POST':
+		form = LBEAttributeForm(request.POST)
+		if form.is_valid():
+			form.save()
+			messages.add_message(request, messages.INFO, 'Attribute created')
+			return redirect('/config/attribute/add')
+	else:
+		form = LBEAttributeForm()
+	return render_to_response('config/attribute/create.html',{'attributeForm':form},context_instance=RequestContext(request))

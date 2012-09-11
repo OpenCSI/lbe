@@ -51,3 +51,6 @@ class LBEObjectInstanceAttributeForm(forms.Form):
 	name = forms.CharField()
 	values = forms.MultiValueField()
 
+class LBEAttributeForm(ModelForm):
+	class Meta:
+		model = LBEAttribute
