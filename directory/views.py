@@ -20,6 +20,6 @@ def addObjectInstance(request, lbeObject_id):
 		print request.POST
 		return render_to_response('directory/default/object/add.html', { 'lbeObject': LBEObjectTemplate.objects.get(id=lbeObject_id), }, context_instance=RequestContext(request))
 	else:
-		form = LBEObjectInstanceForm()
+		form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id))
 		attributesFactory = formset_factory(LBEObjectInstanceAttributeForm, extra = 2)
 	return render_to_response('directory/default/object/add.html', { 'lbeObject': LBEObjectTemplate.objects.get(id=lbeObject_id), 'form': form, 'attributesForm': attributesFactory }, context_instance=RequestContext(request))

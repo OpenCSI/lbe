@@ -40,8 +40,10 @@ class LBEScriptForm(ModelForm):
 		
 # Following forms are not used at the moment
 class LBEObjectInstanceForm(forms.Form):
-	def __init__(self, LBEObjectTemplate):
-		super(forms.Form, self).__init__
+	def __init__(self, lbeObjectTemplate, *args, **kwargs):
+		super(forms.Form, self).__init__(*args, **kwargs)
+		for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
+			self.fields[attributeInstance.lbeAttribute.name] = forms.CharField()
 	
 	displayName = forms.CharField()
 	attributes = forms.MultiValueField()

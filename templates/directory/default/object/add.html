@@ -9,16 +9,5 @@
     {% for form in attributesForm.forms %}
         {{ form.as_table }}
     {% endfor %}
-    <table class='table'>
-        {% for attrInstance in lbeObject.lbeattributeinstance_set.all %}
-            <tr> 
-                <th>{{ attrInstance.lbeAttribute.displayName }} </th>
-                <td><input type='text' name='lbeObject.attributes.{{ attrInstance.lbeAttribute.name }}'></td>
-            </tr>
-        {% endfor %}
-        <tr>
-            <td colspan="2" style='text-align: center;'><input type='submit' name='submit' class='btn' value='Submit'/></td>
-        </tr>
-    </table>
 </form>
 {% endblock %}
