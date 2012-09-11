@@ -56,11 +56,11 @@ def modifyObjectAJAX(request,obj_id = None):
 		lbeObject = LBEObject.objects.get(id = obj_id)
 		if (obj_id == None):
 			messages.add_message(request, messages.INFO, 'object id is missing')
-			return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() })
+			return render_to_response('config/object/list.html', { 'objects': LBEObject.objects.all() }, context_instance=RequestContext(request))
 		else:
 			objectForm = LBEObjectForm(instance=lbeObject)
 		attForm = LBEAttributeInstanceForm()
-		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObject,'objectForm': objectForm, 'attributeForm': attForm})
+		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObject,'objectForm': objectForm, 'attributeForm': attForm}, context_instance=RequestContext(request))
 	
 def showAttributeAJAX(request,attribute = None,value = None):
 	if request.is_ajax():
@@ -68,9 +68,8 @@ def showAttributeAJAX(request,attribute = None,value = None):
 			attr = []
 		else:
 			attr = LBEAttribute.objects.filter(name__contains=value)[:5] # LIKE '%attribute%'
-		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute})
+		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute}, context_instance=RequestContext(request))
 
-@csrf_exempt
 def addObjectAttribute(request, obj_id):
 	if request.method == 'POST':
 		form = LBEAttributeInstanceForm(request.POST)
