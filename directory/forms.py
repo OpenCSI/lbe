@@ -38,11 +38,11 @@ class LBEScriptForm(ModelForm):
 	class Meta:
 		model = LBEScript
 		
-# Following forms are not used at the moment
 class LBEObjectInstanceForm(forms.Form):
 	def __init__(self, lbeObjectTemplate, *args, **kwargs):
 		super(forms.Form, self).__init__(*args, **kwargs)
 		for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
+			# TODO: Manage multivalued attributes
 			# TODO: There is probably a better way than exec
 			exec 'self.fields[attributeInstance.lbeAttribute.displayName] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
 			try:
@@ -50,11 +50,3 @@ class LBEObjectInstanceForm(forms.Form):
 				self.fields[attributeInstance.lbeAttribute.displayName].required = bool(attributeInstance.mandatory)
 			except e:
 				print e
-	
-class LBEObjectInstanceAttributeForm(forms.Form):
-	name = forms.CharField()
-	values = forms.MultiValueField()
-
-class LBEAttributeForm(ModelForm):
-	class Meta:
-		model = LBEAttribute
