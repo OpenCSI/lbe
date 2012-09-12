@@ -23,10 +23,11 @@ def addObjectInstance(request, lbeObject_id = None):
 			try:
 				helper.createFromDict(request.POST)
 			except BaseException as e:
+				print e
 				messages.add_message(request, messages.ERROR, 'An error occured while creating the object.')
-			return render_to_response('directory/default/object/add.html', { 'form': form, }, context_instance=RequestContext(request))
+			return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
 		else:
-			return render_to_response('directory/default/object/add.html', { 'form': form, }, context_instance=RequestContext(request))
+			return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
 		print request.POST
 	else:
 		if lbeObject_id == None:

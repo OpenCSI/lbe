@@ -9,10 +9,10 @@ class LBEObjectInstanceHelper():
 		# TODO: Inject Target method here
 		return True
 		
-	def createFromDict(postData):
+	def createFromDict(self, postData):
 		# First of all, compute DN for this object
-		objectDN = self.template.rdnAttribute.name + '=' + postData[template.rdnAttribute.name] + ',' + self.template.baseDN
-		self.instance = LBEObjectInstance(objectDN, self.template, postData[template.rdnAttribute.name]) 
+		objectDN = self.template.rdnAttribute.name + '=' + postData[self.template.rdnAttribute.name] + ',' + self.template.baseDN
+		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.rdnAttribute.name]) 
 		for attributeInstance in self.template.lbeattributeinstance_set.all():
 			# Only fetch real attributes from the request
 			if attributeInstance.objectType == OBJECT_TYPE_FINAL:
