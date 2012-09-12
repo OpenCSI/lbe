@@ -1,6 +1,6 @@
 from dao.MongoDao import MongoService
 from pymongo import errors
-from directory.models import LBEObjectInstance, OBJECT_INVALID
+from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID
 import sys
 from django.conf import settings
 
@@ -29,7 +29,7 @@ class BackendDaoMongo:
 	# TODO: Implement per page search
 	def searchObjects(self, LBEObjectTemplate, index = 0, size = 0):
 		collection = LBEObjectTemplate.name
-		filter = { 'status': { '$gt': OBJECT_INVALID } }
+		filter = { 'status': { '$gt': OBJECT_STATE_INVALID } }
 		return self.handler.searchObjects(collection, filter)
 
 class BackendDao(BackendDaoMongo):

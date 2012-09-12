@@ -1,12 +1,13 @@
 from pymongo import Connection, errors
 from django.conf import settings
-from directory.models import LBEObjectInstance, OBJECT_IMPORTED
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED
 
+# TODO: This methods must be implemented in the models, or maybe the helper but not here
 def LbeObjectInstanceToJson(lbeObjectInstance):
 	return { '_id': lbeObjectInstance.dn, 
 		'attributes': lbeObjectInstance.attributes, 
 		'displayName': lbeObjectInstance.displayName,
-		'status': OBJECT_IMPORTED,
+		'status': OBJECT_STATE_IMPORTED,
 		'objectType': lbeObjectInstance.objectType,
 	}
 
