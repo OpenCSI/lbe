@@ -48,7 +48,7 @@ class LBEObjectInstanceForm(forms.Form):
 			try:
 				print bool(attributeInstance.mandatory)
 				self.fields[attributeInstance.lbeAttribute.displayName].required = bool(attributeInstance.mandatory)
-			except e:
+			except BaseException as e:
 				print e
 	
 class LBEObjectInstanceAttributeForm(forms.Form):
