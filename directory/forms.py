@@ -41,11 +41,14 @@ class LBEScriptForm(ModelForm):
 	def clean_file(self):
 		value = self.cleaned_data['file']
 		try:
-			file = LBEScript.objects.get(file__iexact=value)
-			raise forms.ValidationError("The file already exists, change its name and class name too.")
-		except BaseException:
+			file = LBEScript.objects.filter(file__iexact=value)
+			exist = True
 			file = self.cleaned_data['file']
+		except BaseException:
+			exist = False
 			pass
+		if exist:
+			raise forms.ValidationError("The file already exists, change its name and class name too.")
 		return file
 
 class LBEScriptManageForm(forms.Form):

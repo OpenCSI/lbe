@@ -102,8 +102,7 @@ def addScript(request):
 		form = LBEScriptForm(request.POST,request.FILES)
 		if form.is_valid():
 			scriptDB = form.save()
-			script = ScriptFile(scriptDB.name,request.FILES['file'])
-			if script.save():
+			if scriptDB:
 				messages.add_message(request, messages.SUCCESS, 'script added.')
 			else:
 				messages.add_message(request,messages.ERROR, 'script not added.')
@@ -121,11 +120,11 @@ def manageScript(request):
 		if form.is_valid():
 			script = LBEScript.objects.get(id=request.POST['script'])
 			mscript = ScriptFile(script.name,script.file)
-			error = mscript.test(request.POST['test'])
-			if error == '':
-				messages.add_message(request, messages.SUCCESS, 'script tested successfully.')
-			else:
-				messages.add_message(request, messages.ERROR, 'Error while testing the script file: ' + str(error))
+			try:
+				message = mscript.execute(request.POST['test'])
+				messages.add_message(request, messages.SUCCESS, 'script tested successfully. Return value:' + message)
+			except BaseException as e:
+				messages.add_message(request, messages.ERROR, 'Error while testing the script file: ' + str(e))
 			return redirect('/config/script/manage')
 		else:
 			messages.add_message(request, messages.ERROR, 'Error while testing the script file.')
