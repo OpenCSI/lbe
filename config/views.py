@@ -6,6 +6,7 @@ from directory.models import *
 from directory.forms import *
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
+from services.manageScript import ScriptFile
 
 def addObject(request):
 	if request.method == 'POST':
@@ -95,3 +96,21 @@ def addAttribute(request):
 	else:
 		form = LBEAttributeForm()
 	return render_to_response('config/attribute/create.html',{'attributeForm':form},context_instance=RequestContext(request))
+	
+def addScript(request):
+	if request.method == 'POST':
+		form = LBEScriptForm(request.POST,request.FILES)
+		if form.is_valid():
+			scriptDB = form.save()
+			script = ScriptFile(scriptDB.name,request.FILES['file'])
+			if script.save():
+				messages.add_message(request, messages.SUCCESS, 'script added.')
+			else:
+				messages.add_message(request,messages.ERROR, 'script not added.')
+				scriptDB.delete()
+			return redirect('/config/script/add')
+		else:
+			messages.add_message(request, messages.ERROR, 'Error while adding script file.')
+	else:
+		form = LBEScriptForm()
+	return render_to_response('config/script/add.html',{'scriptForm':form},context_instance=RequestContext(request))

@@ -10,13 +10,17 @@ urlpatterns = patterns('',
 	url(r'^directory/?$', 'directory.views.index'),
 	url(r'^directory/object/add/?$', 'directory.views.addObjectInstance'),
 	url(r'^directory/object/add/(?P<lbeObject_id>\d+)$', 'directory.views.addObjectInstance'),
+	
 	url(r'^config/?$', 'directory.views.index'),
 	url(r'^config/attribute/add/?$', 'config.views.addAttribute'),
 	url(r'^config/object/add/?$', 'config.views.addObject'),
 	url(r'^config/object/list/?$', 'config.views.listObjects'),
 	url(r'^config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObject'),
+	url(r'^config/script/add/?$', 'config.views.addScript'),
+	
 	url(r'^ajax/config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObjectAJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
+	
 	url(r'^config/object/addattribute/(?P<obj_id>\d+)$', 'config.views.addObjectAttribute'),
     # Examples:
     # url(r'^$', 'lbe.views.home', name='home'),
