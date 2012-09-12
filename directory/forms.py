@@ -46,9 +46,11 @@ class LBEObjectInstanceForm(forms.Form):
 			# Display only finals attributes
 			if attributeInstance.objectType == OBJECT_TYPE_FINAL:
 				# TODO: Find a better way than exec
-				exec 'self.fields[attributeInstance.lbeAttribute.displayName] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
+#				exec 'self.fields[attributeInstance.lbeAttribute.displayName] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
+				exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
 				try:
-					self.fields[attributeInstance.lbeAttribute.displayName].required = bool(attributeInstance.mandatory)
+					self.fields[attributeInstance.lbeAttribute.name].label = attributeInstance.lbeAttribute.displayName
+					self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)
 				except BaseException, e:
 					pass
 	
