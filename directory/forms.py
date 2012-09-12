@@ -3,13 +3,13 @@ from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
 from django.forms.util import ErrorList
 
+# All this forms but ObjectInstanceForm should be in config/forms.py
 class LBEModelChoiceField(ModelChoiceField):
 	def label_from_instance(self, obj):
 		return obj.name
 
 class LBEObjectTemplateForm(ModelForm):
 	rdnAttribute =  forms.CharField(max_length=100)
-	#rdnAttribute =  LBEAttributeChoiceField(queryset = LBEAttribute.objects.all())
 	class Meta:
 		model = LBEObjectTemplate
 		exclude = ( 'attributes', 'objectClasses', 'version' )
@@ -42,11 +42,20 @@ class LBEObjectInstanceForm(forms.Form):
 	def __init__(self, lbeObjectTemplate, *args, **kwargs):
 		super(forms.Form, self).__init__(*args, **kwargs)
 		for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
-			# TODO: Manage multivalued attributes
-			# TODO: There is probably a better way than exec
-			exec 'self.fields[attributeInstance.lbeAttribute.displayName] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
-			try:
-				print bool(attributeInstance.mandatory)
-				self.fields[attributeInstance.lbeAttribute.displayName].required = bool(attributeInstance.mandatory)
-			except e:
-				print e
+			# Display only finals attributes
+			if attributeInstance.objectType == OBJECT_TYPE_FINAL:
+				# TODO: Find a better way than exec
+				exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
+				try:
+					self.fields[attributeInstance.lbeAttribute.name].label = attributeInstance.lbeAttribute.displayName
+					self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)
+				except BaseException, e:
+					pass
+	
+class LBEObjectInstanceAttributeForm(forms.Form):
+	name = forms.CharField()
+	values = forms.MultiValueField()
+
+class LBEAttributeForm(ModelForm):
+	class Meta:
+		model = LBEAttribute

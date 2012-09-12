@@ -18,12 +18,6 @@ urlpatterns = patterns('',
 	url(r'^ajax/config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObjectAJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
 	url(r'^config/object/addattribute/(?P<obj_id>\d+)$', 'config.views.addObjectAttribute'),
-    # Examples:
-    # url(r'^$', 'lbe.views.home', name='home'),
-    # url(r'^lbe/', include('lbe.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

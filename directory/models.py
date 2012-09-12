@@ -3,11 +3,12 @@ from django.db import models
 from django import forms
 
 # Object status
-OBJECT_INVALID = -1
-OBJECT_SYNC = 0
-OBJECT_AWAITING_SYNC = 1
-OBJECT_AWAITING_APPROVAL = 2
-OBJECT_IMPORTED = 1
+OBJECT_STATE_INVALID = -256
+OBJECT_STATE_SYNC_ERROR = -1
+OBJECT_STATE_SYNCED = 0
+OBJECT_STATE_AWAITING_SYNC = 1
+OBJECT_STATE_AWAITING_APPROVAL = 2
+OBJECT_STATE_IMPORTED = 1
 
 OBJECT_TYPE_FINAL = 0
 OBJECT_TYPE_REFERENCE = 1
@@ -79,7 +80,7 @@ class LBEObjectInstance:
 		self.displayName = name
 		# Attributes will be stored a { cn: ['Bruno Bonfils'], mail: [ 'bruno@opencsi.com', 'bbonfils@opencsi.com' ] }
 		self.attributes = attributes
-		self.status = OBJECT_INVALID
+		self.status = OBJECT_STATE_INVALID
 
 	def addAttribute(self, name, values):
 		self.attributes[name] = values
