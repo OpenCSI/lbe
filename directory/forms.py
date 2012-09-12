@@ -51,7 +51,7 @@ class LBEObjectInstanceForm(forms.Form):
 					self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)
 				except BaseException, e:
 					pass
-	
+
 class LBEObjectInstanceAttributeForm(forms.Form):
 	name = forms.CharField()
 	values = forms.MultiValueField()
