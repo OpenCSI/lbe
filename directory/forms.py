@@ -37,19 +37,28 @@ class LBEAttributeInstanceForm(ModelForm):
 class LBEScriptForm(ModelForm):
 	class Meta:
 		model = LBEScript
+	# test if the name already exists:
+	def clean_name(self):
+		value = self.cleaned_data['name']
+		try:
+			name = LBEScript.objects.filter(name__iexact=value)
+			exist = True
+		except BaseException:
+			exists = False
+		if exist:
+			raise forms.ValidationError("This name is already used, change it.")
+		return value
 	# test if a filename already exists:
 	def clean_file(self):
 		value = self.cleaned_data['file']
 		try:
 			file = LBEScript.objects.filter(file__iexact=value)
 			exist = True
-			file = self.cleaned_data['file']
 		except BaseException:
 			exist = False
-			pass
 		if exist:
 			raise forms.ValidationError("The file already exists, change its name and class name too.")
-		return file
+		return value
 
 class LBEScriptManageForm(forms.Form):
 	script = LBEModelChoiceField(queryset = LBEScript.objects.all())
