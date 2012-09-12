@@ -20,11 +20,11 @@ def addObjectInstance(request, lbeObject_id = None):
 		form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id), request.POST)
 		if form.is_valid():
 			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
-			try:
-				helper.createFromDict(request.POST)
-			except BaseException as e:
-				print e
-				messages.add_message(request, messages.ERROR, 'An error occured while creating the object.')
+			# try:
+			helper.createFromDict(request.POST)
+			# except BaseException as e:
+				# print e
+				# messages.add_message(request, messages.ERROR, 'An error occured while creating the object.')
 			return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
 		else:
 			return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))

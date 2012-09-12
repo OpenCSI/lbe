@@ -77,7 +77,7 @@ class TargetDaoLDAP():
 			for oc in LBEObjectTemplate.objectClasses.all():
 				objectClasses.append(oc.name)
 			objectInstance.addAttribute('objectClass', objectClasses)
-			# Add attributes
+			# Fetch only attributes defined in the Template, other all are ignored
 			for attributeInstance in LBEObjectTemplate.lbeattributeinstance_set.all():
 				objectInstance.addAttribute(attributeInstance.lbeAttribute.name, entry[attributeInstance.lbeAttribute.name] )
 			result_set.append(objectInstance)

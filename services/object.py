@@ -1,4 +1,4 @@
-from directory.models import LBEObjectInstance, OBJECT_TYPE_FINAL
+from directory.models import LBEObjectInstance, OBJECT_TYPE_FINAL, OBJECT_TYPE_VIRTUAL, OBJECT_TYPE_REFERENCE
 
 class LBEObjectInstanceHelper():
 	def __init__(self, lbeObjectTemplate):
@@ -10,19 +10,31 @@ class LBEObjectInstanceHelper():
 		return True
 		
 	def createFromDict(self, postData):
-		# First of all, compute DN for this object
-		objectDN = self.template.rdnAttribute.name + '=' + postData[self.template.rdnAttribute.name] + ',' + self.template.baseDN
-		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.rdnAttribute.name]) 
+		attributes = {}
 		for attributeInstance in self.template.lbeattributeinstance_set.all():
 			# Only fetch real attributes from the request
 			if attributeInstance.objectType == OBJECT_TYPE_FINAL:
-				attributeName = attributeInstance.lbeattribute.name
+				attributeName = attributeInstance.lbeAttribute.name
 				# TODO: manage multivalue heres
-				self.instance.addAttribute(attributeName, [ postData[attributeName] ] )
-				print self.instance.attributes
+				attributes[attributeName] = [ postData[attributeName] ]
 			# Compute virtual attributes
-			elif attribute.objectType == OBJECT_TYPE_VIRTUAL:
+			elif attributeInstance.objectType == OBJECT_TYPE_VIRTUAL:
+				# TODO:
 				pass
 			#Compute reference attributes
-			elif attribute.objectType == OBJECT_TYPE_REFERENCE:
+			elif attributeInstance.objectType == OBJECT_TYPE_REFERENCE:
+				# TODO:
 				pass
+		# Finally, create the objecte
+		# Hard code dn for the moment
+		objectDN = 'cn=test,dc=opencsi,dc=com'
+		# objectDN = self.template.rdnAttribute.name + '=' + postData[self.template.rdnAttribute.name] + ',' + self.template.baseDN
+		# Add objectClasses
+		# TODO: Need refactoring
+		ocList = []
+		for objectClass in self.template.objectClasses.all():
+			ocList.append(objectClass.name)
+		attributes['objectClass'] = ocList
+		print attributes
+		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.rdnAttribute.name], attributes) 
+		return self.instance
