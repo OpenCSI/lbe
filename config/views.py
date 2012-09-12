@@ -114,3 +114,21 @@ def addScript(request):
 	else:
 		form = LBEScriptForm()
 	return render_to_response('config/script/add.html',{'scriptForm':form},context_instance=RequestContext(request))
+	
+def manageScript(request):
+	if request.method == 'POST':
+		form = LBEScriptManageForm(request.POST)
+		if form.is_valid():
+			script = LBEScript.objects.get(id=request.POST['script'])
+			mscript = ScriptFile(script.name,script.file)
+			error = mscript.test(request.POST['test'])
+			if error == '':
+				messages.add_message(request, messages.SUCCESS, 'script tested successfully.')
+			else:
+				messages.add_message(request, messages.ERROR, 'Error while testing the script file: ' + str(error))
+			return redirect('/config/script/manage')
+		else:
+			messages.add_message(request, messages.ERROR, 'Error while testing the script file.')
+	else:
+		form = LBEScriptManageForm()
+	return render_to_response('config/script/manage.html',{'scriptForm':form},context_instance=RequestContext(request))

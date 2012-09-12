@@ -37,6 +37,28 @@ class LBEAttributeInstanceForm(ModelForm):
 class LBEScriptForm(ModelForm):
 	class Meta:
 		model = LBEScript
+	# test if a filename already exists:
+	def clean_file(self):
+		value = self.cleaned_data['file']
+		try:
+			file = LBEScript.objects.get(file__iexact=value)
+			raise forms.ValidationError("The file already exists, change its name and class name too.")
+		except BaseException:
+			file = self.cleaned_data['file']
+			pass
+		return file
+
+class LBEScriptManageForm(forms.Form):
+	script = LBEModelChoiceField(queryset = LBEScript.objects.all())
+	test = forms.CharField(max_length=64)
+	# script selected exists:
+	def clean_script(self):
+		value = self.cleaned_data['script']
+		try:
+			script = LBEScript.objects.get(name__iexact=value)
+		except BaseException:
+			raise forms.ValidationError("This field must be a valid script.")
+		return script
 		
 # Following forms are not used at the moment
 class LBEObjectInstanceForm(forms.Form):

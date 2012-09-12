@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% block content %}
+	<h4>Manage script file:</h4>
+    <form method="post"  action="">{% csrf_token %}
+       {% include 'config/script/form.html' %}
+    </form>
+{% endblock %}
