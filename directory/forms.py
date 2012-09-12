@@ -9,7 +9,6 @@ class LBEModelChoiceField(ModelChoiceField):
 
 class LBEObjectTemplateForm(ModelForm):
 	rdnAttribute =  forms.CharField(max_length=100)
-	#rdnAttribute =  LBEAttributeChoiceField(queryset = LBEAttribute.objects.all())
 	class Meta:
 		model = LBEObjectTemplate
 		exclude = ( 'attributes', 'objectClasses', 'version' )
@@ -43,13 +42,12 @@ class LBEObjectInstanceForm(forms.Form):
 	def __init__(self, lbeObjectTemplate, *args, **kwargs):
 		super(forms.Form, self).__init__(*args, **kwargs)
 		for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
-			# TODO: There is probably a better way than exec
+			# TODO: Find a better way than exec
 			exec 'self.fields[attributeInstance.lbeAttribute.displayName] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
 			try:
-				print bool(attributeInstance.mandatory)
 				self.fields[attributeInstance.lbeAttribute.displayName].required = bool(attributeInstance.mandatory)
 			except e:
-				print e
+				pass
 	
 class LBEObjectInstanceAttributeForm(forms.Form):
 	name = forms.CharField()
