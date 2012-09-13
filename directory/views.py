@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
 from directory.models import *
 from directory.forms import *
@@ -6,10 +7,10 @@ from django.forms.formsets import formset_factory
 from services.object import LBEObjectInstanceHelper
 from django.contrib import messages
 from django.template import RequestContext
-from services.backend import BackendDao
+from services.backend import BackendHelper
 
 def index(request):
-	backend = BackendDao()
+	backend = BackendHelper()
 	objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
 	return render_to_response('directory/default/index.html', { 'objects': objects }, context_instance=RequestContext(request))
 

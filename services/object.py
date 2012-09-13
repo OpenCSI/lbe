@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 from directory.models import LBEObjectInstance, OBJECT_TYPE_FINAL, OBJECT_TYPE_VIRTUAL, OBJECT_TYPE_REFERENCE
 
@@ -60,4 +61,5 @@ class LBEObjectInstanceHelper():
 		self.instance = LBEObjectInstance(objectDN, self.template, 'blah', attributes)
 #		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.rdnAttribute.name], attributes)
 		self.applyCustomScript('custom.employee', 'EmployeePostConfig')
+		print self.instance.attributes
 		return self.instance
