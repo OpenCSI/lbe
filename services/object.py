@@ -22,20 +22,19 @@ class LBEObjectInstanceHelper():
 		# Apply functions
 		for attributeInstance in self.template.lbeattributeinstance_set.all():
 			# Apply clean_<attribute> methods on final attributes
-			if attributeInstance.objectType == OBJECT_TYPE_FINAL:
-				attributeName = attributeInstance.lbeAttribute.name
-				try:
-					cleanMethod = getattr(postClassInstance, 'clean_' + attributeName)
-					self.instance.attributes[attributeName] = cleanMethod()
-				except AttributeError, e:
-					# No cleaner method is implement for this attribute
-					pass
-			# Apply compute_<attribute>
-			elif attributeInstance.objectType == OBJECT_TYPE_VIRTUAL:
+			attributeName = attributeInstance.lbeAttribute.name
+			try:
+				prefix = ''
+				if attributeInstance.objectType == OBJECT_TYPE_FINAL:
+					prefix = 'clean_'
+				elif attributeInstance.objectType == OBJECT_TYPE_VIRTUAL:
+					prefix = 'compute_'
+				method = getattr(postClassInstance, prefix + attributeName)
+				self.instance.attributes[attributeName] = method()
+			except AttributeError, e:
+				# No method is implement for this attribute, do nothing
+				print e
 				pass
-		
-		# Finally, compute virtul attributes
-		print postClassInstance.__class__
 		
 	def createFromDict(self, postData):
 		attributes = {}
