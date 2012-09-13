@@ -1,4 +1,10 @@
 {% extends "index.html" %}
 {% block content %}
-
+	<h4>Modify Reference:</h4>
+	{% if referenceForm %}
+	<form method="post" action="#" onSubmit="return false;">{% csrf_token %}
+		   {% include 'config/reference/form.html' %}
+	</form>
+	<div class="show"></div>
+	{%endif %}
 {% endblock %}

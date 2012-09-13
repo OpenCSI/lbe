@@ -62,6 +62,18 @@ def modifyObjectAJAX(request,obj_id = None):
 			objectForm = LBEObjectTemplateForm(instance=lbeObjectTemplate)
 		attForm = LBEAttributeInstanceForm()
 		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObjectTemplate,'objectForm': objectForm, 'attributeForm': attForm}, context_instance=RequestContext(request))
+
+def modifyReferenceAJAX(request,ref_id = None):
+	if request.is_ajax():
+		if (ref_id == None):
+			#messages.add_message(request, messages.ERROR, 'Reference id is missing.')
+			return HttpResponse('')
+		try:
+			form = LBEReferenceForm(instance = LBEReference.objects.get(id=ref_id))
+		except BaseException:
+			messages.add_message(request, messages.ERROR, 'Reference does not exist.')
+			form = []
+		return render_to_response('ajax/config/modifyReference.html',{'referenceForm': form,'refID':ref_id}, context_instance=RequestContext(request))
 	
 def showAttributeAJAX(request,attribute = None,value = None):
 	if request.is_ajax():
@@ -112,15 +124,15 @@ def addReference(request):
 def modifyReference(request,ref_id = None):
 	if request.method == 'POST':
 		try:
-			form = LBEReferenceForm(request.POST,instance=LBEReference.objets.get(id=ref_id))
+			form = LBEReferenceForm(request.POST,instance=LBEReference.objects.get(id=ref_id))
 			if form.is_valid():
 				form.save()
-				messages.add_message(request, messages.SUCCESS, 'Reference created.')
+				messages.add_message(request, messages.SUCCESS, 'Reference modified.')
 				return redirect('/config/reference/modify')
 			else:
-				messages.add_message(request, messages.ERROR, 'Error while modifing reference.')
-		except BaseException:
+				messages.add_message(request, messages.ERROR, 'Error while modifing reference: check if you have resspected the form.')
+		except BaseException as e:
 			messages.add_message(request, messages.ERROR, 'Error while modifing reference.')
-	else:
-		form = LBEReferenceForm()
-	return render_to_response('config/reference/modify.html',{'referenceForm':form},context_instance=RequestContext(request))
+	#else:
+	form = LBEReferenceSelectForm()
+	return render_to_response('config/reference/modify.html',{'referenceForm':form,'ajax':True,'refID':ref_id},context_instance=RequestContext(request))

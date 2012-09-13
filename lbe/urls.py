@@ -20,6 +20,7 @@ urlpatterns = patterns('',
 	url(r'^config/reference/modify/(?P<ref_id>\d+)?$', 'config.views.modifyReference'),
 	
 	url(r'^ajax/config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObjectAJAX'),
+	url(r'^ajax/config/reference/modify/(?P<ref_id>\d+)?$', 'config.views.modifyReferenceAJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
 	url(r'^config/object/addattribute/(?P<obj_id>\d+)$', 'config.views.addObjectAttribute'),
     # Examples:

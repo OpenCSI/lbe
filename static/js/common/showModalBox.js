@@ -10,3 +10,16 @@ function showModalBox(url)
 		}
 	 });
 }
+
+function showModalBox1V(url,val)
+{
+	$.ajax({
+	   type: "GET",
+	   url: url + val,
+	   async:false,
+	   success: function(data){
+		    $('.show').html(data);
+		    $('#MBAddAttribute').modal('show');
+		}
+	 });
+}

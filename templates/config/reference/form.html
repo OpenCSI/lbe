@@ -1,18 +1,24 @@
-{# Include the hidden fields #}
-{% for hidden in referenceForm.hidden_fields %}
-{{ hidden }}
-{% endfor %}
-{# Include the visible fields #}
-<table class='table table-condensed'>
-{% for field in referenceForm.visible_fields %}
-    <tr>
-        <th> {{ field.label }} </th>
-        <td> {{ field }}
-            {% for error in field.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
-        </td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn'></td>
-    </tr>
-</table>
+{% load url from future %}
+{% if referenceForm %}
+	{# Include the hidden fields #}
+	{% for hidden in referenceForm.hidden_fields %}
+	{{ hidden }}
+	{% endfor %}
+	{# Include the visible fields #}
+	<table class='table table-condensed'>
+	{% for field in referenceForm.visible_fields %}
+		<tr>
+			<th> {{ field.label }} </th>
+			<td> {{ field }}
+				{% for error in field.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+			</td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn' {% if ajax %}onClick="showModalBox1V('{% url 'config.views.modifyReferenceAJAX' %}',$('#id_reference :checked').val())"{% endif %}></td>
+		</tr>
+	</table>
+	{% if ajax %}
+	<script type="text/javascript" src="/static/js/common/showModalBox.js"></script>
+	{% endif %}
+{% endif %}
