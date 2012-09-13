@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pymongo import Connection, errors
 from django.conf import settings
 from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED
@@ -16,7 +17,7 @@ def DocumentsToLBEObjectInstance(documents):
 	for document in documents:
 		instance = LBEObjectInstance(document['_id'], document['objectType'], document['displayName'], document['attributes'])
 		# Must be override by hand
-		instance.setStatus(document['status'])
+		instance.set_status(document['status'])
 		result_set.append(instance)
 	return result_set
 
@@ -37,3 +38,12 @@ class MongoService:
 			print 'Inserting ', id
 		except Exception as e:
 			print >> sys.stderr, 'Error: ', e
+
+# Pensee
+# Renommer rdnAttribute en uniqueAttribute, pour faire plus générique
+# Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script
+
+# Pour faire une recherche LDAP, on appelle les methodes base_dn, object_classes du script lié à l'objet
+# Puis on utilise la valeur du champ uniqueAttribute pour savoir quel champ lire
+
+# Dans le cas d'un target MongoDB, on utilise une collection par type d'objet, donc on peut utiliser ce champ comme _id
