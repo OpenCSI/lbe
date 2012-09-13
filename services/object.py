@@ -1,3 +1,4 @@
+import sys
 from directory.models import LBEObjectInstance, OBJECT_TYPE_FINAL, OBJECT_TYPE_VIRTUAL, OBJECT_TYPE_REFERENCE
 
 class LBEObjectInstanceHelper():
@@ -8,6 +9,33 @@ class LBEObjectInstanceHelper():
 	def saveObject():
 		# TODO: Inject Target method here
 		return True
+	
+	def applyCustomScript(self, moduleName, className):
+		# Import specified class from module
+		__import__(moduleName)
+		module = sys.modules[moduleName]
+		postClass = getattr(module, className)
+		
+		# Call constructor
+		postClassInstance = postClass(self.template, self.instance)
+		
+		# Apply functions
+		for attributeInstance in self.template.lbeattributeinstance_set.all():
+			# Apply clean_<attribute> methods on final attributes
+			if attributeInstance.objectType == OBJECT_TYPE_FINAL:
+				attributeName = attributeInstance.lbeAttribute.name
+				try:
+					cleanMethod = getattr(postClassInstance, 'clean_' + attributeName)
+					self.instance.attributes[attributeName] = cleanMethod()
+				except AttributeError, e:
+					# No cleaner method is implement for this attribute
+					pass
+			# Apply compute_<attribute>
+			elif attributeInstance.objectType == OBJECT_TYPE_VIRTUAL:
+				pass
+		
+		# Finally, compute virtul attributes
+		print postClassInstance.__class__
 		
 	def createFromDict(self, postData):
 		attributes = {}
@@ -17,14 +45,6 @@ class LBEObjectInstanceHelper():
 				attributeName = attributeInstance.lbeAttribute.name
 				# TODO: manage multivalue heres
 				attributes[attributeName] = [ postData[attributeName] ]
-			# Compute virtual attributes
-			elif attributeInstance.objectType == OBJECT_TYPE_VIRTUAL:
-				# TODO:
-				pass
-			#Compute reference attributes
-			elif attributeInstance.objectType == OBJECT_TYPE_REFERENCE:
-				# TODO:
-				pass
 		# Finally, create the objecte
 		# Hard code dn for the moment
 		objectDN = 'cn=test,dc=opencsi,dc=com'
@@ -35,6 +55,10 @@ class LBEObjectInstanceHelper():
 		for objectClass in self.template.objectClasses.all():
 			ocList.append(objectClass.name)
 		attributes['objectClass'] = ocList
-		print attributes
-		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.rdnAttribute.name], attributes) 
+		# FIXME: Grr, how to manage the rdn attribute well..
+		self.instance = LBEObjectInstance(objectDN, self.template, 'blah', attributes)
+#		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.rdnAttribute.name], attributes)
+		print 'Initial attributes:', self.instance.attributes
+		self.applyCustomScript('custom.employee', 'EmployeePostConfig')
+		print 'Computed attributes:', self.instance.attributes
 		return self.instance

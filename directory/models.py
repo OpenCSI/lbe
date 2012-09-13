@@ -79,6 +79,7 @@ class LBEObjectInstance:
 		self.objectType = object_type
 		self.displayName = name
 		# Attributes will be stored a { cn: ['Bruno Bonfils'], mail: [ 'bruno@opencsi.com', 'bbonfils@opencsi.com' ] }
+		# IMPORTANT: Even mono valued fields are store in a list !
 		self.attributes = attributes
 		self.status = OBJECT_STATE_INVALID
 
