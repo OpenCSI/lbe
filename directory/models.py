@@ -11,8 +11,8 @@ OBJECT_STATE_AWAITING_APPROVAL = 2
 OBJECT_STATE_IMPORTED = 1
 
 OBJECT_TYPE_FINAL = 0
-OBJECT_TYPE_REFERENCE = 1
-OBJECT_TYPE_VIRTUAL = 2
+OBJECT_TYPE_VIRTUAL = 1
+OBJECT_TYPE_REFERENCE = 2
 
 class LBEAttribute(models.Model):
 	displayName       = models.CharField(unique = True, max_length=64)

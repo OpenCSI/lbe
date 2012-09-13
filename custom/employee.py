@@ -21,7 +21,8 @@ class EmployeePostConfig:
 	def compute_cn(self):
 		# You may raise an exception here too
 		# IMPORTANT: Remember than every attribute are stored in a list
-		return [self.instance.attributes['firstname'][0] + ' ' + self.instance.attributes['lastname'][0]]
+		print 'compute_cn method called'
+		return [self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0]]
 	
 	# Validators, only called for real attributes, the returned value will override the one given in the form
 	def clean_givenName(self):
