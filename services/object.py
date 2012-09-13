@@ -59,7 +59,7 @@ class LBEObjectInstanceHelper():
 		attributes['objectClass'] = ocList
 		# FIXME: Grr, how to manage the rdn attribute well..
 		self.instance = LBEObjectInstance(objectDN, self.template, 'blah', attributes)
-#		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.rdnAttribute.name], attributes)
-		self.applyCustomScript('custom.employee', 'EmployeePostConfig')
+#		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.uniqueAttribute.name], attributes)
+		self.applyCustomScript()
 		print self.instance.attributes
 		return self.instance
