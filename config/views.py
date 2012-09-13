@@ -95,3 +95,32 @@ def addAttribute(request):
 	else:
 		form = LBEAttributeForm()
 	return render_to_response('config/attribute/create.html',{'attributeForm':form},context_instance=RequestContext(request))
+
+def addReference(request):
+	if request.method == 'POST':
+		form = LBEReferenceForm(request.POST)
+		if form.is_valid():
+			form.save()
+			messages.add_message(request, messages.SUCCESS, 'Reference created.')
+			return redirect('/config/reference/add')
+		else:
+			messages.add_message(request, messages.ERROR, 'Error while creating reference.')
+	else:
+		form = LBEReferenceForm()
+	return render_to_response('config/reference/add.html',{'referenceForm':form},context_instance=RequestContext(request))
+
+def modifyReference(request,ref_id = None):
+	if request.method == 'POST':
+		try:
+			form = LBEReferenceForm(request.POST,instance=LBEReference.objets.get(id=ref_id))
+			if form.is_valid():
+				form.save()
+				messages.add_message(request, messages.SUCCESS, 'Reference created.')
+				return redirect('/config/reference/modify')
+			else:
+				messages.add_message(request, messages.ERROR, 'Error while modifing reference.')
+		except BaseException:
+			messages.add_message(request, messages.ERROR, 'Error while modifing reference.')
+	else:
+		form = LBEReferenceForm()
+	return render_to_response('config/reference/modify.html',{'referenceForm':form},context_instance=RequestContext(request))

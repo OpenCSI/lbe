@@ -58,3 +58,15 @@ class LBEObjectInstanceAttributeForm(forms.Form):
 class LBEAttributeForm(ModelForm):
 	class Meta:
 		model = LBEAttribute
+		
+class LBEReferenceForm(ModelForm):
+	class Meta:
+		model = LBEReference
+	def clean_objectAttribute(self):
+		try:
+			objectAttribute = self.cleaned_data['objectAttribute']
+			# test if attribut is in the object:
+			LBEAttributeInstance.objects.get(lbeAttribute = objectAttribute,lbeObjectTemplate = self.cleaned_data['objectTemplate'])
+		except BaseException:
+			raise forms.ValidationError("This field must be an attribute own by the object.")
+		return objectAttribute

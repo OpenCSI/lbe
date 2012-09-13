@@ -15,6 +15,10 @@ urlpatterns = patterns('',
 	url(r'^config/object/add/?$', 'config.views.addObject'),
 	url(r'^config/object/list/?$', 'config.views.listObjects'),
 	url(r'^config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObject'),
+	
+	url(r'^config/reference/add/?$', 'config.views.addReference'),
+	url(r'^config/reference/modify/(?P<ref_id>\d+)?$', 'config.views.modifyReference'),
+	
 	url(r'^ajax/config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObjectAJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
 	url(r'^config/object/addattribute/(?P<obj_id>\d+)$', 'config.views.addObjectAttribute'),

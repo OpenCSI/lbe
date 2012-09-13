@@ -48,7 +48,9 @@ class LBEObjectTemplate(models.Model):
 		return str(self.displayName)
 
 class LBEReference(models.Model):
-	name              = models.CharField(max_length=24)
+	name               = models.CharField(max_length=24)
+	objectTemplate     = models.ForeignKey(LBEObjectTemplate)
+	objectAttribute    = models.ForeignKey(LBEAttribute)
 
 class LBEAttributeInstance(models.Model):
 	lbeAttribute      = models.ForeignKey(LBEAttribute)
