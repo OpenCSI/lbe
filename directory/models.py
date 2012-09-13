@@ -40,11 +40,12 @@ class LBEObjectTemplate(models.Model):
 	displayName  	  = models.CharField(unique = True, max_length=32)
 	name         	  = models.CharField(unique = True, max_length=32)
 	baseDN       	  = models.CharField(max_length=256)
-	rdnAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'rdnattribute')
+	uniqueAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'unique_attribute')
 	approval		  = models.SmallIntegerField(default = 0) # If > 0, this object need approvals. Must be positive
 	objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
 	# To increment each time an object is changed. TODO: add this field in backend
 	version           = models.SmallIntegerField(default = 0)
+	script         	  = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
 	def __unicode__(self):
 		return str(self.displayName)
 
@@ -58,7 +59,6 @@ class LBEAttributeInstance(models.Model):
 	mandatory         = models.BooleanField(default = False)
 	multivalue        = models.BooleanField(default = True)
 	reference         = models.ForeignKey(LBEReference, null = True, blank = True, default = None)
-	script         	  = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
 	# If true, this attribute will be stored enciphered (by a symmetric key defined in LBE/settings.py) TODO: implement
 	secure		      = models.BooleanField(default = False)
 	objectType        = models.SmallIntegerField(default = OBJECT_TYPE_FINAL)
@@ -98,5 +98,3 @@ class LBEObjectInstance:
 		
 	def save(self):
 		pass
-		
-

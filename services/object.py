@@ -1,43 +1,62 @@
 # -*- coding: utf-8 -*-
-import sys
+import sys, logging
+
 from directory.models import LBEObjectInstance, OBJECT_TYPE_FINAL, OBJECT_TYPE_VIRTUAL, OBJECT_TYPE_REFERENCE
 
 class LBEObjectInstanceHelper():
 	def __init__(self, lbeObjectTemplate):
 		self.template = lbeObjectTemplate
 		self.instance = None
+		self.scriptInstance = None
+			
+	def __load_script(self):
+		# if lbeObjectTemplate.script is defined, create an instance
+		scriptName = self.template.script.name
+		if ( scriptName != None ):
+			# Explanation: the scriptName is like 'custom.employee.EmployeePostConfig', so we need to extract the module, aka custom.employee
+			moduleName = '.'.join(scriptName.split('.')[:-1])
+			# and the classname, EmployeePostConfig
+			className = scriptName.split('.')[-1]
+			try:
+				__import__(moduleName)
+				module = sys.modules[moduleName]
+				scriptClass = getattr(module, className)
 		
-	def saveObject():
+				# Create an instance
+				self.scriptInstance = scriptClass(self.template, self.instance)
+			except BaseException, e:
+				logging.error('Error while loading script: ' + scriptName)
+		else:
+			logging.error('This object does not have an associate script')
+	
+
+	def saveObject(self):
 		# TODO: Inject backend method here
 		return True
 	
-	def applyCustomScript(self, moduleName, className):
-		# Import specified class from module
-		__import__(moduleName)
-		module = sys.modules[moduleName]
-		postClass = getattr(module, className)
-		
-		# Create an instance
-		postClassInstance = postClass(self.template, self.instance)
+	def applyCustomScript(self):
+		if (self.scriptInstance == None):
+			self.__load_script()
 		
 		# Clean attributes before manage virtuals attributes
 		for attributeInstance in self.template.lbeattributeinstance_set.filter(objectType= OBJECT_TYPE_FINAL):
 			attributeName = attributeInstance.lbeAttribute.name
 			try:
-				method = getattr(postClassInstance, 'clean_' + attributeName)
+				method = getattr(self.scriptInstance, 'clean_' + attributeName)
 				self.instance.attributes[attributeName] = method()
 			except AttributeError, e:
 				# No method is implement for this attribute, do nothing
-				pass
+				print e
 		# Now, compute virtual attributes
 		for attributeInstance in self.template.lbeattributeinstance_set.filter(objectType= OBJECT_TYPE_VIRTUAL):
 			attributeName = attributeInstance.lbeAttribute.name
 			try:
-				method = getattr(postClassInstance, 'compute_' + attributeName)
+				method = getattr(self.scriptInstance, 'compute_' + attributeName)
 				self.instance.attributes[attributeName] = method()
 			except AttributeError, e:
 				# No method is implement for this attribute, do nothing
 				pass
+		print self.instance.attributes
 		
 	def createFromDict(self, postData):
 		attributes = {}
@@ -50,7 +69,7 @@ class LBEObjectInstanceHelper():
 		# Finally, create the objecte
 		# Hard code dn for the moment
 		objectDN = 'cn=test,dc=opencsi,dc=com'
-#		objectDN = self.template.rdnAttribute.name + '=' + postData[self.template.rdnAttribute.name] + ',' + self.template.baseDN
+#		objectDN = self.template.uniqueAttribute.name + '=' + postData[self.template.uniqueAttribute.name] + ',' + self.template.baseDN
 		# Add objectClasses
 		# TODO: Need refactoring
 		ocList = []
@@ -59,7 +78,8 @@ class LBEObjectInstanceHelper():
 		attributes['objectClass'] = ocList
 		# FIXME: Grr, how to manage the rdn attribute well..
 		self.instance = LBEObjectInstance(objectDN, self.template, 'blah', attributes)
-#		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.rdnAttribute.name], attributes)
-		self.applyCustomScript('custom.employee', 'EmployeePostConfig')
+		print self.instance.attributes
+#		self.instance = LBEObjectInstance(objectDN, self.template, postData[self.template.uniqueAttribute.name], attributes)
+		self.applyCustomScript()
 		print self.instance.attributes
 		return self.instance
