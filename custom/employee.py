@@ -24,7 +24,14 @@ class EmployeePostConfig:
 	# Compute the virtual attribute cn
 	def compute_cn(self):
 		# IMPORTANT: Remember than attributes are stored in a list, even mono valued
-		return [self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0]]
+		return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
+	
+	def compute_uid(self):
+		print 'compute_uid called'
+		return [ (self.instance.attributes['givenName'][0][0] + self.instance.attributes['sn'][0]).lower() ]
+
+	def compute_mail(self):
+		return [ self.compute_uid()[0] + '@opencsi.com' ]
 		
 	# This methods are used only for LDAP target. Must be class methods
 	@classmethod
