@@ -40,7 +40,7 @@ class LBEObjectTemplate(models.Model):
 	displayName  	  = models.CharField(unique = True, max_length=32)
 	name         	  = models.CharField(unique = True, max_length=32)
 	baseDN       	  = models.CharField(max_length=256)
-	rdnAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'rdnattribute')
+	uniqueAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'rdnattribute')
 	approval		  = models.SmallIntegerField(default = 0) # If > 0, this object need approvals. Must be positive
 	objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
 	# To increment each time an object is changed. TODO: add this field in backend

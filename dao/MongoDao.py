@@ -25,7 +25,7 @@ class MongoService:
 			print >> sys.stderr, 'Error while creating document: ', e
 
 # Pensee
-# Renommer rdnAttribute en uniqueAttribute, pour faire plus générique
+# Renommer uniqueAttribute en uniqueAttribute, pour faire plus générique
 # Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script
 
 # Pour faire une recherche LDAP, on appelle les methodes base_dn, object_classes du script lié à l'objet

@@ -9,7 +9,7 @@ class LBEModelChoiceField(ModelChoiceField):
 		return obj.name
 
 class LBEObjectTemplateForm(ModelForm):
-	rdnAttribute =  forms.CharField(max_length=100)
+	uniqueAttribute =  forms.CharField(max_length=100)
 	class Meta:
 		model = LBEObjectTemplate
 		exclude = ( 'attributes', 'objectClasses', 'version' )
@@ -20,13 +20,13 @@ class LBEObjectTemplateForm(ModelForm):
 			raise forms.ValidationError("This field must be null or positive.")
 		return approval
 	# Validator and replace value to his reference class value:
-	def clean_rdnAttribute(self):
-		value = self.cleaned_data['rdnAttribute']
+	def clean_uniqueAttribute(self):
+		value = self.cleaned_data['uniqueAttribute']
 		try:
-			rdnAttribute = LBEAttribute.objects.get(name__iexact=value)
+			uniqueAttribute = LBEAttribute.objects.get(name__iexact=value)
 		except BaseException:
 			raise forms.ValidationError("This field must be a valid attribute.")
-		return rdnAttribute
+		return uniqueAttribute
 
 class LBEAttributeInstanceForm(ModelForm):
 	lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())

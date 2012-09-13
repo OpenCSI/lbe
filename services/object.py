@@ -50,7 +50,7 @@ class LBEObjectInstanceHelper():
 		# Finally, create the objecte
 		# Hard code dn for the moment
 		objectDN = 'cn=test,dc=opencsi,dc=com'
-		# objectDN = self.template.rdnAttribute.name + '=' + postData[self.template.rdnAttribute.name] + ',' + self.template.baseDN
+		# objectDN = self.template.uniqueAttribute.name + '=' + postData[self.template.uniqueAttribute.name] + ',' + self.template.baseDN
 		# Add objectClasses
 		# TODO: Need refactoring
 		ocList = []

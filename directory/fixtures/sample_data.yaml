@@ -100,6 +100,6 @@
     name: employee
     displayName: employees
     baseDN: ou=Employees,ou=People,dc=opencsi,dc=com
-    rdnAttribute: 1
+    uniqueAttribute: 1
     approval: 0
     objectClasses: [1, 2, 3, 4]

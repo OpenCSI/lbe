@@ -72,7 +72,7 @@ class TargetLDAPImplementation():
 		filter += ')'
 		# Search in object's basedn TODO: add a scope property to LBEObject
 		for dn, entry in self.handler.search(LBEObjectTemplate.baseDN, filter, ldap.SCOPE_SUBTREE):
-			objectInstance = LBEObjectInstance(dn, LBEObjectTemplate.name, entry[LBEObjectTemplate.rdnAttribute.name][0])
+			objectInstance = LBEObjectInstance(dn, LBEObjectTemplate.name, entry[LBEObjectTemplate.uniqueAttribute.name][0])
 			# Add objectClasses
 			objectClasses = []
 			for oc in LBEObjectTemplate.objectClasses.all():
