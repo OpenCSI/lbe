@@ -18,7 +18,7 @@ class BackendInvalidCredentials(Exception):
 	def __str__(self):
 		return repr(self.value)
 
-def LBEObjectInstanceToJSON(lbeObjectInstance):
+def LBEObjectInstanceToDict(lbeObjectInstance):
 	return { '_id': lbeObjectInstance.dn, 
 		'attributes': lbeObjectInstance.attributes, 
 		'displayName': lbeObjectInstance.displayName,
@@ -43,7 +43,7 @@ class BackendMongoImpl:
 			logging.error("Can't connect to MongoDB server (", settings.MONGODB_SERVER['HOST'], ' ',  settings.MONGODB_SERVER['PORT'], " )")
 	
 	def createObject(self, lbeObjectInstance):
-		return self.handler.createDocument(lbeObjectInstance.objectType, LBEObjectInstanceToJSON(lbeObjectInstance) )
+		return self.handler.createDocument(lbeObjectInstance.objectType, LBEObjectInstanceToDict(lbeObjectInstance) )
 	
 	# TODO: Implement per page search
 	def searchObjects(self, LBEObjectTemplate, index = 0, size = 0):

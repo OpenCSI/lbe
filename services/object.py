@@ -8,7 +8,7 @@ class LBEObjectInstanceHelper():
 		self.instance = None
 		
 	def saveObject():
-		# TODO: Inject Target method here
+		# TODO: Inject backend method here
 		return True
 	
 	def applyCustomScript(self, moduleName, className):
@@ -50,7 +50,7 @@ class LBEObjectInstanceHelper():
 		# Finally, create the objecte
 		# Hard code dn for the moment
 		objectDN = 'cn=test,dc=opencsi,dc=com'
-		# objectDN = self.template.rdnAttribute.name + '=' + postData[self.template.rdnAttribute.name] + ',' + self.template.baseDN
+#		objectDN = self.template.rdnAttribute.name + '=' + postData[self.template.rdnAttribute.name] + ',' + self.template.baseDN
 		# Add objectClasses
 		# TODO: Need refactoring
 		ocList = []
