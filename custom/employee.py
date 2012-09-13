@@ -32,7 +32,7 @@ class EmployeePostConfig:
 	def compute_mail(self):
 		return [ self.compute_uid()[0] + '@opencsi.com' ]
 		
-	# This methods are used only for LDAP target. Must be class methods
+	# These methods are used only for LDAP target. Must be class methods
 	@classmethod
 	def base_dn(className):
 		return 'ou=Employee,ou=People,dc=opencsi,dc=com'
