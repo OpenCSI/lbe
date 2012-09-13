@@ -13,22 +13,24 @@ class EmployeePostConfig:
 	# TODO: Think about implements is_valid method here to be called by LBEObjectInstanceForm if possible	
 	# def is_valid():
 	
-	# # We use a virtual attribute to inject LDAP objectClasses required by this object
-	# def compute_objectClass():
-	# 	return [ 'top', 'person', 'organizationalPerson', 'inetOrgPerson' ]
-		
-	# Compute the virtual attribute dn
-	def compute_cn(self):
-		# You may raise an exception here too
-		# IMPORTANT: Remember than every attribute are stored in a list
-		print 'compute_cn method called'
-		return [self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0]]
-	
-	# Validators, only called for real attributes, the returned value will override the one given in the form
+	# Validators, only called for final attributes, attributes will be overridden
 	def clean_givenName(self):
-		print 'clean_givenName method called'
-		# You may raise a Validator exception, for example to ensure an uniquess of a computed attribute (like uidNumber)
+		# TODO: Try to implement a uidNumber
 		return [self.instance.attributes['givenName'][0].capitalize()]
 	
 	def clean_sn(self):
 		return [self.instance.attributes['sn'][0].capitalize()]
+
+	# Compute the virtual attribute cn
+	def compute_cn(self):
+		# IMPORTANT: Remember than attributes are stored in a list, even mono valued
+		return [self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0]]
+		
+	# This methods are used only for LDAP target. Must be class methods
+	@classmethod
+	def base_dn(className):
+		return 'ou=Employee,ou=People,dc=opencsi,dc=com'
+	
+	@classmethod
+	def object_classes(className):
+		return ['top', 'person', 'organizationalPerson','inetOrgPerson']

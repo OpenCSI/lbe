@@ -1,7 +1,7 @@
 from django.conf import settings
 import ldap
 
-class LDAPService:
+class LDAPDAO:
 	def __init__(self):
 		self.handler = ldap.open(settings.LDAP_SERVER['HOST'], settings.LDAP_SERVER['PORT'])
 		self.handler.simple_bind_s(settings.LDAP_SERVER['BIND_DN'], settings.LDAP_SERVER['BIND_PWD'])	
