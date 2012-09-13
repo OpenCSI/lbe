@@ -83,8 +83,20 @@ class LBEObjectInstance:
 		self.attributes = attributes
 		self.status = OBJECT_STATE_INVALID
 
-	def addAttribute(self, name, values):
+	def add_attribute(self, name, values):
 		self.attributes[name] = values
 	
-	def setStatus(self, status):
+	def set_status(self, status):
 		self.status = status
+	
+	# TODO: implement
+	def is_valid(self):
+		pass
+	
+	def search(self, filter):
+		pass
+		
+	def save(self):
+		pass
+		
+
