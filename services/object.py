@@ -16,7 +16,7 @@ class LBEObjectInstanceHelper():
 		module = sys.modules[moduleName]
 		postClass = getattr(module, className)
 		
-		# Call constructor
+		# Create an instance
 		postClassInstance = postClass(self.template, self.instance)
 		
 		# Clean attributes before manage virtuals attributes
@@ -28,6 +28,7 @@ class LBEObjectInstanceHelper():
 			except AttributeError, e:
 				# No method is implement for this attribute, do nothing
 				pass
+		# Now, compute virtual attributes
 		for attributeInstance in self.template.lbeattributeinstance_set.filter(objectType= OBJECT_TYPE_VIRTUAL):
 			attributeName = attributeInstance.lbeAttribute.name
 			try:
