@@ -27,7 +27,6 @@ class EmployeePostConfig:
 		return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
 	
 	def compute_uid(self):
-		print 'compute_uid called'
 		return [ (self.instance.attributes['givenName'][0][0] + self.instance.attributes['sn'][0]).lower() ]
 
 	def compute_mail(self):
