@@ -130,7 +130,7 @@ def modifyReference(request,ref_id = None):
 				messages.add_message(request, messages.SUCCESS, 'Reference modified.')
 				return redirect('/config/reference/modify')
 			else:
-				messages.add_message(request, messages.ERROR, 'Error while modifing reference: check if you have resspected the form.')
+				messages.add_message(request, messages.ERROR, 'Error while modifing reference: check if you have respected the form.')
 		except BaseException as e:
 			messages.add_message(request, messages.ERROR, 'Error while modifing reference.')
 	#else:
