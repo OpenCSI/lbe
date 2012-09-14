@@ -50,7 +50,7 @@ class EmployeePostConfig:
 	
 	def compute_uid(self):
 		# TODO: Provide an example to use two letters of the givenName if the uid already exists in the backend
-		return [ (self.instance.attributes['givenName'][0][0] + self.instance.attributes['sn'].replace(' ', '')).lower() ]
+		return [ (self.instance.attributes['givenName'][0][0] + self.instance.attributes['sn'][0].replace(' ', '')).lower() ]
 
 	def compute_mail(self):
 		return [ self.compute_uid()[0] + '@opencsi.com' ]
