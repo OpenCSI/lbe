@@ -6,7 +6,7 @@ from directory.models import *
 from directory.forms import *
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
-from services.manageScript import ScriptFile
+from services.scriptHelper import ScriptFile
 
 def addObject(request):
 	if request.method == 'POST':
