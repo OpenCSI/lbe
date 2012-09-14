@@ -72,6 +72,13 @@ class LBEDirectoryACL(models.Model):
 	type = models.CharField(max_length=10) # TODO: DOCUMENT probably use constants
 	attribut = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
 	condition = models.CharField(max_length=100)
+	
+class log(models.Model):
+	level	 		   = models.CharField(max_length=255)
+	message 		   = models.CharField(max_length=255)
+	date			   = models.DateTimeField(auto_now=True)
+	def __unicode__(self):
+		return str(level + ': ' + message)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance:
