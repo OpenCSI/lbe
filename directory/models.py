@@ -74,7 +74,8 @@ class LBEDirectoryACL(models.Model):
 	condition = models.CharField(max_length=100)
 	
 class log(models.Model):
-	level	 		   = models.CharField(max_length=255)
+	type			   = models.CharField(max_length=32)
+	level	 		   = models.CharField(max_length=24)
 	message 		   = models.CharField(max_length=255)
 	date			   = models.DateTimeField(auto_now=True)
 	def __unicode__(self):
