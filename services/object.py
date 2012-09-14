@@ -69,5 +69,5 @@ class LBEObjectInstanceHelper():
 		self.instance = LBEObjectInstance(self.template, attributes = attributes)
 		self.applyCustomScript()
 		# Set uniqueName and displayName
-		self.instance.name = self.instance.attributes[self.template.uniqueAttribute.name]
-		self.instance.displayName = self.instance.attributes[self._allScriptMethod('display_name')][0]
+		self.instance.name = self.instance.attributes[self.template.instanceNameAttribute.name]
+		self.instance.displayName = self.instance.attributes[self.template.instanceDisplayNameAttribute.name][0]

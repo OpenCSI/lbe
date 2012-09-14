@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from dao.LdapDao import LDAPDAO
 from directory.models import LBEObjectTemplate, LBEObjectInstance
-from services.object import LBEObjectInstanceHelper
 
 import ldap, logging
 
@@ -65,28 +64,25 @@ class TargetLDAPImplementation():
 		return result_set
 	
 	def searchObjects(self, lbeObjectTemplate, start = 0, page = 0):
-		objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
 		result_set = []
 		# Include all objectClass in LDAP filter
+		# TODO: Refactoring to get objectClasses and basedn from the template script
 		filter = '(&'
 		for oc in lbeObjectTemplate.objectClasses.all():
 			filter += '(objectClass=' + oc.name + ')'
 		filter += ')'
+
 		# Search in object's basedn TODO: let administrator define the subTree somewhere
 		for dn, entry in self.handler.search(lbeObjectTemplate.baseDN, filter, ldap.SCOPE_SUBTREE):
-			objectInstance = LBEObjectInstance(lbeObjectTemplate, name = entry[lbeObjectTemplate.uniqueAttribute.name][0])
-			# TODO: Refactoring to get objectClasses and basedn from the template script
-			# Add objectClasses
-			objectClasses = []
-			for oc in lbeObjectTemplate.objectClasses.all():
-				objectClasses.append(oc.name)
-			objectInstance.add_attribute('objectClass', objectClasses)
-			# Fetch only attributes defined in the Template, other all are ignored
+			# Create an empty instance
+			objectInstance = LBEObjectInstance(lbeObjectTemplate, name = entry[lbeObjectTemplate.instanceNameAttribute.name][0])
+			# Add attributes defined in the template. Other ones are ignored
 			for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
 				try:
 					objectInstance.add_attribute(attributeInstance.lbeAttribute.name, entry[attributeInstance.lbeAttribute.name] )
 				except KeyError, e:
 					logging.warning('The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in the LDAP object: '  + dn)
-			objectInstance.displayName = entry[objectHelper.callScriptMethod('display_name_attribute')][0]
+			# Set displayName
+			objectInstance.displayName = entry[lbeObjectTemplate.instanceDisplayNameAttribute.name][0]
 			result_set.append(objectInstance)
 		return result_set

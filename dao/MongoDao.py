@@ -28,6 +28,6 @@ class MongoService:
 # Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script
 
 # Pour faire une recherche LDAP, on appelle les methodes base_dn, object_classes du script lié à l'objet
-# Puis on utilise la valeur du champ uniqueAttribute pour savoir quel champ lire
+# Puis on utilise la valeur du champ instanceNameAttribute pour savoir quel champ lire
 
 # Dans le cas d'un target MongoDB, on utilise une collection par type d'objet, donc on peut utiliser ce champ comme _id

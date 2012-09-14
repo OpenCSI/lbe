@@ -106,7 +106,8 @@
     name: employee
     displayName: employees
     baseDN: ou=Employees,ou=People,dc=opencsi,dc=com
-    uniqueAttribute: 5
+    instanceNameAttribute: 5
+    instanceDisplayNameAttribute: 1
     approval: 0
     objectClasses: [1, 2, 3, 4]
     script: 1

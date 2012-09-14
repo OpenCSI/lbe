@@ -17,7 +17,7 @@ def addObject(request):
 	else:
 		form = LBEObjectTemplateForm()
 	# which attribute have ajax request:
-	ajaxAttribute = 'uniqueAttribute'
+	ajaxAttribute = 'instanceNameAttribute'
 	# Ajax function to call (js):
 	ajaxFunction = 'selectFrom(\'' + reverse('config.views.showAttributeAJAX')[:-1] +'\',\''+ajaxAttribute+'\');'
 	return render_to_response('config/object/create.html', { 'objectForm': form,'ajaxAttribute':ajaxAttribute,'ajaxFunction':ajaxFunction }, context_instance=RequestContext(request))
@@ -45,8 +45,8 @@ def modifyObject(request, obj_id = None, instance_id = None):
 	attForm = LBEAttributeInstanceForm()
 	instances = LBEAttributeInstance.objects.filter(lbeObjectTemplate = lbeObjectTemplate)
 	# which attribute have ajax request:
-	ajaxAttribute = 'uniqueAttribute'
-	defaultValue = lbeObjectTemplate.uniqueAttribute.name
+	ajaxAttribute = 'instanceNameAttribute'
+	defaultValue = lbeObjectTemplate.instanceNameAttribute.name
 	# Ajax function to call (js):
 	ajaxFunction = 'selectFrom(\'' + reverse('config.views.showAttributeAJAX')[:-1] +'\',\''+ajaxAttribute+'\');'
 	return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObjectTemplate, 'objectForm': objectForm, 'attributeForm': attForm,'ajaxAttribute':ajaxAttribute,'ajaxFunction':ajaxFunction,'defaultValue':defaultValue},\

@@ -11,19 +11,12 @@ class EmployeePostConfig:
 	def __init__(self, lbeObjectTemplate, lbeObjectInstance = None):
 		self.template = lbeObjectTemplate
 		self.instance = lbeObjectInstance
-
-	# Which attribute used to 
-	# While it's not required, it's recommanded to have unique values to avoid user confusions through the web interface
-	# Two guys named 'John Doe' but with differents uid (used as uniqueName attribute)
-	@classmethod
-	def display_name_attribute(self):
-		return 'cn'
 	# END OF REQUIRED SECTION ----------------------------------------------------
 	
 	# REQUIRED SECTION FOR LDAP BACKEND ------------------------------------------	
 
 	# These methods are used only for LDAP target. Must be class methods
-	# uniqueAttribute will be used as RDN attribute
+	# instanceNameAttribute will be used as RDN attribute
 	@classmethod
 	def base_dn(className):
 		return 'ou=Employee,ou=People,dc=opencsi,dc=com'
