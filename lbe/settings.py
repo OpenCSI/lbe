@@ -167,7 +167,11 @@ LOGGING = {
         },
         'db': {
             #'level': 'DEBUG',
-            'class': 'services.loggerHandler.log',#'logging.StreamHandler',
+            'class': 'services.loggerHandler.logDB',#'logging.StreamHandler',
+        },
+        'request': {
+            #'level': 'DEBUG',
+            'class': 'services.loggerHandler.logRequest',#'logging.StreamHandler',
         }
     },
     'loggers': {
@@ -175,11 +179,11 @@ LOGGING = {
             'level': 'DEBUG',
             'handlers': ['db'],
         },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
+        #'django.request': {
+        #    'handlers': ['request'],
+        #    'level': 'DEBUG',
+        #    'propagate': True,
+        #}
     }
 }
 
