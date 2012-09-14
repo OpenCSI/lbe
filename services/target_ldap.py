@@ -79,9 +79,9 @@ class TargetLDAPImplementation():
 			# Add attributes defined in the template. Other ones are ignored
 			for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
 				try:
-					objectInstance.add_attribute(attributeInstance.lbeAttribute.name, entry[attributeInstance.lbeAttribute.name] )
+					objectInstance.attributes[attributeInstance.lbeAttribute.name] = entry[attributeInstance.lbeAttribute.name]
 				except KeyError, e:
-					logging.warning('The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in the LDAP object: '  + dn)
+					logging.warning('The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in LDAP object: '  + dn)
 			# Set displayName
 			objectInstance.displayName = entry[lbeObjectTemplate.instanceDisplayNameAttribute.name][0]
 			result_set.append(objectInstance)
