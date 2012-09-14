@@ -81,19 +81,11 @@ class LBEDirectoryACL(models.Model):
 class LBEObjectInstance: 
 	def __init__(self, lbeObjectTemplate, *args, **kwargs):
 		self.attributes = {}
+		self.status = OBJECT_STATE_INVALID
 		for key, value in kwargs.iteritems():
 			setattr(self, key, value)
 		self.template = lbeObjectTemplate
-		self.status = OBJECT_STATE_INVALID
 
-	# TODO: remove
-	def add_attribute(self, name, values):
-		self.attributes[name] = values
-	
-	# TODO: remove
-	def set_status(self, status):
-		self.status = status
-	
 	# TODO: implement
 	def is_valid(self):
 		pass
