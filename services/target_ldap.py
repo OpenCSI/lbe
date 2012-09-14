@@ -72,7 +72,7 @@ class TargetLDAPImplementation():
 		for oc in lbeObjectTemplate.objectClasses.all():
 			filter += '(objectClass=' + oc.name + ')'
 		filter += ')'
-		# Search in object's basedn TODO: add a scope property to LBEObject
+		# Search in object's basedn TODO: let administrator define the subTree somewhere
 		for dn, entry in self.handler.search(lbeObjectTemplate.baseDN, filter, ldap.SCOPE_SUBTREE):
 			objectInstance = LBEObjectInstance(lbeObjectTemplate, name = entry[lbeObjectTemplate.uniqueAttribute.name][0])
 			# TODO: Refactoring to get objectClasses and basedn from the template script
