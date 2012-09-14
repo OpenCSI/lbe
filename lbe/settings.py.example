@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Django settings for lbe project.
 import os
 from django.contrib import messages

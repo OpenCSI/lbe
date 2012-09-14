@@ -53,7 +53,7 @@
     lbeObjectTemplate: 1
     multivalue: False
     mandatory: True
-    objectType: 1
+    attributeType: 1
 - model: directory.LBEAttributeInstance
   pk: 2
   fields:
@@ -61,7 +61,7 @@
     lbeObjectTemplate: 1
     multivalue: False
     mandatory: True
-    objectType: 0
+    attributeType: 0
 - model: directory.LBEAttributeInstance
   pk: 3
   fields:
@@ -69,21 +69,21 @@
     lbeObjectTemplate: 1
     multivalue: False
     mandatory: True
-    objectType: 0
+    attributeType: 0
 - model: directory.LBEAttributeInstance
   pk: 4
   fields:
     lbeAttribute: 4
     lbeObjectTemplate: 1
     multivalue: False
-    objectType: 1
+    attributeType: 1
 - model: directory.LBEAttributeInstance
   pk: 5
   fields:
     lbeAttribute: 5
     lbeObjectTemplate: 1
     multivalue: False
-    objectType: 1
+    attributeType: 1
 - model: directory.LBEAttributeInstance
   pk: 6
   fields:
@@ -92,7 +92,7 @@
     widget: forms.ChoiceField
     widgetArgs: "(('M', 'Male'), ('F', 'Female'))"
     multivalue: False
-    objectType: 0
+    attributeType: 0
 
 - model: directory.LBEScript
   pk: 1
@@ -106,7 +106,7 @@
     name: employee
     displayName: employees
     baseDN: ou=Employees,ou=People,dc=opencsi,dc=com
-    uniqueAttribute: 1
+    uniqueAttribute: 5
     approval: 0
     objectClasses: [1, 2, 3, 4]
     script: 1

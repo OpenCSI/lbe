@@ -10,9 +10,9 @@ OBJECT_STATE_AWAITING_SYNC = 1
 OBJECT_STATE_AWAITING_APPROVAL = 2
 OBJECT_STATE_IMPORTED = 1
 
-OBJECT_TYPE_FINAL = 0
-OBJECT_TYPE_VIRTUAL = 1
-OBJECT_TYPE_REFERENCE = 2
+ATTRIBUTE_TYPE_FINAL = 0
+ATTRIBUTE_TYPE_VIRTUAL = 1
+ATTRIBUTE_TYPE_REFERENCE = 2
 
 class LBEAttribute(models.Model):
 	displayName       = models.CharField(unique = True, max_length=64)
@@ -40,7 +40,7 @@ class LBEObjectTemplate(models.Model):
 	displayName  	  = models.CharField(unique = True, max_length=32)
 	name         	  = models.CharField(unique = True, max_length=32)
 	baseDN       	  = models.CharField(max_length=256)
-	uniqueAttribute  	  = models.ForeignKey(LBEAttribute, related_name = 'unique_attribute')
+	uniqueAttribute   = models.ForeignKey(LBEAttribute, related_name = 'unique_attribute')
 	approval		  = models.SmallIntegerField(default = 0) # If > 0, this object need approvals. Must be positive
 	objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
 	# To increment each time an object is changed. TODO: add this field in backend
@@ -61,7 +61,7 @@ class LBEAttributeInstance(models.Model):
 	reference         = models.ForeignKey(LBEReference, null = True, blank = True, default = None)
 	# If true, this attribute will be stored enciphered (by a symmetric key defined in LBE/settings.py) TODO: implement
 	secure		      = models.BooleanField(default = False)
-	objectType        = models.SmallIntegerField(default = OBJECT_TYPE_FINAL)
+	attributeType        = models.SmallIntegerField(default = ATTRIBUTE_TYPE_FINAL)
 	# The HTML widget used to display/edit attribute. We'll inject classname
 	widget            = models.CharField(max_length=64, default = 'forms.CharField', blank = True)
 	widgetArgs        = models.CharField(max_length=255, default = 'None')
@@ -73,19 +73,19 @@ class LBEDirectoryACL(models.Model):
 	condition = models.CharField(max_length=100)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
-class LBEObjectInstance:
-	def __init__(self, dn, object_type, name, attributes = {}):
-		self.dn = dn
-		self.objectType = object_type
-		self.displayName = name
-		# Attributes will be stored a { cn: ['Bruno Bonfils'], mail: [ 'bruno@opencsi.com', 'bbonfils@opencsi.com' ] }
-		# IMPORTANT: Even mono valued fields are store in a list !
-		self.attributes = attributes
+class LBEObjectInstance: 
+	def __init__(self, lbeObjectTemplate, *args, **kwargs):
+		self.attributes = {}
+		for key, value in kwargs.iteritems():
+			setattr(self, key, value)
+		self.template = lbeObjectTemplate
 		self.status = OBJECT_STATE_INVALID
 
+	# TODO: remove
 	def add_attribute(self, name, values):
 		self.attributes[name] = values
 	
+	# TODO: remove
 	def set_status(self, status):
 		self.status = status
 	
@@ -98,3 +98,6 @@ class LBEObjectInstance:
 		
 	def save(self):
 		pass
+	
+	def __unicode__(self):
+		return 'name: ' + self.name + ', displayName: ' + self.displayName + ', attributes: ' + self.attributes

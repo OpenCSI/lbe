@@ -19,4 +19,4 @@ class Command(BaseCommand):
 				sys.exit (1)
 			for lbeObjectTemplate in LBEObjectTemplate.objects.all():
 				for lbeObject in target.searchObjects(lbeObjectTemplate):
-					backend.createObject(lbeObject)
+					backend.createObject(lbeObjectTemplate, lbeObject)

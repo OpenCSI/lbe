@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from dao.LdapDao import LDAPDAO
 from directory.models import LBEObjectTemplate, LBEObjectInstance
+from services.object import LBEObjectInstanceHelper
 
 import ldap, logging
 
@@ -63,27 +64,29 @@ class TargetLDAPImplementation():
 					result_set.append(aBuffer[4].replace('\'', ''))
 		return result_set
 	
-	def searchObjects(self, LBEObjectTemplate, start = 0, page = 0):
+	def searchObjects(self, lbeObjectTemplate, start = 0, page = 0):
+		objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
 		result_set = []
 		# Include all objectClass in LDAP filter
 		filter = '(&'
-		for oc in LBEObjectTemplate.objectClasses.all():
+		for oc in lbeObjectTemplate.objectClasses.all():
 			filter += '(objectClass=' + oc.name + ')'
 		filter += ')'
 		# Search in object's basedn TODO: add a scope property to LBEObject
-		for dn, entry in self.handler.search(LBEObjectTemplate.baseDN, filter, ldap.SCOPE_SUBTREE):
-			objectInstance = LBEObjectInstance(dn, LBEObjectTemplate.name, entry[LBEObjectTemplate.uniqueAttribute.name][0])
+		for dn, entry in self.handler.search(lbeObjectTemplate.baseDN, filter, ldap.SCOPE_SUBTREE):
+			objectInstance = LBEObjectInstance(lbeObjectTemplate, name = entry[lbeObjectTemplate.uniqueAttribute.name][0])
+			# TODO: Refactoring to get objectClasses and basedn from the template script
 			# Add objectClasses
 			objectClasses = []
-			for oc in LBEObjectTemplate.objectClasses.all():
+			for oc in lbeObjectTemplate.objectClasses.all():
 				objectClasses.append(oc.name)
 			objectInstance.add_attribute('objectClass', objectClasses)
 			# Fetch only attributes defined in the Template, other all are ignored
-			for attributeInstance in LBEObjectTemplate.lbeattributeinstance_set.all():
+			for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
 				try:
 					objectInstance.add_attribute(attributeInstance.lbeAttribute.name, entry[attributeInstance.lbeAttribute.name] )
 				except KeyError, e:
 					logging.warning('The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in the LDAP object: '  + dn)
-					
+			objectInstance.displayName = entry[objectHelper.callScriptMethod('display_name_attribute')][0]
 			result_set.append(objectInstance)
 		return result_set

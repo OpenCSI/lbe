@@ -19,19 +19,16 @@ class BackendInvalidCredentials(Exception):
 		return repr(self.value)
 
 def LBEObjectInstanceToDict(lbeObjectInstance):
-	return { '_id': lbeObjectInstance.dn, 
+	return { '_id': lbeObjectInstance.name, 
 		'attributes': lbeObjectInstance.attributes, 
 		'displayName': lbeObjectInstance.displayName,
 		'status': OBJECT_STATE_IMPORTED,
-		'objectType': lbeObjectInstance.objectType,
 	}
 
-def DocumentsToLBEObjectInstance(documents):
+def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):
 	result_set = []
 	for document in documents:
-		instance = LBEObjectInstance(document['_id'], document['objectType'], document['displayName'], document['attributes'])
-		# Must be override by hand
-		instance.set_status(document['status'])
+		instance = LBEObjectInstance(lbeObjectInstance, name = document['_id'], displayName = document['displayName'], attributes = document['attributes'], status = document['status'])
 		result_set.append(instance)
 	return result_set
 
@@ -41,12 +38,13 @@ class BackendMongoImpl:
 			self.handler = MongoService()
 		except errors.AutoReconnect:
 			logging.error("Can't connect to MongoDB server (", settings.MONGODB_SERVER['HOST'], ' ',  settings.MONGODB_SERVER['PORT'], " )")
+			raise BackendConnectionError("Can't connect to the backend server")
 	
-	def createObject(self, lbeObjectInstance):
-		return self.handler.createDocument(lbeObjectInstance.objectType, LBEObjectInstanceToDict(lbeObjectInstance) )
+	def createObject(self, lbeObjectTemplate, lbeObjectInstance):
+		return self.handler.createDocument(lbeObjectTemplate.name, LBEObjectInstanceToDict(lbeObjectInstance) )
 	
 	# TODO: Implement per page search
-	def searchObjects(self, LBEObjectTemplate, index = 0, size = 0):
-		collection = LBEObjectTemplate.name
+	def searchObjects(self, lbeObjectTemplate, index = 0, size = 0):
+		collection = lbeObjectTemplate.name
 		filter = { 'status': { '$gt': OBJECT_STATE_INVALID } }
-		return DocumentsToLBEObjectInstance(self.handler.searchObjects(collection, filter))
+		return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchObjects(collection, filter))

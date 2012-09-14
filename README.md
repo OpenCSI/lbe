@@ -33,7 +33,7 @@ Internal object JSON representation used by LBE:
 Modification d'un objet:
  - 
 
-Algo de synchronisation LBE -> Annuaire:
+Algo de réconciliation LBE -> Annuaire:
 
  - Recherche des objets avec update_at > sync_at
  - On parse les attributes pour vérifier si update_at > sync_at

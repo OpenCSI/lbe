@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
@@ -43,7 +44,7 @@ class LBEObjectInstanceForm(forms.Form):
 		super(forms.Form, self).__init__(*args, **kwargs)
 		for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
 			# Display only finals attributes
-			if attributeInstance.objectType == OBJECT_TYPE_FINAL:
+			if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
 				# TODO: Find a better way than exec
 				exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
 				try:

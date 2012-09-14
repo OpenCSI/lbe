@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from directory.models import LBEObjectTemplate, LBEObjectInstance
 
 #
@@ -6,33 +7,23 @@ from directory.models import LBEObjectTemplate, LBEObjectInstance
 
 # TODO: Probably use a better suffix than PostConfig
 class EmployeePostConfig:
-	def __init__(self, lbeObjectTemplate, lbeObjectInstance):
+	# BEGINNING OF REQUIRED SECTION ----------------------------------------------
+	def __init__(self, lbeObjectTemplate, lbeObjectInstance = None):
 		self.template = lbeObjectTemplate
 		self.instance = lbeObjectInstance
-	
-	# TODO: Think about implements is_valid method here to be called by LBEObjectInstanceForm if possible	
-	# def is_valid():
-	
-	# Validators, only called for final attributes, attributes will be overridden
-	def clean_givenName(self):
-		# TODO: Try to implement a uidNumber
-		return [self.instance.attributes['givenName'][0].capitalize()]
-	
-	def clean_sn(self):
-		return [self.instance.attributes['sn'][0].capitalize()]
 
-	# Compute the virtual attribute cn
-	def compute_cn(self):
-		# IMPORTANT: Remember than attributes are stored in a list, even mono valued
-		return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
+	# Which attribute used to 
+	# While it's not required, it's recommanded to have unique values to avoid user confusions through the web interface
+	# Two guys named 'John Doe' but with differents uid (used as uniqueName attribute)
+	@classmethod
+	def display_name_attribute(self):
+		return 'cn'
+	# END OF REQUIRED SECTION ----------------------------------------------------
 	
-	def compute_uid(self):
-		return [ (self.instance.attributes['givenName'][0][0] + self.instance.attributes['sn'][0]).lower() ]
+	# REQUIRED SECTION FOR LDAP BACKEND ------------------------------------------	
 
-	def compute_mail(self):
-		return [ self.compute_uid()[0] + '@opencsi.com' ]
-		
 	# These methods are used only for LDAP target. Must be class methods
+	# uniqueAttribute will be used as RDN attribute
 	@classmethod
 	def base_dn(className):
 		return 'ou=Employee,ou=People,dc=opencsi,dc=com'
@@ -40,3 +31,33 @@ class EmployeePostConfig:
 	@classmethod
 	def object_classes(className):
 		return ['top', 'person', 'organizationalPerson','inetOrgPerson']
+
+	# END OF REQUIRED SECTION ----------------------------------------------------
+
+	
+	# TODO: Think about implements is_valid method here to be called by LBEObjectInstanceForm if possible	
+	# def is_valid():
+	
+	# Validators methods are used to alter, verify, compute the values of an attribute
+	# IMPORTANT: Remembers all attributes are store in a list, even mono valued. Therefore, you must return a list
+	
+	# Prototype:
+	# def clean_<attributeName>(self): (NOT the displayName) for FINAL attributes
+	# def compute_<attributeName>(self): (NOT the displayName) for VIRTUAL attributes
+
+	def clean_givenName(self):
+		# TODO: Try to implement a uidNumber
+		return [ self.instance.attributes['givenName'][0].capitalize() ]
+	
+	def clean_sn(self):
+		return [ self.instance.attributes['sn'][0].capitalize() ]
+
+	def compute_cn(self):
+		return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
+	
+	def compute_uid(self):
+		# TODO: Provide an example to use two letters of the givenName if the uid already exists in the backend
+		return [ (self.instance.attributes['givenName'][0][0] + self.instance.attributes['sn'].replace(' ', '')).lower() ]
+
+	def compute_mail(self):
+		return [ self.compute_uid()[0] + '@opencsi.com' ]
