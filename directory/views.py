@@ -17,19 +17,13 @@ def index(request):
 # Create an instance of LBEObjectInstance from LBEObject definition. Save it into MongoDB with status AWAITING_SYNC
 def addObjectInstance(request, lbeObject_id = None):
     form = None
-    if (request.method == 'POST'):
+    if request.method == 'POST':
         form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id), request.POST)
         if form.is_valid():
             helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
-            # try:
             helper.createFromDict(request.POST)
-            # except BaseException as e:
-                # print e
-                # messages.add_message(request, messages.ERROR, 'An error occured while creating the object.')
-            return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
-        else:
-            return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
-        print request.POST
+            helper.save()
+        return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
     else:
         if lbeObject_id == None:
             # TODO: Redirect to a form to choose which object to add

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys, logging
-import pprint
-
+from services.backend import BackendHelper
 logger = logging.getLogger(__name__)
 
 from directory.models import LBEObjectInstance, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE
@@ -11,14 +10,20 @@ class LBEObjectInstanceHelper():
         self.template = lbeObjectTemplate
         self.instance = None
         self.scriptInstance = None
-            
+        self.backend = None
+
+    def _backend(self):
+        if self.backend is not None:
+            return
+        self.backend = BackendHelper()
+
     def _load_script(self):
-        if self.scriptInstance != None:
+        if self.scriptInstance is not None:
             return
         
         # if lbeObjectTemplate.script is defined, create an instance
         scriptName = self.template.script.name
-        if ( scriptName != None ):
+        if scriptName is not None :
             # the scriptName is like 'custom.employee.EmployeePostConfig', so we need to extract the module, aka custom.employee
             moduleName = '.'.join(scriptName.split('.')[:-1])
             # and the classname, EmployeePostConfig
@@ -32,10 +37,10 @@ class LBEObjectInstanceHelper():
         else:
             logging.error('This object does not have an associate script')
     
-    def saveObject(self):
-        # TODO: Inject backend method here
-        return True
-    
+    def save(self):
+        self._backend()
+        self.backend.createObject(self.template, self.instance)
+
     def callScriptMethod(self, methodName):
         self._load_script()
         method = getattr(self.scriptInstance, methodName)
@@ -63,7 +68,7 @@ class LBEObjectInstanceHelper():
             # Only fetch real attributes from the request
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 attributeName = attributeInstance.lbeAttribute.name
-                # TODO: manage multivalue heres
+                # TODO: manage multivalue here
                 attributes[attributeName] = [ postData[attributeName] ]
         # IMPORTANT: We need to create an instance without the name because the unique attribut may be a computed attribute, for example uid (compute from firstname/name)
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
