@@ -2,10 +2,7 @@
 from django.shortcuts import render_to_response, redirect
 from directory.models import *
 from directory.forms import *
-from django.core.context_processors import csrf
-from django.forms.formsets import formset_factory
 from services.object import LBEObjectInstanceHelper
-from django.contrib import messages
 from django.template import RequestContext
 from services.backend import BackendHelper
 
@@ -18,14 +15,17 @@ def index(request):
 def addObjectInstance(request, lbeObject_id = None):
     form = None
     if request.method == 'POST':
+        # TODO: wtf
+        request.encoding = 'latin'
         form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id), request.POST)
         if form.is_valid():
             helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
+            print request.POST
             helper.createFromDict(request.POST)
             helper.save()
         return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
     else:
-        if lbeObject_id == None:
+        if lbeObject_id is None:
             # TODO: Redirect to a form to choose which object to add
             print 'error'
     form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id))

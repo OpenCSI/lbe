@@ -18,11 +18,11 @@ class EmployeePostConfig:
     # These methods are used only for LDAP target. Must be class methods
     # instanceNameAttribute will be used as RDN attribute
     @classmethod
-    def base_dn(className):
+    def base_dn(cls):
         return 'ou=Employee,ou=People,dc=opencsi,dc=com'
     
     @classmethod
-    def object_classes(className):
+    def object_classes(cls):
         return ['top', 'person', 'organizationalPerson','inetOrgPerson']
 
     # END OF REQUIRED SECTION ----------------------------------------------------

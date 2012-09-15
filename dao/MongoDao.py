@@ -18,10 +18,12 @@ class MongoService:
         db = self.db[collection]
         try:
             # TODO: remove print
-            print document
+            print 'collection:', collection, ', document:', document
             id = db.insert(document)
+            print 'id: ', id
             return id
         except Exception as e:
+            print 'error'
             print >> sys.stderr, 'Error while creating document: ', e
 
 # Pensee

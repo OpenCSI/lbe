@@ -74,7 +74,7 @@ class LBEAttributeInstance(models.Model):
 class LBEDirectoryACL(models.Model):
     object = models.CharField(max_length=25) # TODO: Why it's not a foreign key?
     type = models.CharField(max_length=10) # TODO: DOCUMENT probably use constants
-    attribut = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
+    attribute = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
     condition = models.CharField(max_length=100)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
