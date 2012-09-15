@@ -7,22 +7,22 @@ import sys, logging
 logger = logging.getLogger(__name__)
 
 class MongoService:
-	def __init__(self):
-		self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
-		self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
+    def __init__(self):
+        self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
+        self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
 
-	def searchObjects(self, collection, filters = {}):
-		return self.db[collection].find(filters)
+    def searchObjects(self, collection, filters = {}):
+        return self.db[collection].find(filters)
 
-	def createDocument(self, collection, document):
-		db = self.db[collection]
-		try:
-			# TODO: remove print
-			print document
-			id = db.insert(document)
-			return id
-		except Exception as e:
-			print >> sys.stderr, 'Error while creating document: ', e
+    def createDocument(self, collection, document):
+        db = self.db[collection]
+        try:
+            # TODO: remove print
+            print document
+            id = db.insert(document)
+            return id
+        except Exception as e:
+            print >> sys.stderr, 'Error while creating document: ', e
 
 # Pensee
 # Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script

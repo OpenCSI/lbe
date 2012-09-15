@@ -2,13 +2,13 @@ from django.contrib import admin
 from directory.models import LBEAttribute, LBEObjectTemplate, LBEObjectClass
 
 class LBEAttributeAdmin(admin.ModelAdmin):
-	list_display = ('name', 'displayName')
+    list_display = ('name', 'displayName')
 
 class LBEObjectAdmin(admin.ModelAdmin):
-	pass
-	
+    pass
+    
 class LBEObjectClassAdmin(admin.ModelAdmin):
-	list_display = ('name', 'name')
+    list_display = ('name', 'name')
 
 admin.site.register(LBEAttribute, LBEAttributeAdmin)
 admin.site.register(LBEObjectTemplate, LBEObjectAdmin)

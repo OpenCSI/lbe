@@ -11,12 +11,12 @@ import sys
 
 class Command(BaseCommand):
         def handle(self, *args, **options):
-			try:
-				backend = BackendHelper()
-				target = TargetHelper()
-			except Exception as e:
-				print >> sys.stderr, e
-				sys.exit (1)
-			for lbeObjectTemplate in LBEObjectTemplate.objects.all():
-				for lbeObject in target.searchObjects(lbeObjectTemplate):
-					backend.createObject(lbeObjectTemplate, lbeObject)
+            try:
+                backend = BackendHelper()
+                target = TargetHelper()
+            except Exception as e:
+                print >> sys.stderr, e
+                sys.exit (1)
+            for lbeObjectTemplate in LBEObjectTemplate.objects.all():
+                for lbeObject in target.searchObjects(lbeObjectTemplate):
+                    backend.createObject(lbeObjectTemplate, lbeObject)
