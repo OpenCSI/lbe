@@ -19,10 +19,14 @@ class BackendInvalidCredentials(Exception):
         return repr(self.value)
 
 def LBEObjectInstanceToDict(lbeObjectInstance):
+    # TODO: Probably need optimization
     return { '_id': lbeObjectInstance.name, 
         'attributes': lbeObjectInstance.attributes, 
         'displayName': lbeObjectInstance.displayName,
-        'status': OBJECT_STATE_IMPORTED,
+        'status': lbeObjectInstance.status,
+        'created_at': lbeObjectInstance.created_at,
+        'updated_at': lbeObjectInstance.updated_at,
+        'synced_at': lbeObjectInstance.synced_at
     }
 
 def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):

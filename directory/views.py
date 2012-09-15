@@ -22,6 +22,8 @@ def addObjectInstance(request, lbeObject_id = None):
             print request.POST
             helper.createFromDict(request.POST)
             helper.save()
+            # Redirect to list
+            return redirect('/directory/')
         return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
     else:
         if lbeObject_id is None:

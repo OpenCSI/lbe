@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django import forms
-
+import datetime
 # Object status
 OBJECT_STATE_INVALID = -256
 OBJECT_STATE_SYNC_ERROR = -1
@@ -82,6 +82,11 @@ class LBEObjectInstance:
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         self.attributes = {}
         self.status = OBJECT_STATE_INVALID
+        now = datetime.datetime.now()
+        self.created_at = now
+        self.updated_at = now
+        self.synced_at = -1
+
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
         self.template = lbeObjectTemplate
