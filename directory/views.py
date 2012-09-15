@@ -16,7 +16,6 @@ def addObjectInstance(request, lbeObject_id = None):
     form = None
     if request.method == 'POST':
         # TODO: wtf
-        request.encoding = 'latin'
         form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id), request.POST)
         if form.is_valid():
             helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
