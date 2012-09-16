@@ -88,7 +88,6 @@
   fields:
     name: employee
     displayName: employees
-    baseDN: ou=Employees,ou=People,dc=opencsi,dc=com
     instanceNameAttribute: 5
     instanceDisplayNameAttribute: 1
     approval: 0
