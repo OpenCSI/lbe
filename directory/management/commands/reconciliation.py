@@ -9,6 +9,10 @@ logger = logging.getLogger(__name__)
 #
 # Algoritm used for reconciliation:
 #
+# First step (manage update):
+#   - look for all need to be synced objects
+#
+# Second step (manage object than exists in target but not in backend):
 # last_sync = now()
 # Foreach object in target:
 #   - check if object exists in backend
@@ -25,30 +29,21 @@ logger = logging.getLogger(__name__)
 # foreach object in backend where _synced_at < last_sync
 #   - create object in target
 
-#
-# TODO: Must be use modifiersDate from target
-#
-#
-
-def compare_object(lbeObjectTemplate, first, second):
-    pass
-
-def update_object(lbeObjectTemplate, fromObject, toObject):
-    pass
-
 class Reconciliation():
     def __init__(self):
         self.backend = BackendHelper()
         self.target = TargetHelper()
-        self.startDate = datetime.datetime.now()
+        self.start_date = datetime.datetime.now()
+
+    def createObject(self, lbeObjectTemplate, lbeObjectInstance):
+        pass
 
     def start(self):
         for objectTemplate in LBEObjectTemplate.objects.all():
             # Search objects in backend (by default LDAP)
-            for object in self.target.searchObjects(objectTemplate):
-                logger.debug('Target object found: ' + object.name)
-
-            # Search existing objects in backend but not found in target
+            for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
+                logger.debug('Object to create or update: ' + objectInstance.name)
+                self.target.createOrUpdate(objectTemplate, objectInstance)
 
 
 class Command(BaseCommand):

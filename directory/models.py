@@ -9,7 +9,7 @@ OBJECT_STATE_SYNC_ERROR = -1
 OBJECT_STATE_SYNCED = 0
 OBJECT_STATE_AWAITING_SYNC = 1
 OBJECT_STATE_AWAITING_APPROVAL = 2
-OBJECT_STATE_IMPORTED = 1
+OBJECT_STATE_IMPORTED = 0
 
 ATTRIBUTE_TYPE_FINAL = 0
 ATTRIBUTE_TYPE_VIRTUAL = 1
@@ -78,6 +78,7 @@ class LBEDirectoryACL(models.Model):
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance: 
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
+        # List of fields (useful for completion too)
         self.template = lbeObjectTemplate
         self.attributes = {}
         self.status = OBJECT_STATE_INVALID
@@ -85,8 +86,8 @@ class LBEObjectInstance:
         self.created_at = now
         self.updated_at = now
         self.synced_at = datetime.datetime.fromtimestamp(0, utc)
-        # Example of changeSet : { 'cn': { 'operation': create, values' = [ 'value '] } }
-        self.changeSet = {}
+        # Example: changesSet = { cn: [ 'new value'] }
+        self.changesSet = {}
         self.name = None
         self.displayName = None
 

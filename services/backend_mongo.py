@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from dao.MongoDao import MongoService
 from pymongo import errors
-from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED
-import logging
+from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC
+from django.utils.timezone import utc
+import logging, datetime
+
 
 from django.conf import settings
 
@@ -26,13 +28,20 @@ def LBEObjectInstanceToDict(lbeObjectInstance):
         'status': lbeObjectInstance.status,
         'created_at': lbeObjectInstance.created_at,
         'updated_at': lbeObjectInstance.updated_at,
-        'synced_at': lbeObjectInstance.synced_at
+        'synced_at': lbeObjectInstance.synced_at,
+        'changes_set': lbeObjectInstance.changesSet,
     }
 
 def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):
     result_set = []
     for document in documents:
-        instance = LBEObjectInstance(lbeObjectInstance, name = document['_id'], displayName = document['displayName'], attributes = document['attributes'], status = document['status'])
+        instance = LBEObjectInstance(lbeObjectInstance, \
+            name = document['_id'], \
+            displayName = document['displayName'], \
+            attributes = document['attributes'], \
+            status = document['status'], \
+            changesSet = document['changes_set']
+        )
         result_set.append(instance)
     return result_set
 
@@ -56,6 +65,8 @@ class BackendMongoImpl:
     
     # TODO: Implement per page search
     def searchObjects(self, lbeObjectTemplate, index = 0, size = 0):
-        collection = lbeObjectTemplate.name
-        filter = { 'status': { '$gt': OBJECT_STATE_INVALID } }
-        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(collection, filter))
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': { '$gt': OBJECT_STATE_INVALID } }))
+
+    # Search objects with synced_at <= lbeObjectTemplate.synced_at
+    def searchObjectsToUpdate(self, lbeObjectTemplate, index = 0, size = 0):
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': OBJECT_STATE_AWAITING_SYNC }))

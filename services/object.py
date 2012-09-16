@@ -97,6 +97,8 @@ class LBEObjectInstanceHelper():
         try:
             self.instance.name = self.instance.attributes[self.template.instanceNameAttribute.name][0]
             self.instance.displayName = self.instance.attributes[self.template.instanceDisplayNameAttribute.name][0]
+            # It's a new object, the changesSet apply to all attributes
+            self.instance.changesSet = self.instance.attributes
         except BaseException as e:
             # TODO: Remove technical message, use another handler to send message to administrator
             messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')

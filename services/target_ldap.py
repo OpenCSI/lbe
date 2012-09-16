@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+import ldap, logging, datetime
+from ldap import modlist
+
 from dao.LdapDao import LDAPDAO
 from directory.models import LBEObjectTemplate, LBEObjectInstance, OBJECT_STATE_IMPORTED
-
-import ldap, logging, datetime
 from services.object import LBEObjectInstanceHelper
 
 logger = logging.getLogger(__name__)
@@ -23,6 +24,24 @@ class TargetInvalidCredentials(Exception):
 class TargetObjectInstance():
     def __init__(self):
         self.dn = ''
+
+def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
+    # Append objectClasses
+    attributes = lbeObjectInstance.changesSet
+    # For each mono valued, drop the list
+    encodedAttributes = {}
+    for key, value in attributes.iteritems():
+        if len(value) == 1:
+            encodedAttributes[key.encode('utf-8')] = value.pop().encode('utf-8')
+        else:
+            # TODO: probably need to decode each value
+            encodedAttributes[key.encode('utf-8')] = value
+    # objectClasses are not unicode objects
+    encodedAttributes['objectClass'] = objectClasses
+    return ldap.modlist.addModlist(encodedAttributes)
+
+def lbeObjectInstanceToModifyModList(lbeObjectInstance):
+    return ldap.modlist.modifyModlist(lbeObjectInstance.changesSet, lbeObjectInstance.changesSet, [], 1)
 
 class TargetLDAPImplementation():
     def __init__(self):
@@ -110,3 +129,17 @@ class TargetLDAPImplementation():
                 objectInstance.updated_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
             result_set.append(objectInstance)
         return result_set
+
+    def createOrUpdate(self, lbeObjectTemplate, lbeObjectInstance):
+        objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+
+        rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
+        dn =  rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]  + ',' + objectHelper.callScriptClassMethod('base_dn')
+
+        # TODO: maybe perform a search instead trying to create
+        # Try to create first
+        try:
+            self.handler.add(dn, lbeObjectInstanceToAddModList(lbeObjectInstance, objectHelper.callScriptClassMethod('object_classes')))
+        except BaseException as e:
+            print 'Exception ', e.message
+            self.handler.update(dn, lbeObjectInstanceToModifyModList(lbeObjectInstance))

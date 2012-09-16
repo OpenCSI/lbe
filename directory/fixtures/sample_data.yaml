@@ -26,7 +26,7 @@
 - model: directory.lbeattribute
   pk: 6
   fields:
-    name: gender
+    name: title
     displayName: Gender
 
 - model: directory.LBEAttributeInstance
