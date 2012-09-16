@@ -23,7 +23,7 @@ class Command(BaseCommand):
                 # the searchNewObjectcs methods search for backend object where createTimestamp > objectTemplate.imported_at
                 for lbeObject in target.searchNewObjects(lbeObjectTemplate):
                     #
-                    # TODO: Whe probably should care about virtual/reference attributes
+                    # TODO: take care about virtual/reference attributes
                     # Example: an object where uid is computed as 'bbonfils', but backend value is 'asyd'
                     backend.createObject(lbeObjectTemplate, lbeObject)
                 lbeObjectTemplate.imported_at = now
