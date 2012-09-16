@@ -66,15 +66,30 @@ class TargetLDAPImplementation():
                     result_set.append(aBuffer[4].replace('\'', ''))
         return result_set
 
-    # TODO: add a parameter to get extra attributes, used for reconciliation task
-    def searchObjects(self, lbeObjectTemplate, start = 0, page = 0):
-        result_set = []
-        # Call methods from object's script to get basedn and objectClass
+    @classmethod
+    def _ldap_date(cls, date):
+        return date.strftime('%Y%m%d%H%M%SZ')
+
+    def searchNewObjects(self, lbeObjectTemplate, start = 0, page = 0):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
-        filter = '(&'
+        filter = '(&(createTimeStamp>=' + self._ldap_date(lbeObjectTemplate.imported_at) + ')'
         for oc in objectHelper.callScriptClassMethod('object_classes'):
             filter += '(objectClass=' + oc + ')'
         filter += ')'
+
+        return self.searchObjects(lbeObjectTemplate, filter, start, page)
+
+    # TODO: add a parameter to get all ldap attributes, used for reconciliation task
+    def searchObjects(self, lbeObjectTemplate, filter = None, start = 0, page = 0):
+        result_set = []
+        # Call methods from object's script to get basedn and objectClass
+        objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+        if filter is None:
+            filter = '(&'
+            for oc in objectHelper.callScriptClassMethod('object_classes'):
+                filter += '(objectClass=' + oc + ')'
+            filter += ')'
+
         # Search in object's basedn TODO: let administrator define the scope in the object script
         for dn, entry in self.handler.search(objectHelper.callScriptClassMethod('base_dn'), filter, ldap.SCOPE_SUBTREE, ['*', '+']):
             # Create an empty instance

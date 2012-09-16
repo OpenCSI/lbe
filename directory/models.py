@@ -2,6 +2,7 @@
 from django.db import models
 from django import forms
 import datetime
+from django.utils.timezone import utc
 # Object status
 OBJECT_STATE_INVALID = -256
 OBJECT_STATE_SYNC_ERROR = -1
@@ -44,6 +45,10 @@ class LBEObjectTemplate(models.Model):
     version           = models.SmallIntegerField(default = 0)
     # Every template must be associated to a class provided by the administrator
     script               = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
+    # Date of last import. Used to detect new objects in target by searching on createTimestamp (for LDAP) > last import
+    imported_at     = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
+    # Date of last sync
+    synced_at       = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
     def __unicode__(self):
         return str(self.displayName)
 

@@ -13,13 +13,14 @@ class LBEObjectTemplateForm(ModelForm):
     instanceNameAttribute =  forms.CharField(max_length=100)
     class Meta:
         model = LBEObjectTemplate
-        exclude = ( 'attributes', 'objectClasses', 'version' )
+        exclude = ( 'attributes', 'imported_at', 'synced_at' 'version' )
     # Implements validator for approval field (must >= 0)
     def clean_approval(self):
         approval = self.cleaned_data['approval']
-        if (approval < 0):
+        if approval < 0:
             raise forms.ValidationError("This field must be null or positive.")
         return approval
+
     # Validator and replace value to his reference class value:
     def clean_instanceNameAttribute(self):
         value = self.cleaned_data['instanceNameAttribute']
