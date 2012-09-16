@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import ldap, logging, datetime
+import ldap, logging, datetime, base64
 from ldap import modlist
 
 from dao.LdapDao import LDAPDAO
@@ -30,14 +30,16 @@ def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
     attributes = lbeObjectInstance.changesSet
     # For each mono valued, drop the list
     encodedAttributes = {}
-    for key, value in attributes.iteritems():
+    for key, value in attributes.items():
         if len(value) == 1:
-            encodedAttributes[key.encode('utf-8')] = value.pop().encode('utf-8')
+#            encodedAttributes[key.encode('utf-8')] = value[0]
+            encodedAttributes[key.encode('utf-8')] = base64.b64encode(value[0].encode('utf-8'))
         else:
             # TODO: probably need to decode each value
             encodedAttributes[key.encode('utf-8')] = value
     # objectClasses are not unicode objects
     encodedAttributes['objectClass'] = objectClasses
+    print encodedAttributes
     return ldap.modlist.addModlist(encodedAttributes)
 
 def lbeObjectInstanceToModifyModList(lbeObjectInstance):
@@ -144,5 +146,5 @@ class TargetLDAPImplementation():
             self.handler.add(dn, lbeObjectInstanceToAddModList(lbeObjectInstance, objectHelper.callScriptClassMethod('object_classes')))
         except ldap.CONSTRAINT_VIOLATION as e:
             self.handler.update(dn, lbeObjectInstanceToModifyModList(lbeObjectInstance))
-        except UnicodeEncodeError as e:
-            print e.__str__()
+#        except UnicodeEncodeError as e:
+#            print e.__str__()

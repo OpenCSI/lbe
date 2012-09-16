@@ -12,7 +12,7 @@ class MongoService:
         self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
 
     def searchDocuments(self, collection, filters = {}):
-        logger.debug('Performing MongoDB search on collection: ' + collection + ' with filter:' + str(filter))
+        logger.debug('Performing MongoDB search on collection: ' + collection + ' with filter: ' + filters.__str__())
         return self.db[collection].find(filters)
 
     def createDocument(self, collection, document):
