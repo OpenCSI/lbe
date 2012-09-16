@@ -20,7 +20,7 @@ def addObjectInstance(request, lbeObject_id = None):
         if form.is_valid():
             helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
             print request.POST
-            helper.createFromDict(request.POST)
+            helper.createFromDict(request)
             helper.save()
             # Redirect to list
             return redirect('/directory/')

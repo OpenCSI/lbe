@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from dao.LdapDao import LDAPDAO
-from directory.models import LBEObjectTemplate, LBEObjectInstance
+from directory.models import LBEObjectTemplate, LBEObjectInstance, OBJECT_STATE_IMPORTED
 
 import ldap, logging
+from services.object import LBEObjectInstanceHelper
+
+logger = logging.getLogger(__name__)
 
 # TODO: Think to use same exceptions than backend?
 class TargetConnectionError(Exception):
@@ -65,15 +68,14 @@ class TargetLDAPImplementation():
     
     def searchObjects(self, lbeObjectTemplate, start = 0, page = 0):
         result_set = []
-        # Include all objectClass in LDAP filter
-        # TODO: Refactoring to get objectClasses and basedn from the template script
+        # Call methods from object's script to get basedn and objectClass
+        objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
         filter = '(&'
-        for oc in lbeObjectTemplate.objectClasses.all():
-            filter += '(objectClass=' + oc.name + ')'
+        for oc in objectHelper.callScriptClassMethod('object_classes'):
+            filter += '(objectClass=' + oc + ')'
         filter += ')'
-
         # Search in object's basedn TODO: let administrator define the subTree somewhere
-        for dn, entry in self.handler.search(lbeObjectTemplate.baseDN, filter, ldap.SCOPE_SUBTREE):
+        for dn, entry in self.handler.search(objectHelper.callScriptClassMethod('base_dn'), filter, ldap.SCOPE_SUBTREE):
             # Create an empty instance
             objectInstance = LBEObjectInstance(lbeObjectTemplate, name = entry[lbeObjectTemplate.instanceNameAttribute.name][0])
             # Add attributes defined in the template. Other ones are ignored
@@ -81,8 +83,9 @@ class TargetLDAPImplementation():
                 try:
                     objectInstance.attributes[attributeInstance.lbeAttribute.name] = entry[attributeInstance.lbeAttribute.name]
                 except KeyError, e:
-                    logging.warning('The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in LDAP object: '  + dn)
+                    logger.warning('The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in LDAP object: '  + dn)
             # Set displayName
             objectInstance.displayName = entry[lbeObjectTemplate.instanceDisplayNameAttribute.name][0]
+            objectInstance.status = OBJECT_STATE_IMPORTED
             result_set.append(objectInstance)
         return result_set

@@ -29,23 +29,6 @@
     name: gender
     displayName: Gender
 
-- model: directory.LBEObjectClass
-  pk: 1
-  fields:
-    name: top
-- model: directory.LBEObjectClass
-  pk: 2
-  fields:
-    name: person
-- model: directory.LBEObjectClass
-  pk: 3
-  fields:
-    name: organizationalPerson  
-- model: directory.LBEObjectClass
-  pk: 4
-  fields:
-    name: inetOrgPerson
-
 - model: directory.LBEAttributeInstance
   pk: 1
   fields: 
@@ -109,5 +92,4 @@
     instanceNameAttribute: 5
     instanceDisplayNameAttribute: 1
     approval: 0
-    objectClasses: [1, 2, 3, 4]
     script: 1

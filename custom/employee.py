@@ -19,8 +19,9 @@ class EmployeePostConfig:
     # instanceNameAttribute will be used as RDN attribute
     @classmethod
     def base_dn(cls):
-        return 'ou=Employee,ou=People,dc=opencsi,dc=com'
-    
+        return 'ou=Employees,ou=People,dc=opencsi,dc=com'
+
+    # Note this method must return a list
     @classmethod
     def object_classes(cls):
         return ['top', 'person', 'organizationalPerson','inetOrgPerson']

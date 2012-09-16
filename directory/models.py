@@ -21,11 +21,6 @@ class LBEAttribute(models.Model):
     def __unicode__(self):
         return str(self.displayName + ":" + self.name)
 
-class LBEObjectClass(models.Model):
-    name              = models.CharField(unique = True, max_length=64)
-    def __unicode__(self):
-        return str(self.name)
-
 class LBEScript(models.Model):
     name      = models.CharField(max_length=64)
     file      = models.FileField(upload_to='script')
@@ -37,19 +32,17 @@ class LBEScript(models.Model):
 
 # Use lbeobject.lbeattributeinstance_set.all() to get all attributes instance for a LBEObject
 class LBEObjectTemplate(models.Model):
-    displayName        = models.CharField(unique = True, max_length=32)
     name               = models.CharField(unique = True, max_length=32)
-    baseDN             = models.CharField(max_length=256)
+    displayName        = models.CharField(unique = True, max_length=32)
     # Used as name for an objectInstance
     instanceNameAttribute   = models.ForeignKey(LBEAttribute, related_name = 'instance_name_attribute')
     # Used as displayName for an objectInstance
     instanceDisplayNameAttribute   = models.ForeignKey(LBEAttribute, related_name = 'instance_displayname_attribute')
      # If > 0, this object need approvals. Must be positive
     approval          = models.SmallIntegerField(default = 0)
-    objectClasses     = models.ManyToManyField(LBEObjectClass, null = True, default = None)
     # To increment each time an object is changed
     version           = models.SmallIntegerField(default = 0)
-    # Every template must be provived with a corresponding class loaded from a script
+    # Every template must be associated to a class provided by the administrator
     script               = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
     def __unicode__(self):
         return str(self.displayName)

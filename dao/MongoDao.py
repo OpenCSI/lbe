@@ -12,19 +12,17 @@ class MongoService:
         self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
 
     def searchObjects(self, collection, filters = {}):
+        logger.debug('Performing MongoDB search on collection: ' + collection + ' with filter:' + str(filter))
         return self.db[collection].find(filters)
 
     def createDocument(self, collection, document):
         db = self.db[collection]
         try:
-            # TODO: remove print
-            print 'collection:', collection, ', document:', document
             id = db.insert(document)
-            print 'id: ', id
+            logger.debug('MongoDB object id: ' + id + ' created')
             return id
         except Exception as e:
-            print 'error'
-            print >> sys.stderr, 'Error while creating document: ', e
+            logger.error('Error while creating document: ' + e)
 
 # Pensee
 # Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script

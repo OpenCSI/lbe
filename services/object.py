@@ -2,8 +2,8 @@
 import sys, logging
 from services.backend import BackendHelper
 logger = logging.getLogger(__name__)
-
-from directory.models import LBEObjectInstance, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE
+from django.contrib import messages
+from directory.models import LBEObjectInstance, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC
 
 class LBEObjectInstanceHelper():
     def __init__(self, lbeObjectTemplate):
@@ -30,25 +30,33 @@ class LBEObjectInstanceHelper():
             className = scriptName.split('.')[-1]
             __import__(moduleName)
             module = sys.modules[moduleName]
-            scriptClass = getattr(module, className)
+            self.scriptClass = getattr(module, className)
         
             # Create an instance
-            self.scriptInstance = scriptClass(self.template, self.instance)
         else:
             logging.error('This object does not have an associate script')
-    
+
+    def _create_script_instance(self):
+        self._load_script()
+        if self.scriptInstance is not None:
+            return
+        self.scriptInstance = self.scriptClass(self.template, self.instance)
+
     def save(self):
         self._backend()
         self.backend.createObject(self.template, self.instance)
 
     def callScriptMethod(self, methodName):
-        self._load_script()
+        self._create_script_instance()
         method = getattr(self.scriptInstance, methodName)
         return method()
 
-    def callAttributeScriptMethod(self, attributeType, methodPrefix):
+    def callScriptClassMethod(self, methodName):
         self._load_script()
-        
+        method = getattr(self.scriptClass, methodName)
+        return method()
+
+    def callAttributeScriptMethod(self, attributeType, methodPrefix):
         for attributeInstance in self.template.lbeattributeinstance_set.filter(attributeType= attributeType):
             attributeName = attributeInstance.lbeAttribute.name
             try:
@@ -62,18 +70,24 @@ class LBEObjectInstanceHelper():
         # Now, compute virtual attributes
         self.callAttributeScriptMethod(ATTRIBUTE_TYPE_VIRTUAL, 'compute_')
         
-    def createFromDict(self, postData):
+    def createFromDict(self, request):
         attributes = {}
         for attributeInstance in self.template.lbeattributeinstance_set.all():
             # Only fetch real attributes from the request
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 attributeName = attributeInstance.lbeAttribute.name
                 # TODO: manage multivalue here
-                attributes[attributeName] = [ postData[attributeName] ]
-        # IMPORTANT: We need to create an instance without the name because the unique attribut may be a computed attribute, for example uid (compute from firstname/name)
+                attributes[attributeName] = [ request.POST[attributeName] ]
+        # IMPORTANT: We need to create an instance without the uniqueBecause because it may be a computed attribute, for example uid (compute from firstname/name)
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
+        # TODO: Maybe check here if the object need approvals
+        self.instance.status = OBJECT_STATE_AWAITING_SYNC
         self.applyCustomScript()
         # Set uniqueName and displayName
-        self.instance.name = self.instance.attributes[self.template.instanceNameAttribute.name][0]
-        self.instance.displayName = self.instance.attributes[self.template.instanceDisplayNameAttribute.name][0]
+        try:
+            self.instance.name = self.instance.attributes[self.template.instanceNameAttribute.name][0]
+            self.instance.displayName = self.instance.attributes[self.template.instanceDisplayNameAttribute.name][0]
+        except BaseException as e:
+            # TODO: Remove technical message, use another handler to send message to administrator
+            messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')
         print self.instance.attributes
