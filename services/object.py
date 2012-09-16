@@ -72,7 +72,7 @@ class LBEObjectInstanceHelper():
             try:
                 self.instance.attributes[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
             except AttributeError as e:
-                logger.info('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.message)
+                logger.info('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
     
     def applyCustomScript(self):
         # Clean attributes before manage virtuals attributes

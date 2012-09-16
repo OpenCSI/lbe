@@ -41,6 +41,8 @@ def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
     return ldap.modlist.addModlist(encodedAttributes)
 
 def lbeObjectInstanceToModifyModList(lbeObjectInstance):
+    print lbeObjectInstance.name
+    print lbeObjectInstance.changesSet
     return ldap.modlist.modifyModlist(lbeObjectInstance.changesSet, lbeObjectInstance.changesSet, [], 1)
 
 class TargetLDAPImplementation():
@@ -140,6 +142,7 @@ class TargetLDAPImplementation():
         # Try to create first
         try:
             self.handler.add(dn, lbeObjectInstanceToAddModList(lbeObjectInstance, objectHelper.callScriptClassMethod('object_classes')))
-        except BaseException as e:
-            print 'Exception ', e.message
+        except ldap.CONSTRAINT_VIOLATION as e:
             self.handler.update(dn, lbeObjectInstanceToModifyModList(lbeObjectInstance))
+        except UnicodeEncodeError as e:
+            print e.__str__()
