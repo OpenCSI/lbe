@@ -4,6 +4,7 @@ from services.backend import BackendHelper
 logger = logging.getLogger(__name__)
 from django.contrib import messages
 from directory.models import LBEObjectInstance, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC
+from services.backend import BackendObjectAlreadyExist
 
 class LBEObjectInstanceHelper():
     def __init__(self, lbeObjectTemplate):
@@ -42,7 +43,16 @@ class LBEObjectInstanceHelper():
             return
         self.scriptInstance = self.scriptClass(self.template, self.instance)
 
-    def save(self):
+    def save(self, ):
+        self._backend()
+        # Search for an existing object
+        searchResult = self.backend.getObjectByName(self.template, self.instance.name)
+        if searchResult is None:
+            return self.backend.createObject(self.template, self.instance)
+        else:
+            raise BackendObjectAlreadyExist('Already exists')
+
+    def update(self):
         self._backend()
         self.backend.createObject(self.template, self.instance)
 

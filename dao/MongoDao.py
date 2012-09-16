@@ -11,7 +11,7 @@ class MongoService:
         self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
         self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
 
-    def searchObjects(self, collection, filters = {}):
+    def searchDocuments(self, collection, filters = {}):
         logger.debug('Performing MongoDB search on collection: ' + collection + ' with filter:' + str(filter))
         return self.db[collection].find(filters)
 

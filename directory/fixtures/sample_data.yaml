@@ -88,7 +88,7 @@
   fields:
     name: employee
     displayName: employees
-    instanceNameAttribute: 5
+    instanceNameAttribute: 1
     instanceDisplayNameAttribute: 1
     approval: 0
     script: 1

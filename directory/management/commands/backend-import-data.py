@@ -25,6 +25,7 @@ class Command(BaseCommand):
                     #
                     # TODO: take care about virtual/reference attributes
                     # Example: an object where uid is computed as 'bbonfils', but backend value is 'asyd'
+                    lbeObject.synced_at = now
                     backend.createObject(lbeObjectTemplate, lbeObject)
                 lbeObjectTemplate.imported_at = now
                 lbeObjectTemplate.save()

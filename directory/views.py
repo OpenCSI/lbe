@@ -4,7 +4,8 @@ from directory.models import *
 from directory.forms import *
 from services.object import LBEObjectInstanceHelper
 from django.template import RequestContext
-from services.backend import BackendHelper
+from services.backend import BackendHelper, BackendObjectAlreadyExist
+from django.contrib import messages
 
 def index(request):
     backend = BackendHelper()
@@ -15,15 +16,19 @@ def index(request):
 def addObjectInstance(request, lbeObject_id = None):
     form = None
     if request.method == 'POST':
-        # TODO: wtf
         form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id), request.POST)
+        helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
         if form.is_valid():
-            helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
-            print request.POST
             helper.createFromDict(request)
-            helper.save()
+            try:
+                helper.save()
+            except BackendObjectAlreadyExist as e:
+                messages.add_message(request, messages.ERROR, 'Object already exists')
+                return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
             # Redirect to list
             return redirect('/directory/')
+        else:
+            render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
         return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
     else:
         if lbeObject_id is None:

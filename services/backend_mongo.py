@@ -45,7 +45,11 @@ class BackendMongoImpl:
             raise BackendConnectionError("Can't connect to the backend server")
 
     def getObjectByName(self, lbeObjectTemplate, uniqueName):
-        return self.handler.searchObjects(lbeObjectTemplate.name, { '_id': uniqueName })
+        searchResult = self.handler.searchDocuments(lbeObjectTemplate.name, { '_id': uniqueName })
+        print searchResult.count()
+        if searchResult.count() > 0:
+            return searchResult[0]
+        return None
 
     def createObject(self, lbeObjectTemplate, lbeObjectInstance):
         return self.handler.createDocument(lbeObjectTemplate.name, LBEObjectInstanceToDict(lbeObjectInstance) )
@@ -54,4 +58,4 @@ class BackendMongoImpl:
     def searchObjects(self, lbeObjectTemplate, index = 0, size = 0):
         collection = lbeObjectTemplate.name
         filter = { 'status': { '$gt': OBJECT_STATE_INVALID } }
-        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchObjects(collection, filter))
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(collection, filter))

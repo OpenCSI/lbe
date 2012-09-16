@@ -81,12 +81,14 @@ class LBEObjectInstance:
         self.template = lbeObjectTemplate
         self.attributes = {}
         self.status = OBJECT_STATE_INVALID
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(utc)
         self.created_at = now
         self.updated_at = now
-        self.synced_at = -1
+        self.synced_at = datetime.datetime.fromtimestamp(0, utc)
         # Example of changeSet : { 'cn': { 'operation': create, values' = [ 'value '] } }
         self.changeSet = {}
+        self.name = None
+        self.displayName = None
 
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
