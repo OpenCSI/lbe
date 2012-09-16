@@ -2,7 +2,7 @@
 from dao.LdapDao import LDAPDAO
 from directory.models import LBEObjectTemplate, LBEObjectInstance, OBJECT_STATE_IMPORTED
 
-import ldap, logging
+import ldap, logging, datetime
 from services.object import LBEObjectInstanceHelper
 
 logger = logging.getLogger(__name__)
@@ -65,7 +65,8 @@ class TargetLDAPImplementation():
                 else:
                     result_set.append(aBuffer[4].replace('\'', ''))
         return result_set
-    
+
+    # TODO: add a parameter to get extra attributes, used for reconciliation task
     def searchObjects(self, lbeObjectTemplate, start = 0, page = 0):
         result_set = []
         # Call methods from object's script to get basedn and objectClass
@@ -74,8 +75,8 @@ class TargetLDAPImplementation():
         for oc in objectHelper.callScriptClassMethod('object_classes'):
             filter += '(objectClass=' + oc + ')'
         filter += ')'
-        # Search in object's basedn TODO: let administrator define the subTree somewhere
-        for dn, entry in self.handler.search(objectHelper.callScriptClassMethod('base_dn'), filter, ldap.SCOPE_SUBTREE):
+        # Search in object's basedn TODO: let administrator define the scope in the object script
+        for dn, entry in self.handler.search(objectHelper.callScriptClassMethod('base_dn'), filter, ldap.SCOPE_SUBTREE, ['*', '+']):
             # Create an empty instance
             objectInstance = LBEObjectInstance(lbeObjectTemplate, name = entry[lbeObjectTemplate.instanceNameAttribute.name][0])
             # Add attributes defined in the template. Other ones are ignored
@@ -87,5 +88,10 @@ class TargetLDAPImplementation():
             # Set displayName
             objectInstance.displayName = entry[lbeObjectTemplate.instanceDisplayNameAttribute.name][0]
             objectInstance.status = OBJECT_STATE_IMPORTED
+            objectInstance.created_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
+            try:
+                objectInstance.updated_at = datetime.datetime.strptime(entry['modifyTimestamp'][0], '%Y%m%d%H%M%SZ')
+            except:
+                objectInstance.updated_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
             result_set.append(objectInstance)
         return result_set

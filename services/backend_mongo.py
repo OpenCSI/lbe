@@ -43,7 +43,10 @@ class BackendMongoImpl:
         except errors.AutoReconnect:
             logging.error("Can't connect to MongoDB server (", settings.MONGODB_SERVER['HOST'], ' ',  settings.MONGODB_SERVER['PORT'], " )")
             raise BackendConnectionError("Can't connect to the backend server")
-    
+
+    def getObjectByName(self, lbeObjectTemplate, uniqueName):
+        return self.handler.searchObjects(lbeObjectTemplate.name, { '_id': uniqueName })
+
     def createObject(self, lbeObjectTemplate, lbeObjectInstance):
         return self.handler.createDocument(lbeObjectTemplate.name, LBEObjectInstanceToDict(lbeObjectInstance) )
     

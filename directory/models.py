@@ -73,16 +73,18 @@ class LBEDirectoryACL(models.Model):
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance: 
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
+        self.template = lbeObjectTemplate
         self.attributes = {}
         self.status = OBJECT_STATE_INVALID
         now = datetime.datetime.now()
         self.created_at = now
         self.updated_at = now
         self.synced_at = -1
+        # Example of changeSet : { 'cn': { 'operation': create, values' = [ 'value '] } }
+        self.changeSet = {}
 
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
-        self.template = lbeObjectTemplate
 
     # TODO: implement
     def is_valid(self):

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand, CommandError
-from pymongo import Connection, errors
-from services.Mongo import MongoService
 from directory.models import LBEObjectTemplate
-from django.conf import settings
 from services.target import TargetHelper
 from services.backend import BackendHelper
 
@@ -19,4 +16,6 @@ class Command(BaseCommand):
                 sys.exit (1)
             for lbeObjectTemplate in LBEObjectTemplate.objects.all():
                 for lbeObject in target.searchObjects(lbeObjectTemplate):
+                    # TODO: Whe probably should care about virtual/reference attributes
+                    # Example: an object where uid is computed, but different in LDAP than then computed value
                     backend.createObject(lbeObjectTemplate, lbeObject)

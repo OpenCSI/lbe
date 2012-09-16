@@ -21,8 +21,8 @@ class MongoService:
             id = db.insert(document)
             logger.debug('MongoDB object id: ' + id + ' created')
             return id
-        except Exception as e:
-            logger.error('Error while creating document: ' + e)
+        except BaseException as e:
+            logger.error('Error while creating document: ' + e.message)
 
 # Pensee
 # Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script
