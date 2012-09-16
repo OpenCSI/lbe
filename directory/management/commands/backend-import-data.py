@@ -17,5 +17,5 @@ class Command(BaseCommand):
             for lbeObjectTemplate in LBEObjectTemplate.objects.all():
                 for lbeObject in target.searchObjects(lbeObjectTemplate):
                     # TODO: Whe probably should care about virtual/reference attributes
-                    # Example: an object where uid is computed, but different in LDAP than then computed value
+                    # Example: an object where uid is computed as 'bbonfils', but backend value is 'asyd'
                     backend.createObject(lbeObjectTemplate, lbeObject)

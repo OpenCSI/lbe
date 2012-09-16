@@ -91,7 +91,7 @@ class TargetLDAPImplementation():
             objectInstance.created_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
             try:
                 objectInstance.updated_at = datetime.datetime.strptime(entry['modifyTimestamp'][0], '%Y%m%d%H%M%SZ')
-            except:
+            except KeyError:
                 objectInstance.updated_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
             result_set.append(objectInstance)
         return result_set
