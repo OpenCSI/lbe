@@ -174,17 +174,17 @@ LOGGING = {
             'class': 'services.loggerHandler.logRequest',#'logging.StreamHandler',
         }
     },
-    'loggers': {
-		'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['db'],
-        },
+    #'loggers': {
+	#	'django.db.backends': {
+     #       'level': 'DEBUG',
+      #      'handlers': ['db'],
+       # },
         #'django.request': {
         #    'handlers': ['request'],
         #    'level': 'DEBUG',
         #    'propagate': True,
         #}
-    }
+    #}
 }
 
 # Overriding HTML classes used by messages framework to be compliant with Twitter Bootstrap

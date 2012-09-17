@@ -87,7 +87,7 @@ class LBEObjectInstanceHelper():
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 attributeName = attributeInstance.lbeAttribute.name
                 # TODO: manage multivalue here
-                attributes[attributeName] = [ request.POST[attributeName] ]
+                attributes[attributeName] = request.POST.getlist(attributeName)#[ request.POST[attributeName] ]
         # IMPORTANT: We need to create an instance without the uniqueBecause because it may be a computed attribute, for example uid (compute from firstname/name)
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
         # TODO: Maybe check here if the object need approvals

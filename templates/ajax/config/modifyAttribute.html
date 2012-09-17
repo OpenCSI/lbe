@@ -7,9 +7,7 @@
 	<div class="modal-body">
 		<form action="{% url 'config.views.modifyAttribute' obj_id=objID attr_id=attrID %}" method='post'>
 			{% csrf_token %}
-			<table class="table table-condensed">
-				{% include 'config/object/attributes/form.html' %}
-			</table>
+			{% include 'config/object/attributes/form.html' %}
 		</form>
 	</div>
 </div>

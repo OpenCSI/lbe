@@ -32,9 +32,10 @@ class LBEObjectTemplateForm(ModelForm):
 
 class LBEAttributeInstanceForm(ModelForm):
 	lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
+	attributeType = forms.IntegerField(widget=forms.Select(choices=CHOICE_ATTRIBUT_TYPE))
 	class Meta:
 		model = LBEAttributeInstance
-		exclude = ( 'lbeObjectTemplate', 'widgetArgs', 'objectType' )
+		exclude = ( 'lbeObjectTemplate', 'widgetArgs', 'objectType', 'attributeType' )
 
 class LBEScriptForm(ModelForm):
 	class Meta:
