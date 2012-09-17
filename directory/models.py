@@ -79,10 +79,18 @@ class LBEAttributeInstance(models.Model):
     widgetArgs        = models.CharField(max_length=255, default = 'None')
 
 class LBEDirectoryACL(models.Model):
-    object = models.CharField(max_length=25) # TODO: Why it's not a foreign key?
-    type = models.CharField(max_length=10) # TODO: DOCUMENT probably use constants
-    attribute = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
-    condition = models.CharField(max_length=100)
+	object = models.CharField(max_length=25) # TODO: Why it's not a foreign key?
+	type = models.CharField(max_length=10) # TODO: DOCUMENT probably use constants
+	attribut = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
+	condition = models.CharField(max_length=100)
+	
+class log(models.Model):
+	type			   = models.CharField(max_length=32)
+	level	 		   = models.CharField(max_length=24)
+	message 		   = models.TextField()
+	date			   = models.DateTimeField(auto_now=True)
+	def __unicode__(self):
+		return str(level + ': ' + message)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance: 
