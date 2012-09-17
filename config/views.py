@@ -71,7 +71,7 @@ def modifyObjectAJAX(request,obj_id = None):
 		else:
 			objectForm = LBEObjectTemplateForm(instance=lbeObjectTemplate)
 		attForm = LBEAttributeInstanceForm()
-		return render_to_response('ajax/config/modify.html',{'lbeObject': lbeObjectTemplate,'objectForm': objectForm, 'attributeForm': attForm}, context_instance=RequestContext(request))
+		return render_to_response('ajax/config/modifyObject.html',{'lbeObject': lbeObjectTemplate,'objectForm': objectForm, 'attributeForm': attForm}, context_instance=RequestContext(request))
 
 def modifyReferenceAJAX(request,ref_id = None):
 	if request.is_ajax():

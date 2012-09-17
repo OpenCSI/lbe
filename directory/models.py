@@ -72,8 +72,8 @@ class LBEAttributeInstance(models.Model):
     multivalue        = models.BooleanField(default = True)
     reference         = models.ForeignKey(LBEReference, null = True, blank = True, default = None)
     # If true, this attribute will be stored enciphered (by a symmetric key defined in LBE/settings.py) TODO: implement
-    secure              = models.BooleanField(default = False)
-    attributeType        = models.SmallIntegerField(default = ATTRIBUTE_TYPE_FINAL)
+    secure            = models.BooleanField(default = False)
+    attributeType     = models.SmallIntegerField(default = ATTRIBUTE_TYPE_FINAL)
     # The HTML widget used to display/edit attribute. We'll inject classname
     widget            = models.CharField(max_length=64, default = 'forms.CharField', blank = True)
     widgetArgs        = models.CharField(max_length=255, default = 'None')
