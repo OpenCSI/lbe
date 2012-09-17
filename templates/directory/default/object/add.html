@@ -2,7 +2,7 @@
 {% load url from future %}
 {% block content %}
 
-<form action='{% url 'directory.views.addObjectInstance' '1' %}' method='POST'>
+<form action='{% url 'directory.views.addObjectInstance' lbeObject_id=lbeObjectId %}' method='POST'>
     {% csrf_token %}
     {% for hidden in form.hidden_fields %}
     {{ hidden }}
@@ -21,6 +21,5 @@
             <td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn'></td>
         </tr>
     </table>
-    <input type='submit' value='Submit' class='btn' name='Submit'>
 </form>
 {% endblock %}
