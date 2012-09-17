@@ -1,8 +1,9 @@
 import datetime
-from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT
+from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT, LBEObjectInstance, OBJECT_STATE_SYNCED
 from services.backend import BackendHelper
 from services.target import TargetHelper
 from django.core.management.base import BaseCommand, CommandError
+import ldap
 import logging
 
 logger = logging.getLogger(__name__)
@@ -39,12 +40,28 @@ class Reconciliation():
         pass
 
     def start(self):
+        # First of all, applies all changes stored in backend
+
         for objectTemplate in LBEObjectTemplate.objects.all():
-            # Search objects in backend (by default LDAP)
+            # We're looking for all objects with state = OBJECT_STATE_AWAITING_SYNC
             for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
                 logger.debug('Object to create or update: ' + objectInstance.name)
                 if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
-                    self.target.create(objectTemplate, objectInstance)
+                    try:
+                        self.target.create(objectTemplate, objectInstance)
+                        # Ok, the object is added, empty changes set, and update object status
+                        changes = {}
+                        changes['status'] = OBJECT_STATE_SYNCED
+                        changes['changes'] = {}
+                        changes['changes']['set'] = {}
+                        changes['changes']['type'] = -1
+                        changes['synced_at'] = datetime.datetime.now()
+                        # TODO: Not update not implemented
+                        self.backend.updateObject(objectTemplate, objectInstance, changes)
+                    # TODO: We should have a target exception rather ldap
+                    except ldap.ALREADY_EXISTS:
+                        logger.debug('Object ' + objectInstance.name + ' already exists')
+                        pass
 
 
 class Command(BaseCommand):

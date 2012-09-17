@@ -11,23 +11,22 @@ class MongoService:
         self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
         self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
 
-    def searchDocuments(self, collection, filters = {}):
-        logger.debug('Performing MongoDB search on collection: ' + collection + ' with filter: ' + filters.__str__())
-        return self.db[collection].find(filters)
+    def searchDocuments(self, collection, filter = {}):
+        logger.debug('Performing MongoDB search on collection: ' + collection + ' with filter: ' + filter.__str__())
+        return self.db[collection].find(filter)
 
-    def createDocument(self, collection, document):
-        db = self.db[collection]
+    def createDocument(self, collectionName, document):
+        collection = self.db[collectionName]
         try:
-            id = db.insert(document)
+            id = collection.insert(document)
             logger.debug('MongoDB object id: ' + id + ' created')
             return id
         except BaseException as e:
             logger.error('Error while creating document: ' + e.__str__())
+            raise BaseException('an error occured in  mongodb')
 
-# Pensee
-# Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script
-
-# Pour faire une recherche LDAP, on appelle les methodes base_dn, object_classes du script lié à l'objet
-# Puis on utilise la valeur du champ instanceNameAttribute pour savoir quel champ lire
-
-# Dans le cas d'un target MongoDB, on utilise une collection par type d'objet, donc on peut utiliser ce champ comme _id
+    def updateDocument(self, collectionName, filter, changes):
+        collection = self.db[collectionName]
+        logger.debug('Update MongoDB object in collection ' + collectionName  + ', with query:' + filter.__str__() + ' , with changes: '  + changes.__str__())
+        collection = self.db[collectionName]
+        collection.update(filter, changes)
