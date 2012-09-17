@@ -82,6 +82,7 @@ class LBEObjectInstanceHelper():
         
     def createFromDict(self, request):
         attributes = {}
+        print 'pouet'
         for attributeInstance in self.template.lbeattributeinstance_set.all():
             # Only fetch real attributes from the request
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:

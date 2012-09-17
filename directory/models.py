@@ -22,11 +22,13 @@ ATTRIBUTE_TYPE_FINAL = 0
 ATTRIBUTE_TYPE_VIRTUAL = 1
 ATTRIBUTE_TYPE_REFERENCE = 2
 
-CHOICE_ATTRIBUT_TYPE = (
-	(0,"Final"),
-	(1,"virtual"),
-	(2,"reference")
-)
+# TODO: Improve (cf.form.py too)
+#CHOICE_ATTRIBUT_TYPE = (
+#	(0,"Final"),
+#	(1,"Virtual"),
+#	(2,"Reference")
+#)
+
 class LBEAttribute(models.Model):
     displayName       = models.CharField(unique = True, max_length=64)
     name               = models.CharField(unique = True, max_length=64)
