@@ -29,7 +29,7 @@ def LBEObjectInstanceToDict(lbeObjectInstance):
         'created_at': lbeObjectInstance.created_at,
         'updated_at': lbeObjectInstance.updated_at,
         'synced_at': lbeObjectInstance.synced_at,
-        'changes_set': lbeObjectInstance.changesSet,
+        'changes': { 'type': lbeObjectInstance.changes['type'], 'set' : lbeObjectInstance.changes['set'] },
     }
 
 def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):
@@ -40,7 +40,7 @@ def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):
             displayName = document['displayName'], \
             attributes = document['attributes'], \
             status = document['status'], \
-            changesSet = document['changes_set']
+            changes = document['changes']
         )
         result_set.append(instance)
     return result_set

@@ -11,6 +11,13 @@ OBJECT_STATE_AWAITING_SYNC = 1
 OBJECT_STATE_AWAITING_APPROVAL = 2
 OBJECT_STATE_IMPORTED = 0
 
+OBJECT_CHANGE_CREATE_OBJECT = 0
+OBJECT_CHANGE_UPDATE_OBJECT = 1
+OBJECT_CHANGE_DELETE_OBJECT = 2
+OBJECT_CHANGE_CREATE_ATTR   = 3
+OBJECT_CHANGE_UPDATE_ATTR   = 4
+OBJECT_CHANGE_DELETE_ATTR   = 5
+
 ATTRIBUTE_TYPE_FINAL = 0
 ATTRIBUTE_TYPE_VIRTUAL = 1
 ATTRIBUTE_TYPE_REFERENCE = 2
@@ -86,8 +93,11 @@ class LBEObjectInstance:
         self.created_at = now
         self.updated_at = now
         self.synced_at = datetime.datetime.fromtimestamp(0, utc)
-        # Example: changesSet = { cn: [ 'new value'] }
-        self.changesSet = {}
+        # TODO: document usage  of changes
+        self.changes = {
+            'type': -1,
+            'set': { },
+        }
         self.name = None
         self.displayName = None
 

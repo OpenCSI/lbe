@@ -27,13 +27,12 @@ class TargetObjectInstance():
 
 def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
     # Append objectClasses
-    attributes = lbeObjectInstance.changesSet
+    attributes = lbeObjectInstance.changes['set']
     # For each mono valued, drop the list
     encodedAttributes = {}
     for key, value in attributes.items():
         if len(value) == 1:
-#            encodedAttributes[key.encode('utf-8')] = value[0]
-            encodedAttributes[key.encode('utf-8')] = base64.b64encode(value[0].encode('utf-8'))
+            encodedAttributes[key.encode('utf-8')] = value[0].encode('utf-8')
         else:
             # TODO: probably need to decode each value
             encodedAttributes[key.encode('utf-8')] = value
@@ -44,7 +43,7 @@ def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
 
 def lbeObjectInstanceToModifyModList(lbeObjectInstance):
     print lbeObjectInstance.name
-    print lbeObjectInstance.changesSet
+    print lbeObjectInstance.changes['set']
     return ldap.modlist.modifyModlist(lbeObjectInstance.changesSet, lbeObjectInstance.changesSet, [], 1)
 
 class TargetLDAPImplementation():
@@ -134,17 +133,10 @@ class TargetLDAPImplementation():
             result_set.append(objectInstance)
         return result_set
 
-    def createOrUpdate(self, lbeObjectTemplate, lbeObjectInstance):
+    def create(self, lbeObjectTemplate, lbeObjectInstance):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
 
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
         dn =  rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]  + ',' + objectHelper.callScriptClassMethod('base_dn')
 
-        # TODO: maybe perform a search instead trying to create
-        # Try to create first
-        try:
-            self.handler.add(dn, lbeObjectInstanceToAddModList(lbeObjectInstance, objectHelper.callScriptClassMethod('object_classes')))
-        except ldap.CONSTRAINT_VIOLATION as e:
-            self.handler.update(dn, lbeObjectInstanceToModifyModList(lbeObjectInstance))
-#        except UnicodeEncodeError as e:
-#            print e.__str__()
+        self.handler.add(dn, lbeObjectInstanceToAddModList(lbeObjectInstance, objectHelper.callScriptClassMethod('object_classes')))

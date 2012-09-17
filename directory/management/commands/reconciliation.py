@@ -1,5 +1,5 @@
 import datetime
-from directory.models import LBEObjectTemplate
+from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT
 from services.backend import BackendHelper
 from services.target import TargetHelper
 from django.core.management.base import BaseCommand, CommandError
@@ -43,7 +43,8 @@ class Reconciliation():
             # Search objects in backend (by default LDAP)
             for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
                 logger.debug('Object to create or update: ' + objectInstance.name)
-                self.target.createOrUpdate(objectTemplate, objectInstance)
+                if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
+                    self.target.create(objectTemplate, objectInstance)
 
 
 class Command(BaseCommand):

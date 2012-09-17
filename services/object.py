@@ -3,7 +3,7 @@ import sys, logging
 from services.backend import BackendHelper
 logger = logging.getLogger(__name__)
 from django.contrib import messages
-from directory.models import LBEObjectInstance, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC
+from directory.models import LBEObjectInstance, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
 from services.backend import BackendObjectAlreadyExist
 
 class LBEObjectInstanceHelper():
@@ -98,8 +98,10 @@ class LBEObjectInstanceHelper():
             self.instance.name = self.instance.attributes[self.template.instanceNameAttribute.name][0]
             self.instance.displayName = self.instance.attributes[self.template.instanceDisplayNameAttribute.name][0]
             # It's a new object, the changesSet apply to all attributes
-            self.instance.changesSet = self.instance.attributes
+            self.instance.changes['type'] = OBJECT_CHANGE_CREATE_OBJECT
+            self.instance.changes['set'] = self.instance.attributes
         except BaseException as e:
+            print e.__str__()
             # TODO: Remove technical message, use another handler to send message to administrator
             messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')
         print self.instance.attributes
