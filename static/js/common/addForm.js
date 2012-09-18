@@ -1,4 +1,4 @@
-function addField(attribute)
+function addField(attribute,value)
 {
-	$('.'+attribute).append("<input type='text' name='"+attribute+"' id='id_"+attribute+"' value=''/><br>");
+	$('.'+attribute).append(value + '<br>');
 }

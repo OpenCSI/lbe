@@ -44,4 +44,5 @@ def addObjectInstance(request, lbeObject_id = None):
             # TODO: Redirect to a form to choose which object to add
             print 'error'
     form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id))
+    print form.__class__
     return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id, 'multivalue':multivalue }, context_instance=RequestContext(request))
