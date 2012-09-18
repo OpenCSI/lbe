@@ -40,12 +40,9 @@ def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
                 encodedAttributes[key.encode('utf-8')].append(value.encode('utf-8'))
     # objectClasses are not unicode objects
     encodedAttributes['objectClass'] = objectClasses
-    print encodedAttributes
     return ldap.modlist.addModlist(encodedAttributes)
 
 def lbeObjectInstanceToModifyModList(lbeObjectInstance):
-    print lbeObjectInstance.name
-    print lbeObjectInstance.changes['set']
     return ldap.modlist.modifyModlist(lbeObjectInstance.changesSet, lbeObjectInstance.changesSet, [], 1)
 
 class TargetLDAPImplementation():
@@ -124,7 +121,7 @@ class TargetLDAPImplementation():
                     objectInstance.attributes[attributeInstance.lbeAttribute.name] = entry[attributeInstance.lbeAttribute.name]
                 except KeyError, e:
                     logger.warning('The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in LDAP object: '  + dn)
-            # Set displayName
+            # Set displayName and few others attributes
             objectInstance.displayName = entry[lbeObjectTemplate.instanceDisplayNameAttribute.name][0]
             objectInstance.status = OBJECT_STATE_IMPORTED
             objectInstance.created_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')

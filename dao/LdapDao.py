@@ -13,11 +13,13 @@ class LDAPDAO:
 
     # TODO: Implement VLV if supported by the LDAP server
     def search(self, basedn, filter = ('(objectClass=*)'), scope = ldap.SCOPE_SUBTREE, attributes = None, start = 0, page = 0):
-        logger.debug('Performing LDAP search with basedn: ' + basedn + ', filter: ' + filter)
+        logger.debug('LDAP search with basedn: ' + basedn + ', filter: ' + filter)
         return self.handler.search_s(basedn, scope, filter, attributes)
 
     def add(self, basedn, modlist):
+        logger.debug('LDAP Adding ' + basedn + ' object')
         return self.handler.add_s(basedn, modlist)
 
     def update(self, basedn, modlist):
+        logger.debug('LDAP update ' + basedn + ' object')
         return self.handler.modify_s(basedn, modlist)
