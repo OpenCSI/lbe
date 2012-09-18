@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% block content %}
+	<h4>Add a script file:</h4>
+    <form method="post" enctype="multipart/form-data" action="{% url 'config.views.addScript' %}">{% csrf_token %}
+       {% include 'config/script/form.html' %}
+    </form>
+{% endblock %}

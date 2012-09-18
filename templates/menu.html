@@ -14,11 +14,11 @@
 				<li class="nav-header">Attribute Management</li>
 				<li><a href="{% url 'config.views.addAttribute' %}">Add Attribute</a></li>
 				<li class="nav-header">Script Management</li>
-				<li><a href="/admin/script/add/">Add Script</a></li>
-				<li><a href="/admin/script/manage/">Manage Script</a></li>
+				<li><a href="{% url 'config.views.addScript' %}">Add Script</a></li>
+				<li><a href="{% url 'config.views.manageScript' %}">Manage Script</a></li>
 				<li class="nav-header">Reference Management</li>
-				<li><a href="/admin/reference/add/">Add Reference</a></li>
-				<li><a href="/admin/reference/modify/">Modify Reference</a></li>
+				<li><a href="/config/reference/add/">Add Reference</a></li>
+				<li><a href="/config/reference/modify/">Modify Reference</a></li>
 			 </ul>
 		</div>
    </div>

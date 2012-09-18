@@ -6,21 +6,14 @@
 
 <input type="hidden" name="lbeObject" value="{{ lbeObject.id }}">
 <table class='table'>
-	<tr>
-		<th>Name</th>
-		<th>Default value</th>
-		<th>Flags</th>
-		<th>Reference</th>
-	</tr>
-	<tr>
 		<!-- TODO replace this field by an ajax autocompletion -->
-		<td>{{attributeForm.lbeAttribute}} {% for error in attributeForm.lbeAttribute.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
-		<td>{{attributeForm.defaultValue}} {% for error in attributeForm.defaultValue.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
-		<td>Mandatory: {{attributeForm.mandatory}}<br/>
+	<tr><th>Name</th><td>{{attributeForm.lbeAttribute}} {% for error in attributeForm.lbeAttribute.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td></tr>
+	<tr><th>Default value</th>	<td>{{attributeForm.defaultValue}} {% for error in attributeForm.defaultValue.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td></tr>
+	<tr><th>Flags</th>	<td>Mandatory: {{attributeForm.mandatory}}<br/>
 			Multivalued: {{attributeForm.multivalue}}<br/>
-			Ciphered: {{attributeForm.secure}}</td>
-		<td>{{attributeForm.reference}} {% for error in attributeForm.reference.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
-	</tr>		
+			Ciphered: {{attributeForm.secure}}</td></tr>
+	<tr><th>Type: </th><td>{{attributeForm.attributeType}}</td></tr>
+	<tr><th>Reference</th><td>{{attributeForm.reference}} {% for error in attributeForm.reference.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td></tr>		
 	<td colspan="4" style='text-align: center;'><input type="submit" value="Add" class="btn"/></td>
 	</tr>
 </table>

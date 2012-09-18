@@ -17,7 +17,7 @@
                <tr>
                	<th>Name</th>
             	<th>Default value</th>
-            	<th>Reference</th><th>Script</th>
+            	<th>Reference</th><th>Script</th><th>Action</th>
                </tr>
                {% for instance in attributeInstances %}
                <tr>
@@ -25,6 +25,7 @@
             		<td> {{ instance.defaultValue }} </td>
             		<td> {{ instance.reference }} </td>
             		<td> {{ instance.script }} </td>
+            		<td> <a href="#" onClick="showModalBox('{% url 'config.views.modifyAttributeAJAX' obj_id=lbeObject.id attr_id=instance.id  %}')">Modify </a></td>
                </tr>
                {% endfor %}
             </table>

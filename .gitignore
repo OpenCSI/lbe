@@ -2,5 +2,5 @@
 /.bash_history
 /.ipython
 /.vi*
-lbe/settings.py
-.idea
+/.idea
+/lbe/local_settings.py

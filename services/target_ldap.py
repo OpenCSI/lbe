@@ -30,12 +30,14 @@ def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
     attributes = lbeObjectInstance.changes['set']
     # For each mono valued, drop the list
     encodedAttributes = {}
-    for key, value in attributes.items():
-        if len(value) == 1:
-            encodedAttributes[key.encode('utf-8')] = value[0].encode('utf-8')
+    for key, values in attributes.items():
+        if len(values) == 1:
+            encodedAttributes[key.encode('utf-8')] = values[0].encode('utf-8')
         else:
             # TODO: probably need to decode each value
-            encodedAttributes[key.encode('utf-8')] = value
+            encodedAttributes[key.encode('utf-8')] = []
+            for value in values:
+                encodedAttributes[key.encode('utf-8')].append(value.encode('utf-8'))
     # objectClasses are not unicode objects
     encodedAttributes['objectClass'] = objectClasses
     print encodedAttributes

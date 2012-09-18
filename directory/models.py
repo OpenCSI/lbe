@@ -22,6 +22,13 @@ ATTRIBUTE_TYPE_FINAL = 0
 ATTRIBUTE_TYPE_VIRTUAL = 1
 ATTRIBUTE_TYPE_REFERENCE = 2
 
+# TODO: Improve (cf.form.py too)
+#CHOICE_ATTRIBUT_TYPE = (
+#	(0,"Final"),
+#	(1,"Virtual"),
+#	(2,"Reference")
+#)
+
 class LBEAttribute(models.Model):
     displayName       = models.CharField(unique = True, max_length=64)
     name               = models.CharField(unique = True, max_length=64)
@@ -60,7 +67,9 @@ class LBEObjectTemplate(models.Model):
         return str(self.displayName)
 
 class LBEReference(models.Model):
-    name              = models.CharField(max_length=24)
+	name               = models.CharField(max_length=24)
+	objectTemplate     = models.ForeignKey(LBEObjectTemplate)
+	objectAttribute    = models.ForeignKey(LBEAttribute)
 
 class LBEAttributeInstance(models.Model):
     lbeAttribute      = models.ForeignKey(LBEAttribute)
@@ -70,17 +79,25 @@ class LBEAttributeInstance(models.Model):
     multivalue        = models.BooleanField(default = True)
     reference         = models.ForeignKey(LBEReference, null = True, blank = True, default = None)
     # If true, this attribute will be stored enciphered (by a symmetric key defined in LBE/settings.py) TODO: implement
-    secure              = models.BooleanField(default = False)
-    attributeType        = models.SmallIntegerField(default = ATTRIBUTE_TYPE_FINAL)
+    secure            = models.BooleanField(default = False)
+    attributeType     = models.SmallIntegerField(default = ATTRIBUTE_TYPE_FINAL)
     # The HTML widget used to display/edit attribute. We'll inject classname
     widget            = models.CharField(max_length=64, default = 'forms.CharField', blank = True)
     widgetArgs        = models.CharField(max_length=255, default = 'None')
 
 class LBEDirectoryACL(models.Model):
-    object = models.CharField(max_length=25) # TODO: Why it's not a foreign key?
-    type = models.CharField(max_length=10) # TODO: DOCUMENT probably use constants
-    attribute = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
-    condition = models.CharField(max_length=100)
+	object = models.CharField(max_length=25) # TODO: Why it's not a foreign key?
+	type = models.CharField(max_length=10) # TODO: DOCUMENT probably use constants
+	attribut = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
+	condition = models.CharField(max_length=100)
+	
+class log(models.Model):
+	type			   = models.CharField(max_length=32)
+	level	 		   = models.CharField(max_length=24)
+	message 		   = models.TextField()
+	date			   = models.DateTimeField(auto_now=True)
+	def __unicode__(self):
+		return str(level + ': ' + message)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance: 
