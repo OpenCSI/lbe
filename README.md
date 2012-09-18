@@ -17,11 +17,6 @@ Internal object JSON representation used by LBE:
 			mail: [ 'bbonfils@opencsi.com' ],
 			uid: [ 'bbonfils' ],
 		},
-		opsAttributes: {
-			cn: { create_at: 20120234242, update_at:  20120234242},
-			sn: { create_at: 20120234242, update_at:  20120234242},
-			[..]
-		}
 		lastsynclog: [ 'Some text message', 'another one' ]
 		versions: {
 			1: { cn: ['bruno bonfils'], sn: [ 'bonfils' ], [..] },
@@ -29,14 +24,21 @@ Internal object JSON representation used by LBE:
 		}
 	}
 
+Reconciliation:
 
-Modification d'un objet:
- - 
+Diagram sequence (use with http://www.websequencediagrams.com/)
 
-Algo de réconciliation LBE -> Annuaire:
+http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgUmVjb25jaWxpYXRpb24KcGFydGljaXBhbnQgQXBwIGFzIGEACA1UYXJnZXQgYXMgdAAgDUJhY2tlbmQgYXMgYgoKYS0-YjogR2V0IGFsbCBvYmplY3RzIHRvIHVwZGF0ZQpiLT5hOiByZXR1cm4gc2VhcmNoKAAgBi5zdGF0dXMgPSBBV0FJVElOR19TWU5DKQphbHQgRm9yZWFjaABKBwphAEEFY3JlYXRlIGEgY2hhbmdlIHNlABUFdDogQXBwbHkAEAcADwdiOiBVAH4FAIEOByAoc3RhdGUgPSBTWU5DRUQsIHN5bmNlZF9hdCA9IG5vdykKZW5kCgo&s=modern-blue
 
- - Recherche des objets avec update_at > sync_at
- - On parse les attributes pour vérifier si update_at > sync_at
- - Création du changeset
- - Si mise à jour dans le target ok: mise à jour de sync_at
- - Sinon: 
+title Reconciliation
+participant App as a
+participant Target as t
+participant Backend as b
+
+a->b: Get all objects to update
+b->a: return search(object.status = AWAITING_SYNC)
+alt Foreach object
+a->a: create a change set
+a->t: Apply changeset
+a->b: Update object (state = SYNCED, synced_at = now)
+end
