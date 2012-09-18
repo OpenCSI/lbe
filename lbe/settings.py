@@ -173,7 +173,11 @@ LOGGING = {
         'request': {
             #'level': 'DEBUG',
             'class': 'services.loggerHandler.logRequest',#'logging.StreamHandler',
-        }
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            },
     },
     'loggers': {
         '': {
