@@ -1,5 +1,5 @@
 # Django settings for lbe project.
-import os
+import os, sys
 from django.contrib import messages
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -13,12 +13,13 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+# Use
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'lbenew',                        # Or path to database file if using sqlite3.
-        'USER': 'lbe',                        # Not used with sqlite3.
-        'PASSWORD': 'lbepassword',            # Not used with sqlite3.
+        'USER': '',                        # Not used with sqlite3.
+        'PASSWORD': '',            # Not used with sqlite3.
         'HOST': '',                           # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                           # Set to empty string for default. Not used with sqlite3.
     }
@@ -26,10 +27,10 @@ DATABASES = {
 
 LDAP_SERVER = {
 	'HOST': 'localhost',
-	'PORT': 1389,
-	'BASE_DN': 'dc=opencsi,dc=com',
-	'BIND_DN': 'cn=Root',
-	'BIND_PWD': 'root' 
+	'PORT': 389,
+	'BASE_DN': 'dc=example,dc=com',
+	'BIND_DN': 'cn=Directory Manager',
+	'BIND_PWD': 'password'
 }
 
 MONGODB_SERVER = {
@@ -174,17 +175,13 @@ LOGGING = {
             'class': 'services.loggerHandler.logRequest',#'logging.StreamHandler',
         }
     },
-    #'loggers': {
-	#	'django.db.backends': {
-     #       'level': 'DEBUG',
-      #      'handlers': ['db'],
-       # },
-        #'django.request': {
-        #    'handlers': ['request'],
-        #    'level': 'DEBUG',
-        #    'propagate': True,
-        #}
-    #}
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+            },
+        }
 }
 
 # Overriding HTML classes used by messages framework to be compliant with Twitter Bootstrap
@@ -195,3 +192,10 @@ MESSAGE_TAGS = {
 	messages.WARNING: 'label label-warning',
 	messages.ERROR: 'label label-important',
 }
+
+# Import local_settings.py, thanks to Graphite
+try:
+    from lbe.local_settings import *
+except ImportError:
+    print >> sys.stderr, "Could not import local_settings.py, please create it"
+    sys.exit(1)
