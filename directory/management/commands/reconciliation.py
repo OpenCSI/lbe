@@ -56,7 +56,6 @@ class Reconciliation():
                         changes['changes']['set'] = {}
                         changes['changes']['type'] = -1
                         changes['synced_at'] = datetime.datetime.now()
-                        # TODO: Not update not implemented
                         self.backend.updateObject(objectTemplate, objectInstance, changes)
                     # TODO: We should have a target exception rather ldap
                     except ldap.ALREADY_EXISTS:
