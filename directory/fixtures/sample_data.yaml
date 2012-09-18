@@ -28,6 +28,11 @@
   fields:
     name: title
     displayName: Gender
+- model: directory.lbeattribute
+  pk: 7
+  fields:
+    name: telephoneNumber
+    displayName: Telephone
 
 - model: directory.LBEAttributeInstance
   pk: 1
@@ -75,6 +80,13 @@
     widget: forms.ChoiceField
     widgetArgs: "(('M', 'Male'), ('F', 'Female'))"
     multivalue: False
+    attributeType: 0
+- model: directory.LBEAttributeInstance
+  pk: 7
+  fields:
+    lbeAttribute: 7
+    lbeObjectTemplate: 1
+    multivalue: True
     attributeType: 0
 
 - model: directory.LBEScript
