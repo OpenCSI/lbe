@@ -34,13 +34,22 @@ Reconciliation:
 
 Diagram sequence (use with http://www.websequencediagrams.com/)
 
-<<<<<<< HEAD
 http://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgUmVjb25jaWxpYXRpb24KcGFydGljaXBhbnQgQXBwIGFzIGEACA1UYXJnZXQgYXMgdAAgDUJhY2tlbmQgYXMgYgoKYS0-YjogR2V0IGFsbCBvYmplY3RzIHRvIHVwZGF0ZQpiLT5hOiByZXR1cm4gc2VhcmNoKAAgBi5zdGF0dXMgPSBBV0FJVElOR19TWU5DKQphbHQgRm9yZWFjaABKBwphAEEFY3JlYXRlIGEgY2hhbmdlIHNlABUFdDogQXBwbHkAEAcADwdiOiBVAH4FAIEOByAoc3RhdGUgPSBTWU5DRUQsIHN5bmNlZF9hdCA9IG5vdykKZW5kCgo&s=modern-blue
 
 title Reconciliation
 participant App as a
 participant Target as t
 participant Backend as b
+
+a->t: Get all new objects
+b->a: return search(object.createTimestamp > objectTemplate.synced_at)
+alt: Foreach object
+alt: If RECONCILIATION_OBJECT_MODE = DELETE
+a->t: Delete object
+else:
+a->b: Create object
+end:
+end:
 
 a->b: Get all objects to update
 b->a: return search(object.status = AWAITING_SYNC)
@@ -49,8 +58,7 @@ a->a: create a change set
 a->t: Apply changeset
 a->b: Update object (state = SYNCED, synced_at = now)
 end
-=======
+
 Global TODO:
  - For the moment, we search all objects to sync by using the status (OBJECT_STATE_AWAITING_SYNC), however we can also use synced_at, which is the better?
  - The backend-import-data task doesn't manage very well object create by LBE in the target, need improvements
->>>>>>> c3457ff23dce7790945cde52968afd1bd1b71bdc

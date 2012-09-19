@@ -4,13 +4,13 @@
 <table class='table'>
     <tr>
         <th>Name</th>
-        <th>Status</th>
+        <th style='text-align: center;'>Status</th>
         <th>Actions</th>
     </tr>
     {% for object in objects %}
     <tr>
         <td> {{ object.displayName }} </td>
-        <td> {{ object.status }} </td>
+        <td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
         <td> N/A </td>
      </tr>
     {% endfor %}
