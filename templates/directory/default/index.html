@@ -5,13 +5,17 @@
     <tr>
         <th>Name</th>
         <th style='text-align: center;'>Status</th>
-        <th>Actions</th>
+        <th style='text-align: center;'>Actions</th>
     </tr>
     {% for object in objects %}
     <tr>
         <td> {{ object.displayName }} </td>
         <td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
-        <td> N/A </td>
+        <td style='text-align: center;'>
+            <a href="{% url 'directory.views.deleteObjectInstance' objectName=object.name %}">
+                <span class='label label-important'>x</span>
+            </a>
+        </td>
      </tr>
     {% endfor %}
 </table>

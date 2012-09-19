@@ -2,10 +2,8 @@
     <span class='label label-success'>Ok</span>
 {% elif object.status == 1 %}
     <span class='label label-info'>Awaiting sync</span>
-{% elif object.status == 1 %}
-    <span class='label label-info'>Awaiting sync</span>
 {% elif object.status == 2 %}
     <span class='label label-info'>Awaiting approval</span>
-{% elif object.status == 2 %}
+{% elif object.status == 4 %}
     <span class='label label-important'>Deleted</span>
 {% endif %}

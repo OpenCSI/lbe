@@ -10,7 +10,8 @@ urlpatterns = patterns('',
 	url(r'^directory/?$', 'directory.views.index'),
 	url(r'^directory/object/add/?$', 'directory.views.addObjectInstance'),
 	url(r'^directory/object/add/(?P<lbeObject_id>\d+)$', 'directory.views.addObjectInstance'),
-	
+    url(r'^directory/object/delete/(?P<objectName>[\w\d ]+)$', 'directory.views.deleteObjectInstance'),
+
 	url(r'^config/?$', 'directory.views.index'),
 	url(r'^config/attribute/add/?$', 'config.views.addAttribute'),
 	url(r'^config/object/add/?$', 'config.views.addObject'),
