@@ -10,7 +10,8 @@ from django.contrib import messages
 def index(request):
     backend = BackendHelper()
     objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
-    return render_to_response('directory/default/index.html', { 'objects': objects }, context_instance=RequestContext(request))
+    lbeObject = LBEObjectTemplate.objects.get(name__iexact="employee")
+    return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
 
 # Create an instance of LBEObjectInstance from LBEObject definition. Save it into MongoDB with status AWAITING_SYNC
 def addObjectInstance(request, lbeObject_id = None):
@@ -36,3 +37,7 @@ def addObjectInstance(request, lbeObject_id = None):
             print 'error'
     form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id))
     return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
+
+#@type_acl()    
+def manageObjectInstance(request, obj_id,type):
+	return render_to_response('directory/default/object/manage.html',{},context_instance=RequestContext(request))
