@@ -9,3 +9,38 @@ function selectFrom(url,attribute)
 		}
 	 });
 }
+
+function update(url,attribute,value)
+{
+	if ($('#'+attribute).val() == null)
+		$.ajax({
+		   type: "GET",
+		   url: url + '/modify/',
+		   data: attribute + '=' + value,
+		   async:false,
+		   success: function(data){
+				$('.'+attribute).html(data);
+				$('#'+attribute).focus();
+			}
+		 });
+}
+
+function save(url,attribute,value)
+{
+	if ($('#'+attribute).val() != null)
+		$.ajax({
+		   type: "GET",
+		   url: url + '/save/',
+		   data: attribute + '=' + value,
+		   async:false,
+		   success: function(data){
+				$('.'+attribute).html(data);
+				//$('#'+attribute).focus();
+			}
+		 });
+}
+
+/*function toText(attribute,value)
+{
+	$('.'+attribute).html(value);
+}*/

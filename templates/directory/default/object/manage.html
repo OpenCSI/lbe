@@ -1,5 +1,17 @@
 {% extends 'index.html' %}
 {% load url from future %}
-{% block content %}
 
+{% block content %}
+<table class="table">
+	<tr><td style="font-weight:bold;">Display Name : </td><td><span class="displayName">{{object.attributes.title.0}}. {{object.attributes.cn.0}}</span></td></tr>
+	<tr><td style="font-weight:bold;">Mail : </td><td><span class="mail" {% if object.changes.set.mail.0 %} style="color:blue" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=object.attributes.cn.0 %}','mail','{{object.changes.set.mail.0}}');"> {{object.changes.set.mail.0}} {% else %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=object.attributes.cn.0 %}','mail','{{object.attributes.mail.0}}');"> {{object.attributes.mail.0}} {% endif %}</span></td></tr>
+	<tr><td></td><td>mail</td></tr>
+	<tr><td style="font-weight:bold;">Surname : </td><td><span class="sn" {% if object.changes.set.sn.0 %} style="color:blue" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=object.attributes.cn.0 %}','sn','{{object.changes.set.sn.0}}');"> {{object.changes.set.sn.0}} {% else %}> {{object.attributes.sn.0}} {% endif %}</span></td></tr>
+	<tr><td style="font-weight:bold;">Givenname : </td><td><span class="givenName" onClick="alert('coucou');" {% if object.changes.set.givenName.0 %} style="color:blue"> {{object.changes.set.givenName.0}} {% else %}> {{object.attributes.givenName.0}} {% endif %}</span></td></tr>
+	<tr><td style="font-weight:bold;">Login : </td><td><span class="uid" onClick="alert('coucou');" {% if object.changes.set.uid.0 %} style="color:blue"> {{object.changes.set.uid.0}} {% else %}> {{object.attributes.uid.0}} {% endif %}</span></td></tr>
+
+	<tr><td colspan="2"><center><a href="{% url 'directory.views.modifyObjectInstance' obj_id=lbeObjectId uid=object.attributes.cn.0 %}" class="btn">Modify</a></center></td></tr>
+</table>
+
+<script type="text/javascript" src="/static/js/common/crud.js"></script>
 {% endblock %}

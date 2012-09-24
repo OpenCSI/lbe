@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
+from django.http import HttpResponse
 from directory.models import *
 from directory.forms import *
 from services.object import LBEObjectInstanceHelper
@@ -40,4 +41,23 @@ def addObjectInstance(request, lbeObject_id = None):
 
 #@manage_acl()    
 def manageObjectInstance(request, obj_id,uid,type):
-	return render_to_response('directory/default/object/manage.html',{},context_instance=RequestContext(request))
+	if request.is_ajax():
+		nb = 0
+		if type == 'modify':
+			html = '<input type="text" name="'+ request.GET.keys()[nb] +'" id="'+request.GET.keys()[nb]+'" value="'+request.GET[request.GET.keys()[nb]]+'" onBlur="save(\'/directory/object/manage/'+obj_id+'/'+uid+'\',\''+request.GET.keys()[nb]+'\',$(\'#'+request.GET.keys()[nb]+'\').val());"/>'
+		elif type == 'save':
+			html = request.GET[request.GET.keys()[nb]]
+			# save value (replace):
+			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
+			helper.updateFromDict(uid,request.GET)
+			helper.modify()
+		# elif type == 'add':
+			# TODO
+		return HttpResponse(html)
+	backend = BackendHelper()
+	objectValue = backend.getObjectByName(LBEObjectTemplate.objects.get(id=obj_id),uniqueName=uid)
+	return render_to_response('directory/default/object/manage.html',{'object':objectValue,'lbeObjectId':obj_id},context_instance=RequestContext(request))
+
+#@manage_acl('modify')
+def modifyObjectInstance(request,obj_id,uid):
+	return HttpResponse('coucou')

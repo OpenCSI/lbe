@@ -3,16 +3,17 @@ import sys, logging
 from services.backend import BackendHelper
 logger = logging.getLogger(__name__)
 from django.contrib import messages
-from directory.models import LBEObjectInstance, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
+from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
 from services.backend import BackendObjectAlreadyExist
 
 class LBEObjectInstanceHelper():
     def __init__(self, lbeObjectTemplate):
         self.template = lbeObjectTemplate
+        self.ID = None
         self.instance = None
         self.scriptInstance = None
         self.backend = None
-
+		
     def _backend(self):
         if self.backend is not None:
             return
@@ -55,6 +56,10 @@ class LBEObjectInstanceHelper():
     def update(self):
         self._backend()
         self.backend.createObject(self.template, self.instance)
+        
+    def modify(self):
+		self._backend()
+		self.backend.modifyObject(self.template,self.ID,self.instance)
 
     def callScriptMethod(self, methodName):
         self._create_script_instance()
@@ -105,3 +110,9 @@ class LBEObjectInstanceHelper():
             # TODO: Remove technical message, use another handler to send message to administrator
             messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')
         print self.instance.attributes
+
+	# IMPROVE:
+    def updateFromDict(self,ID,values):
+        #attribute = LBEAttributeInstance.objects.get(lbeObjectTemplate = self.template,lbeAttribute=LBEAttribute.objects.get(name__iexact=values.keys()[0]))
+        self.instance = values
+        self.ID = ID

@@ -63,6 +63,9 @@ class BackendMongoImpl:
     def createObject(self, lbeObjectTemplate, lbeObjectInstance):
         return self.handler.createDocument(lbeObjectTemplate.name, LBEObjectInstanceToDict(lbeObjectInstance) )
     
+    def modifyObject(self, lbeObjectTemplate, ID, values):
+        return self.handler.modifyDocument(lbeObjectTemplate.name,ID,values)
+        
     # TODO: Implement per page search
     def searchObjects(self, lbeObjectTemplate, index = 0, size = 0):
         return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': { '$gt': OBJECT_STATE_INVALID } }))

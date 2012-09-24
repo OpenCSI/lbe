@@ -23,7 +23,14 @@ class MongoService:
             return id
         except BaseException as e:
             logger.error('Error while creating document: ' + e.__str__())
-
+	
+    def modifyDocument(self, collection, ID, values):
+        db = self.db[collection]
+        try:
+            return db.update({'_id':ID},{'$set':{'changes':{'set':{values.keys()[0]:[ values[values.keys()[0]] ]}}}})
+        except BaseException as e:
+            logger.error('Error while modifying document: ' + e.__str__())
+		
 # Pensee
 # Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script
 
