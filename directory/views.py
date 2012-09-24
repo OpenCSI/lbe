@@ -38,6 +38,6 @@ def addObjectInstance(request, lbeObject_id = None):
     form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id))
     return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
 
-#@type_acl()    
-def manageObjectInstance(request, obj_id,type):
+#@manage_acl()    
+def manageObjectInstance(request, obj_id,uid,type):
 	return render_to_response('directory/default/object/manage.html',{},context_instance=RequestContext(request))
