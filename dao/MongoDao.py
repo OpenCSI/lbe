@@ -27,7 +27,17 @@ class MongoService:
     def modifyDocument(self, collection, ID, values):
         db = self.db[collection]
         try:
-            return db.update({'_id':ID},{'$set':{'changes':{'set':{values.keys()[0]:[ values[values.keys()[0]] ]}}}})
+			# Get ID values:
+            changeSet = self.searchDocuments(collection,{'_id':ID})[0]['changes']['set']
+            # change the set dict with new values:
+            newValues = {} # new dict because 'values' is QueryDict.
+            for kset in changeSet:
+				if not values.has_key(kset):
+					newValues[kset] = [ changeSet[kset] ] # get other values
+				else:
+					newValues[kset] = [ values[kset] ] # new values
+            # updage Mongo:
+            return db.update({'_id':ID},{'$set':{'changes':{'set':newValues}}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
 		
