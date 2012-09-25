@@ -31,11 +31,16 @@ class MongoService:
             changeSet = self.searchDocuments(collection,{'_id':ID})[0]['changes']['set']
             # change the set dict with new values:
             newValues = {} # new dict because 'values' is QueryDict.
+            # replace values:
             for kset in changeSet:
 				if not values.has_key(kset):
-					newValues[kset] = [ changeSet[kset] ] # get other values
+					newValues[kset] = changeSet[kset] # get other values
 				else:
 					newValues[kset] = [ values[kset] ] # new values
+			# add new (key) value:
+            for kval in values:
+                if not newValues.has_key(kval):
+                    newValues[kval] = [ values[kval] ]
             # updage Mongo:
             return db.update({'_id':ID},{'$set':{'changes':{'set':newValues}}})
         except BaseException as e:
