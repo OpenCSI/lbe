@@ -41,6 +41,7 @@ def addObjectInstance(request, lbeObject_id = None):
 
 #@manage_acl()    
 def manageObjectInstance(request, obj_id,uid,type):
+	# BEGIN AJAX PART:
 	if request.is_ajax():
 		nb = 0
 		if type == 'modify':
@@ -54,9 +55,12 @@ def manageObjectInstance(request, obj_id,uid,type):
 		# elif type == 'add':
 			# TODO
 		return HttpResponse(html)
+		# END AJAX PART.
 	backend = BackendHelper()
-	objectValue = backend.getObjectByName(LBEObjectTemplate.objects.get(id=obj_id),uniqueName=uid)
-	return render_to_response('directory/default/object/manage.html',{'object':objectValue,'lbeObjectId':obj_id},context_instance=RequestContext(request))
+	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
+	objectValue = backend.getObjectByName(lbeObject,uniqueName=uid)
+	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
+	return render_to_response('directory/default/object/manage.html',{'object':objectValue,'lbeObjectId':lbeObject.id,'lbeAttribute':lbeAttribute,'uid':uid},context_instance=RequestContext(request))
 
 #@manage_acl('modify')
 def modifyObjectInstance(request,obj_id,uid):
