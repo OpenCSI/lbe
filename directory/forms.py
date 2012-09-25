@@ -63,14 +63,19 @@ class LBEAttributeForm(ModelForm):
         model = LBEAttribute
         
 class LBEAttributeSingle(forms.Form):
-	def __init__(self,lbeAttribute, *args, **kwargs):
+	def __init__(self,lbeAttribute,defaultValue,event, js, *args, **kwargs):
 		super(forms.Form, self).__init__(*args, **kwargs)
 		# Display only finals attributes
 		if lbeAttribute.attributeType == ATTRIBUTE_TYPE_FINAL:
 			# TODO: Find a better way than exec
-			exec 'self.fields[lbeAttribute.lbeAttribute.name] = ' + lbeAttribute.widget + '(' + lbeAttribute.widgetArgs + ')'
+			exec 'self.fields[lbeAttribute.lbeAttribute.name] = ' + lbeAttribute.widget + '(' + lbeAttribute.widgetArgs +')'
+			# default Value:
+			self.fields[lbeAttribute.lbeAttribute.name].initial= defaultValue
+			# add special attribute tag for js: [AJAX]
+			self.fields[lbeAttribute.lbeAttribute.name].widget.attrs[event]= js
 			try:
 				self.fields[lbeAttribute.lbeAttribute.name].label = lbeAttribute.lbeAttribute.displayName
 				self.fields[lbeAttribute.lbeAttribute.name].required = bool(lbeAttribute.mandatory)
 			except BaseException, e:
 				pass
+
