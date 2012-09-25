@@ -12,7 +12,7 @@ function selectFrom(url,attribute)
 
 function update(url,attribute,value)
 {
-	if ($('#'+attribute).val() == null)
+	if ($('#id_'+attribute).val() == null)
 		$.ajax({
 		   type: "GET",
 		   url: url + '/modify/',
@@ -20,14 +20,14 @@ function update(url,attribute,value)
 		   async:false,
 		   success: function(data){
 				$('.'+attribute).html(data);
-				$('#'+attribute).focus();
+				$('#id_'+attribute).focus();
 			}
 		 });
 }
 
 function save(url,attribute,value)
 {
-	if ($('#'+attribute).val() != null)
+	if ($('#id_'+attribute).val() != null)
 		$.ajax({
 		   type: "GET",
 		   url: url + '/save/',

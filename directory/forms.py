@@ -61,3 +61,16 @@ class LBEObjectInstanceAttributeForm(forms.Form):
 class LBEAttributeForm(ModelForm):
     class Meta:
         model = LBEAttribute
+        
+class LBEAttributeSingle(forms.Form):
+	def __init__(self,lbeAttribute, *args, **kwargs):
+		super(forms.Form, self).__init__(*args, **kwargs)
+		# Display only finals attributes
+		if lbeAttribute.attributeType == ATTRIBUTE_TYPE_FINAL:
+			# TODO: Find a better way than exec
+			exec 'self.fields[lbeAttribute.lbeAttribute.name] = ' + lbeAttribute.widget + '(' + lbeAttribute.widgetArgs + ')'
+			try:
+				self.fields[lbeAttribute.lbeAttribute.name].label = lbeAttribute.lbeAttribute.displayName
+				self.fields[lbeAttribute.lbeAttribute.name].required = bool(lbeAttribute.mandatory)
+			except BaseException, e:
+				pass
