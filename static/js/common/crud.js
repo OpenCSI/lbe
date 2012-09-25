@@ -34,13 +34,17 @@ function save(url,attribute,value)
 		   data: attribute + '=' + value,
 		   async:false,
 		   success: function(data){
-				$('.'+attribute).html(data);
-				//$('#'+attribute).focus();
+				toText(attribute,data);
 			}
 		 });
 }
 
-/*function toText(attribute,value)
+function toText(attribute,value)
 {
 	$('.'+attribute).html(value);
-}*/
+	// Replace value into function from onClick event:
+	var tab = $('.'+attribute).attr("onClick").split(',');
+	tab[2] = "'"+ value + "');";
+	$('.'+attribute).attr("onClick",tab[0]+','+tab[1]+','+tab[2])
+
+}
