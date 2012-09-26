@@ -3,14 +3,48 @@
 
 {% block content %}
 <table class="table">
+	<tr><th></th><th>Values</th><th>To Set</th></tr>
+	{% for key, value in object.attributes.items %}
+		{% for attribute in lbeAttribute %}
+			{% if attribute.lbeAttribute.name == key %}
+				<tr><th>{{ attribute.lbeAttribute.displayName.title }}</th>
+				{% for val in value %}
+					{% if not forloop.first %}
+						<tr><td></td>
+					{% endif %}
+					{# Attributes: #}
+					<td><i>{% if val == '' %}No Value{% else %}{{ val }}{% endif %}</i>
+					</td>
+					{# Have change.set value? #}
+					{% for keySet,valSet in object.changes.set.items %}
+						{% if keySet == key %}
+							<td><span class="{{key}}"
+							{% for valS in valSet %}
+								{% if attribute.attributeType == 0 %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}');" {% endif %}>
+								{% if valS == '' %}<i>No Value</i>{% else %}{{ valS }}{% endif %}</span>
+								{% if attribute.attributeType == 0 %}<a href="#" class="icon-pencil" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}');"></a>{% endif %}
+							{% endfor %}
+							</td>
+						{% endif %}
+					{% endfor %}
+					</tr>
+				{% endfor %}
+				</tr>
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+	
+	{% comment %}
 	<tr><td style="font-weight:bold;">Display Name : </td><td><span class="displayName">{{object.attributes.title.0}}. {{object.attributes.cn.0}}</span></td></tr>
+	{# TODO: loop for multivalue #}
 	<tr><td style="font-weight:bold;">Mail : </td><td><span class="mail" {% if object.changes.set.mail.0 %} style="color:blue" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','mail','{{object.changes.set.mail.0}}');"> {{object.changes.set.mail.0}} {% else %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','mail','{{object.attributes.mail.0}}');"> {{object.attributes.mail.0}} {% endif %}</span><span class="delete_mail"><a href="#" class="icon-trash" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','mail','');"></a></span></td></tr>
 	<tr><td style="font-weight:bold;">Surname : </td><td><span class="sn" {% if object.changes.set.sn.0 %} style="color:blue" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','sn','{{object.changes.set.sn.0}}');"> {{object.changes.set.sn.0}} {% else %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','sn','{{object.attributes.sn.0}}');"> {{object.attributes.sn.0}}{% endif %}</span><span class="delete_sn"><a href="#" class="icon-trash" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','sn','');"></a></span></td></tr>
 	<tr><td style="font-weight:bold;">Givenname : </td><td><span class="givenName"  {% if object.changes.set.givenName.0 %} onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','givenName','{{object.attributes.givenName.0}}');" style="color:blue"> {{object.changes.set.givenName.0}} {% else %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','givenName','{{object.attributes.givenName.0}}');"> {{object.attributes.givenName.0}} {% endif %}</span><span class="delete_givenName"><a href="#" class="icon-trash" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','givenName','');"></a></span></td></tr>
 	<tr><td style="font-weight:bold;">Login : </td><td><span class="uid" {% if object.changes.set.uid.0 %} onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','uid','{{object.changes.set.uid.0}}');" style="color:blue"> {{object.changes.set.uid.0}} {% else %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','uid','{{object.attributes.uid.0}}');"> {{object.attributes.uid.0}} {% endif %}</span><span class="delete_uid"><a href="#" class="icon-trash" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','uid','');"></a></span></td></tr>
 	<tr><td style="font-weight:bold;">Gender : </td><td><span class="title" {% if object.changes.set.title.0 %} onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','title','{{object.changes.set.title.0}}');" style="color:blue"> {{object.changes.set.title.0}} {% else %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','title','{{object.attributes.title.0}}');"> {{object.attributes.title.0}} {% endif %}</span><span class="delete_title"><a href="#" class="icon-trash" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','title','');"></a></span></td></tr>
-
+	
 	<!--<tr><td colspan="2"><center><a href="{% url 'directory.views.modifyObjectInstance' obj_id=lbeObjectId uid=uid %}" class="btn">Modify</a></center></td></tr>-->
+	{% endcomment %}
 </table>
 
 <script type="text/javascript" src="/static/js/common/crud.js"></script>
