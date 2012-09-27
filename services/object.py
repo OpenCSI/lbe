@@ -146,7 +146,7 @@ class LBEObjectInstanceHelper():
                                 tabValue.append(value)
                             cur += 1
                         if not added:# new value
-							tabValue.append(value)
+							tabValue.append(val)
                         qDict[keyB] = tabValue
                     else:
 					    qDict[keyB] = [val]
