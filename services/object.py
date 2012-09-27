@@ -3,6 +3,7 @@ import sys, logging
 from services.backend import BackendHelper
 logger = logging.getLogger(__name__)
 from django.contrib import messages
+from django.http import QueryDict
 from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
 from services.backend import BackendObjectAlreadyExist
 
@@ -113,6 +114,37 @@ class LBEObjectInstanceHelper():
 
 	# IMPROVE:
     def updateFromDict(self,ID,values):
-        #attribute = LBEAttributeInstance.objects.get(lbeObjectTemplate = self.template,lbeAttribute=LBEAttribute.objects.get(name__iexact=values.keys()[0]))
-        self.instance = values
+		# TODO:
+		# replace all attribute key (without the number) [dict(key:{ value, position })] (ex: dict(cn:{Cédric,0}) )
+		# check for multivalues attributes.
+		# if multivalues:
+		# 	 get values and replace the new one.
+		# else:
+		#	 replace value.
+		# get backend values for changes.set:
+        self._backend()
+        backendValues = self.backend.getObjectByName(self.template,ID)
+		# Get values; attr; pos:
+        qDict = QueryDict('')
+        qDict = qDict.copy()# make it mutable
+        for keyB,valB in backendValues['changes']['set'].items():
+            #dic = {}
+            for key,val in values.items():
+                if keyB == key.split('_')[0]:
+                    # is multivalues?:
+                    attribute = LBEAttributeInstance.objects.get(lbeObjectTemplate = self.template,lbeAttribute=LBEAttribute.objects.get(name__iexact=keyB))
+                    if attribute.multivalue:
+                        pos = int(key.split('_')[1])
+                        cur = 0
+                        tabValue = list()
+                        for value in valB:
+                            if pos == cur:
+							    tabValue.append(val)
+                            else:
+                                tabValue.append(value)
+                            cur += 1
+                        qDict[keyB] = tabValue
+                    else:
+					    qDict[keyB] = [val]
+        self.instance = qDict
         self.ID = ID

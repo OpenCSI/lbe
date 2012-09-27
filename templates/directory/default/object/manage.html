@@ -6,7 +6,7 @@
 	<tr><th></th><th>Values</th><th>To Set</th></tr>
 	{% for key, value in object.attributes.items %}
 		{% for attribute in lbeAttribute %}
-			{% if attribute.lbeAttribute.name == key %}
+			{% if attribute.lbeAttribute.name == key %}<script>var v=0;</script>
 				<tr><th>{{ attribute.lbeAttribute.displayName.title }}</th>
 				{% for val in value %}
 					{% if not forloop.first %}
@@ -18,13 +18,18 @@
 					{# Have change.set value? #}
 					{% for keySet,valSet in object.changes.set.items %}
 						{% if keySet == key %}
-							<td><span class="{{key}}"
+							<td>
 							{% for valS in valSet %}
-								{% if attribute.attributeType == 0 %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}');" {% endif %}>
-								{% if valS == '' %}<i>No Value</i>{% else %}{{ valS }}{% endif %}</span>
-								{% if attribute.attributeType == 0 %}<a href="#" class="icon-pencil" onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}');"></a>{% endif %}
-							{% endfor %}
-							</td>
+							{% if attribute.attributeType == 0 %}
+							<span id="{{key}}" {% if attribute.attributeType == 0 %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}',$(this).find('.value').text());"{% endif %}>
+								<span class="value" style="display: none"><script>document.write(v);</script></span> {% endif %}
+								{% if valS == '' %}<i>No Value</i>{% else %}{{ valS }}{% endif %}
+								<script>
+									$("#{{key}}").toggleClass("{{key}}_"+v);
+									$("#{{key}}").removeAttr("id");</script>
+								</span>
+								{% if attribute.attributeType == 0 %}<i class="icon-pencil"></i>{% endif %}
+							{% endfor %}</td><script>v++;</script>
 						{% endif %}
 					{% endfor %}
 					</tr>

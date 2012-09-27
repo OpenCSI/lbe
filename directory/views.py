@@ -50,17 +50,17 @@ def manageObjectInstance(request, obj_id,uid,type):
 		nb = 0
 		if type == 'modify':
 			# get dynamic single input type from forms:
-			attribute = LBEAttribute.objects.get(name__iexact=request.GET.keys()[nb])
+			attr = request.GET.keys()[nb].split('_')[0]# attribute name without the number.
+			attribute = LBEAttribute.objects.get(name__iexact=attr)
 			attributeInstance = LBEAttributeInstance.objects.get(lbeObjectTemplate=lbeObject,lbeAttribute=attribute)
 			# Form:
-			js = "save(\'/directory/object/manage/"+obj_id+"/"+uid+"','"+request.GET.keys()[nb]+"',$(\'#id_"+request.GET.keys()[nb]+"').val());"
+			js = "save(\'/directory/object/manage/"+obj_id+"/"+uid+"','"+attr+"',$(\'#id_"+attr+"').val(),'"+request.GET.keys()[nb].split('_')[1]+"');"
 			f = LBEAttributeSingle(lbeAttribute=attributeInstance,defaultValue=request.GET[request.GET.keys()[nb]],event='onBlur',js=js)
 			# no value: not modified
 			if not f.visible_fields() == []:
-				html = str(f.visible_fields()[0])#[:-2] + ' onBlur="save(\'/directory/object/manage/'+obj_id+'/'+uid+'\',\''+request.GET.keys()[nb]+'\',$(\'#id_'+request.GET.keys()[nb]+'\').val());">'
+				html = str(f.visible_fields()[0])
 			else:
 				html = request.GET[request.GET.keys()[nb]]
-			#html = '<input type="text" name="'+ request.GET.keys()[nb] +'" id="'+request.GET.keys()[nb]+'" value="'+request.GET[request.GET.keys()[nb]]+'" onBlur="save(\'/directory/object/manage/'+obj_id+'/'+uid+'\',\''+request.GET.keys()[nb]+'\',$(\'#'+request.GET.keys()[nb]+'\').val());"/>'
 		elif type == 'save':
 			# TODO: check here value's format
 			html = request.GET[request.GET.keys()[nb]]
