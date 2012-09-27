@@ -118,7 +118,7 @@ class LBEObjectInstanceHelper():
 		# replace all attribute key (without the number) [dict(key:{ value, position })] (ex: dict(cn:{Cédric,0}) )
 		# check for multivalues attributes.
 		# if multivalues:
-		# 	 get values and replace the new one.
+		# 	 get values and replace the new one. (or add it)
 		# else:
 		#	 replace value.
 		# get backend values for changes.set:
@@ -137,12 +137,16 @@ class LBEObjectInstanceHelper():
                         pos = int(key.split('_')[1])
                         cur = 0
                         tabValue = list()
+                        added = False
                         for value in valB:
                             if pos == cur:
 							    tabValue.append(val)
+							    added = True
                             else:
                                 tabValue.append(value)
                             cur += 1
+                        if not added:# new value
+							tabValue.append(value)
                         qDict[keyB] = tabValue
                     else:
 					    qDict[keyB] = [val]
