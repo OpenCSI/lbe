@@ -2,8 +2,9 @@
 {% load url from future %}
 
 {% block content %}
+<div class="message"></div>
 <table class="table">
-	<tr><th></th><th>Values</th><th>To Set</th></tr>
+	<tr><th></th><th>Values</th><th>To Set</th><th></th></tr>
 	{% for key, value in object.attributes.items %}
 		{% for attribute in lbeAttribute %}
 			{% if attribute.lbeAttribute.name == key %}<script>var v=0;</script>
@@ -20,25 +21,30 @@
 						{% if keySet == key %}
 							<td>
 							{% for valS in valSet %}
-							{% if attribute.attributeType == 0 %}
-							<span id="{{key}}" {% if attribute.attributeType == 0 %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}',$(this).find('.value').text());"{% endif %}>
-								<span class="value" style="display: none"><script>document.write(v);</script></span> {% endif %}
-								{% if valS == '' %}<i>No Value</i>{% else %}{{ valS }}{% endif %}
-								<script>
-									$("#{{key}}").toggleClass("{{key}}_"+v);
-									$("#{{key}}").removeAttr("id");</script>
-								</span>
+								{% if attribute.attributeType == 0 %}
+								<span id="{{key}}" {% if attribute.attributeType == 0 %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}',$(this).find('.value').text());"{% endif %}>
+									<span class="value" style="display: none"><script>document.write(v);</script></span> {% endif %}
+									{% if valS == '' %}<i>No Value</i>{% else %}{{ valS }}{% endif %}
+									<script>
+										$("#{{key}}").toggleClass("{{key}}_"+v);
+										$("#{{key}}").removeAttr("id");</script>
+								</span><script>v++;</script>
 								{% if attribute.attributeType == 0 %}<i class="icon-pencil"></i>{% endif %}
-							{% endfor %}</td><script>v++;</script>
+							{% endfor %}
+							</td>
 						{% endif %}
 					{% endfor %}
+					{# Add value [Multivalue] #}
+					{% if forloop.first and attribute.multivalue %}
+						<td><a href="#" onClick="showModalBox('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}/add/','{{key}}');">+</a></td>
+					{% endif %}
 					</tr>
 				{% endfor %}
 				</tr>
 			{% endif %}
 		{% endfor %}
 	{% endfor %}
-	
+	<div class="addAttribute"></div>
 	{% comment %}
 	<tr><td style="font-weight:bold;">Display Name : </td><td><span class="displayName">{{object.attributes.title.0}}. {{object.attributes.cn.0}}</span></td></tr>
 	{# TODO: loop for multivalue #}
@@ -53,4 +59,5 @@
 </table>
 
 <script type="text/javascript" src="/static/js/common/crud.js"></script>
+<script type="text/javascript" src="/static/js/common/showModalBox.js"></script>
 {% endblock %}

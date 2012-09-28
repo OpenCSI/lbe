@@ -114,14 +114,6 @@ class LBEObjectInstanceHelper():
 
 	# IMPROVE:
     def updateFromDict(self,ID,values):
-		# TODO:
-		# replace all attribute key (without the number) [dict(key:{ value, position })] (ex: dict(cn:{Cédric,0}) )
-		# check for multivalues attributes.
-		# if multivalues:
-		# 	 get values and replace the new one. (or add it)
-		# else:
-		#	 replace value.
-		# get backend values for changes.set:
         self._backend()
         backendValues = self.backend.getObjectByName(self.template,ID)
 		# Get values; attr; pos:
