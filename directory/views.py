@@ -98,6 +98,7 @@ def manageObjectInstance(request, obj_id,uid,type):
 				except BaseException as e:
 					print 'Error to add value: ' + str(e)
 					html = '(!) Value not added'
+				html += '<script type="text/javascript">location.reload();</script>'
 		return HttpResponse(html)
 		# END AJAX PART.
 	backend = BackendHelper()
