@@ -12,10 +12,7 @@ function selectFrom(url,attribute)
 
 function update(url,attribute,value,num)
 {
-	if (num)
-		id = '_' + num.split(';')[1];
-	else
-		id = '';
+	id = '_' + num;
 	attr = attribute + id; 
 	if ($('#id_'+attribute).val() == null)
 		$.ajax({
@@ -32,10 +29,7 @@ function update(url,attribute,value,num)
 
 function save(url,attribute,value,num)
 {
-	if (num)
-		id = '_' + num;
-	else
-		id = '';
+	id = '_' + num;
 	attr = attribute + id;
 	if ($('#id_'+attribute).val() != null)
 		$.ajax({
@@ -49,12 +43,24 @@ function save(url,attribute,value,num)
 		 });
 }
 
+function remove(url,attribute,num)
+{
+	id = '_' + num;
+	attr = attribute + id;
+	$.ajax({
+	   type: "GET",
+	   url: url + '/save/',
+	   data: attr + '=',
+	   async:false,
+	   success: function(data){
+			toText(attribute,data,num);
+		}
+	 });
+}
+
 function toText(attribute,value,num)
 {
-	if (num)
-		id = '_' + num;
-	else
-		id = '';
+	id = '_' + num;
 	if (value == '')
 		val = '<i>No Value</i>'
 	else
@@ -62,7 +68,7 @@ function toText(attribute,value,num)
 	$('.'+attribute+id).html(val);
 	// Replace value into function from onClick event:
 	var tab = $('.'+attribute+id).attr("onClick").split(',');
-	tab[2] = "'"+ value + "',';"+num+"');";
+	tab[2] = "'"+ value + "','"+num+"');";
 	$('.'+attribute+id).attr("onClick",tab[0]+','+tab[1]+','+tab[2])
 }
 

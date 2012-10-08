@@ -20,17 +20,21 @@
 					{% for keySet,valSet in object.changes.set.items %}
 						{% if keySet == key %}
 							<td>
+							<table class="{{key}}">
 							{% for valS in valSet %}
 								{% if attribute.attributeType == 0 %}
-								<span id="{{key}}" {% if attribute.attributeType == 0 %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}',$(this).find('.value').text());"{% endif %}>
-									<span class="value" style="display: none"><script>document.write(v);</script></span> {% endif %}
+								<tr><td>
+								<span id="{{key}}" {% if attribute.attributeType == 0 %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}','{{valS}}',$(this).closest('tr').index());"{% endif %}>
+								{% endif %}
 									{% if valS == '' %}<i>No Value</i>{% else %}{{ valS }}{% endif %}
 									<script>
 										$("#{{key}}").toggleClass("{{key}}_"+v);
 										$("#{{key}}").removeAttr("id");</script>
 								</span><script>v++;</script>
-								{% if attribute.attributeType == 0 %}<i class="icon-pencil"></i>{% endif %}
+								{% if attribute.attributeType == 0 %}<i class="icon-pencil"></i></td><td><a href="#" onClick="remove('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{key}}',$(this).closest('tr').index());return false;"><i class='icon-trash'></i></a>{% endif %}</td>
+							</tr>
 							{% endfor %}
+							</table>
 							</td>
 						{% endif %}
 					{% endfor %}
