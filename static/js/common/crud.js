@@ -59,10 +59,10 @@ function toText(attribute,value,num)
 		val = '<i>No Value</i>'
 	else
 		val = value
-		$('.'+attribute+id).html(val);
+	$('.'+attribute+id).html(val);
 	// Replace value into function from onClick event:
 	var tab = $('.'+attribute+id).attr("onClick").split(',');
-	tab[2] = "'"+ value + "');";
+	tab[2] = "'"+ value + "',';"+num+"');";
 	$('.'+attribute+id).attr("onClick",tab[0]+','+tab[1]+','+tab[2])
 }
 
