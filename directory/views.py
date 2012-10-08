@@ -76,15 +76,20 @@ def manageObjectInstance(request, obj_id,uid,type):
 				if request.GET[request.GET.keys()[0]] == '':# empty value:
 					html = -1
 				else:# check if value is correct:
-					html = 0 # error code: 0: no error; -1: error (empty); -2: wrong checking 
+					html = 0 # 0: no error; -1: error (empty); -2: wrong checking 
 		elif type == 'add':
 			# ModalBox:
 			if request.method == 'GET' and request.GET.has_key('attribute'):
 				attribute = LBEAttribute.objects.get(name__iexact=request.GET['attribute'])
 				# input (widget):
 				attributeInstance = LBEAttributeInstance.objects.get(lbeObjectTemplate=lbeObject,lbeAttribute=attribute)
+				exec 'print ' + str(attributeInstance.widget)
+				if attributeInstance.widget == 'forms.CharField':
+					event='onKeyUp'
+				else:
+					event='onChange'
 				js = "check(\'/directory/object/manage/"+obj_id+"/"+uid+"/check\','"+attribute.name+"',$(\'#id_"+attribute.name+"').val());"
-				widget = LBEAttributeSingle(lbeAttribute=attributeInstance,defaultValue="",event='onKeyUp',js=js)
+				widget = LBEAttributeSingle(lbeAttribute=attributeInstance,defaultValue="",event=event,js=js)
 				return render_to_response('ajax/directory/addAttribute.html',{'user':uid,'attribute':attribute,'widget':widget,'uid':uid,'lbeObjectId':obj_id})
 			# Save part:
 			else:
@@ -95,10 +100,10 @@ def manageObjectInstance(request, obj_id,uid,type):
 					helper.updateFromDict(uid,request.GET)
 					helper.modify()
 					html = 'Value added.'
+					html += '<script type="text/javascript">location.reload();</script>'
 				except BaseException as e:
 					print 'Error to add value: ' + str(e)
 					html = '(!) Value not added'
-				html += '<script type="text/javascript">location.reload();</script>'
 		return HttpResponse(html)
 		# END AJAX PART.
 	backend = BackendHelper()
@@ -107,4 +112,4 @@ def manageObjectInstance(request, obj_id,uid,type):
 
 #@manage_acl('modify')
 def modifyObjectInstance(request,obj_id,uid):
-	return HttpResponse('coucou')
+	return HttpResponse('')

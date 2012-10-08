@@ -92,7 +92,7 @@ function check(url,attribute,value)
 	   type: "GET",
 	   url: url,
 	   data: attribute + '=' + value,
-	   async:false,
+	   async:true,
 	   success: function(data){
 			if (data == 0)
 			{

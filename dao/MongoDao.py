@@ -37,7 +37,6 @@ class MongoService:
 				if not values.has_key(kset):
 					newValues[kset] = changeSet[kset] # get other values
 				else:
-					print values[kset]
 					newValues[kset] = values[kset] # new values
 			# add new (key) value:
             for kval in values:
