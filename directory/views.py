@@ -61,13 +61,6 @@ def manageObjectInstance(request, obj_id,uid,type):
 				html = str(f.visible_fields()[0])
 			else:
 				html = request.GET[request.GET.keys()[nb]]
-		elif type == 'save':
-			# TODO: check here value's format
-			html = request.GET[request.GET.keys()[nb]]
-			# save value (replace):
-			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
-			helper.updateFromDict(uid,request.GET)
-			helper.modify()
 		elif type == 'check':
 			# TODO:
 			if request.method != 'GET':# no value:
@@ -77,6 +70,18 @@ def manageObjectInstance(request, obj_id,uid,type):
 					html = -1
 				else:# check if value is correct:
 					html = 0 # 0: no error; -1: error (empty); -2: wrong checking 
+		elif type == 'save':
+			# TODO: check here value's format
+			html = request.GET[request.GET.keys()[nb]]
+			# save value (replace):
+			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
+			helper.updateFromDict(uid,request.GET)
+			helper.modify()
+		elif type == 'delete':
+			# test if value exists from attribute value:
+			# if not: remove the attribute value
+			# else set empty string value
+			html = 'delete'
 		elif type == 'add':
 			# ModalBox:
 			if request.method == 'GET' and request.GET.has_key('attribute'):

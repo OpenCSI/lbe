@@ -31,7 +31,7 @@ function save(url,attribute,value,num)
 {
 	id = '_' + num;
 	attr = attribute + id;
-	if ($('#id_'+attribute).val() != null)
+	if (($('#id_'+attribute).val() != null)&&(value != ''))
 		$.ajax({
 		   type: "GET",
 		   url: url + '/save/',
@@ -41,6 +41,8 @@ function save(url,attribute,value,num)
 				toText(attribute,data,num);
 			}
 		 });
+	else if (value == '')
+		toText(attribute,$('.hidden_'+attr).val(),num);
 }
 
 function remove(url,attribute,num)
@@ -49,11 +51,11 @@ function remove(url,attribute,num)
 	attr = attribute + id;
 	$.ajax({
 	   type: "GET",
-	   url: url + '/save/',
-	   data: attr + '=',
+	   url: url + '/delete/',
+	   data: attr,
 	   async:false,
 	   success: function(data){
-			toText(attribute,data,num);
+			$('.tr_'+attr).remove();
 		}
 	 });
 }
@@ -62,7 +64,7 @@ function toText(attribute,value,num)
 {
 	id = '_' + num;
 	if (value == '')
-		val = '<i>No Value</i>'
+		val = '<i>Removed</i>'
 	else
 		val = value
 	$('.'+attribute+id).html(val);
