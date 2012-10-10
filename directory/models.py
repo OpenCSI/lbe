@@ -105,8 +105,15 @@ class LBEObjectInstance:
             setattr(self, key, value)
 
     # TODO: implement
-    def is_valid(self):
-        pass
+    def is_valid(self,request):
+		# import the class from module:
+        mod = __import__('custom.'+self.template.name,fromlist=[self.template.name.title() + 'PostConfig'])
+        # get the class type:
+        cl = getattr(mod,self.template.name.title() + 'PostConfig')
+        # instance the class:
+        instance = cl(self.template)
+        # execute the is_valid() method:
+        return instance.is_valid(request)
     
     def search(self, filter):
         pass

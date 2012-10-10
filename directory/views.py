@@ -71,6 +71,11 @@ def manageObjectInstance(request, obj_id,uid,type):
 				else:# check if value is correct:
 					html = 0 # 0: no error; -1: error (empty); -2: wrong checking 
 		elif type == 'save':
+			lbeObjectInstance = LBEObjectInstance(lbeObject)
+			if lbeObjectInstance.is_valid(request.GET):
+				print 'Ok'
+			else:
+				print 'error'
 			# TODO: check here value's format
 			html = request.GET[request.GET.keys()[nb]]
 			# save value (replace):
@@ -94,7 +99,6 @@ def manageObjectInstance(request, obj_id,uid,type):
 				attribute = LBEAttribute.objects.get(name__iexact=request.GET['attribute'])
 				# input (widget):
 				attributeInstance = LBEAttributeInstance.objects.get(lbeObjectTemplate=lbeObject,lbeAttribute=attribute)
-				exec 'print ' + str(attributeInstance.widget)
 				if attributeInstance.widget == 'forms.CharField':
 					event='onKeyUp'
 				else:

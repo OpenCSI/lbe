@@ -53,7 +53,7 @@
 		{# Add value [Multivalue] #}
 		<td>
 		{% if attribute.multivalue %}
-			<a href="#" onClick="showModalBox('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}/add/','{{attribute.lbeAttribute.name}}');">+</a>
+			<a href="#" onClick="showModalBox('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}/add/','{{attribute.lbeAttribute.name}}');"><button class="btn">+</button></a>
 		{% endif %}
 		</td>
 		</tr>

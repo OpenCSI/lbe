@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from directory.models import LBEObjectTemplate, LBEObjectInstance
+import re
 
 #
 # This file is an example of script called after object creation
@@ -31,6 +32,12 @@ class EmployeePostConfig:
     
     # TODO: Think about implements is_valid method here to be called by LBEObjectInstanceForm if possible    
     # def is_valid():
+    def is_valid(self,request):
+		valid = True
+		for key,val in request.items():
+			if re.match('givenName',key):
+				print 'TODO'
+		return valid
     
     # Validators methods are used to alter, verify, compute the values of an attribute
     # IMPORTANT: Remembers all attributes are store in a list, even mono valued. Therefore, you must return a list
