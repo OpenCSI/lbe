@@ -55,7 +55,10 @@ function remove(url,attribute,num)
 	   data: attr,
 	   async:false,
 	   success: function(data){
-			$('.tr_'+attr).remove();
+		   if (data == 'delete')
+				$('.tr_'+attr).remove();
+			else if (data == 'empty')
+				toText(attribute,"",num);
 		}
 	 });
 }

@@ -79,9 +79,15 @@ def manageObjectInstance(request, obj_id,uid,type):
 			helper.modify()
 		elif type == 'delete':
 			# test if value exists from attribute value:
+			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
+			remove = helper.removeFromDict(uid,request.GET)
+			helper.modify()
 			# if not: remove the attribute value
+			if remove:
+				html = 'delete'
+			else:
+				html = 'empty'
 			# else set empty string value
-			html = 'delete'
 		elif type == 'add':
 			# ModalBox:
 			if request.method == 'GET' and request.GET.has_key('attribute'):

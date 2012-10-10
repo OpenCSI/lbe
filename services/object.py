@@ -144,3 +144,29 @@ class LBEObjectInstanceHelper():
 					    qDict[keyB] = [val]
         self.instance = qDict
         self.ID = ID
+        
+    def removeFromDict(self,ID,values):
+        self._backend()
+        backendValues = self.backend.getObjectByName(self.template,ID)
+        qDict = QueryDict('')
+        qDict = qDict.copy()# make it mutable
+        for keyV, attrV in values.items():
+			# get the attribute position:
+			key = keyV.split('_')[0]
+			pos = keyV.split('_')[1]
+			# check if this value exists on attributes field, if not:
+			# we can remove it, else set it empty.
+			replace = backendValues['attributes'].has_key(key) and len(backendValues['attributes'][key]) >= int(pos)+1
+			num = 0
+			tabValue = list()
+			for val in backendValues['changes']['set'][key]:
+				if num == int(pos):
+					if replace:
+						tabValue.append("")
+				else:
+					tabValue.append(val)
+				num += 1
+			qDict[key] = tabValue
+        self.instance = qDict
+        self.ID = ID
+        return not replace # remove
