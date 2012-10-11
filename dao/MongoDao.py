@@ -48,8 +48,8 @@ class MongoService:
             # updage Mongo:
             db.update({'_id':ID},{'$set':{'changes':{'set':newValues}}})
             # TO IMPROVE:
-            db.update({'_id':ID},{'$set':{'updated_at':str(datetime.datetime.now(utc))}})
-            return db.update({'_id':ID},{'$set':{'status':str(OBJECT_STATE_AWAITING_SYNC)}})
+            db.update({'_id':ID},{'$set':{'updated_at':datetime.datetime.now(utc)}})
+            return db.update({'_id':ID},{'$set':{'status':OBJECT_STATE_AWAITING_SYNC}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
 		
