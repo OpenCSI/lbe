@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from pymongo import Connection, errors
 from django.conf import settings
-from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC
 import sys, logging
+
+import datetime
+from django.utils.timezone import utc
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +46,10 @@ class MongoService:
                 if not newValues.has_key(kval):
                     newValues[kval] = [ values[kval] ]
             # updage Mongo:
-            return db.update({'_id':ID},{'$set':{'changes':{'set':newValues}}})
+            db.update({'_id':ID},{'$set':{'changes':{'set':newValues}}})
+            # TO IMPROVE:
+            db.update({'_id':ID},{'$set':{'updated_at':str(datetime.datetime.now(utc))}})
+            return db.update({'_id':ID},{'$set':{'status':str(OBJECT_STATE_AWAITING_SYNC)}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
 		

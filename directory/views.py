@@ -69,6 +69,11 @@ def manageObjectInstance(request, obj_id,uid,type):
 				if request.GET[request.GET.keys()[0]] == '':# empty value:
 					html = -1
 				else:# check if value is correct:
+					lbeObjectInstance = LBEObjectInstance(lbeObject)
+					if lbeObjectInstance.is_valid(request.GET):
+						print 'Ok'# html = 0
+					else:
+						print 'error'# html = -2
 					html = 0 # 0: no error; -1: error (empty); -2: wrong checking 
 		elif type == 'save':
 			lbeObjectInstance = LBEObjectInstance(lbeObject)
