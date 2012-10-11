@@ -107,6 +107,8 @@ class LBEObjectInstance:
     # TODO: implement
     def is_valid(self,request):
 		# import the class from module:
+		# TODO in DB: replace name value by only the class file name.
+		#ex: (current) custom.employee.EmployeePostConfig by EmployeePostConfig.
         mod = __import__(str(self.template.script.file),fromlist=[ self.template.script.name.split('.')[2] ])# 2-> 0: dir; 1: file; 2: class
         # get the class type:
         cl = getattr(mod,self.template.script.name.split('.')[2])
