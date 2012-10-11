@@ -116,11 +116,16 @@ def manageObjectInstance(request, obj_id,uid,type):
 				try:
 					# add value:
 					# Before adding; need to check (again) value
-					helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
-					helper.updateFromDict(uid,request.GET)
-					helper.modify()
-					html = 'Value added.'
-					html += '<script type="text/javascript">location.reload();</script>'
+					lbeObjectInstance = LBEObjectInstance(lbeObject)
+					if lbeObjectInstance.is_valid(request.GET):
+						helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
+						helper.updateFromDict(uid,request.GET)
+						helper.modify()
+						# need to update virtual attributes too [TODO]
+						html = 'Value added.'
+						html += '<script type="text/javascript">location.reload();</script>'
+					else:
+						raise BaseException('Check values are incorrect.')
 				except BaseException as e:
 					print 'Error to add value: ' + str(e)
 					html = '(!) Value not added'
