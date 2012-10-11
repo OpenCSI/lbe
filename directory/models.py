@@ -107,7 +107,7 @@ class LBEObjectInstance:
     # TODO: implement
     def is_valid(self,request):
 		# import the class from module:
-        mod = __import__('custom.'+self.template.name,fromlist=[self.template.name.title() + 'PostConfig'])
+        mod = __import__(str(self.template.script.file),fromlist=[ self.template.script.name.split('.')[2] ])# 2-> 0: dir; 1: file; 2: class
         # get the class type:
         cl = getattr(mod,self.template.name.title() + 'PostConfig')
         # instance the class:
