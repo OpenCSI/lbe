@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pymongo import Connection, errors
 from django.conf import settings
-from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_OBJECT
 import sys, logging
 
 import datetime
@@ -45,6 +45,8 @@ class MongoService:
             for kval in values:
                 if not newValues.has_key(kval):
                     newValues[kval] = [ values[kval] ]
+            # set status for changes:
+            newValues['status'] = OBJECT_CHANGE_UPDATE_OBJECT
             # updage Mongo:
             db.update({'_id':ID},{'$set':{'changes':{'set':newValues}}})
             # TO IMPROVE:

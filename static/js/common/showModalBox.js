@@ -12,6 +12,11 @@ function showModalBox(url,attribute)
 	   success: function(data){
 		    $('.addAttribute').html(data);
 		    $('#MBAddAttribute').modal('show');
+		    $('#MBAddAttribute').on('hidden', function () {
+				// Remove div#:
+				$('#MBAddAttribute').remove();
+			})
+
 		}
 	 });
 }

@@ -55,7 +55,6 @@ class BackendMongoImpl:
 
     def getObjectByName(self, lbeObjectTemplate, uniqueName):
         searchResult = self.handler.searchDocuments(lbeObjectTemplate.name, { '_id': uniqueName })
-        print searchResult.count()
         if searchResult.count() > 0:
             return searchResult[0]
         return None

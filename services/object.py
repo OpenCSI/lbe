@@ -152,8 +152,7 @@ class LBEObjectInstanceHelper():
         qDict = qDict.copy()# make it mutable
         for keyV, attrV in values.items():
 			# get the attribute position:
-			key = keyV.split('_')[0]
-			pos = keyV.split('_')[1]
+			key, pos = keyV.split('_')
 			# check if this value exists on attributes field, if not:
 			# we can remove it, else set it empty.
 			replace = backendValues['attributes'].has_key(key) and len(backendValues['attributes'][key]) >= int(pos)+1

@@ -3,6 +3,8 @@
 
 {% block content %}
 <div class="message"></div>
+<div class="addAttribute"></div>
+
 <table class="table">
 	<tr><th></th><th>Values</th><th>To Set</th><th></th></tr>
 	{% for attribute in lbeAttribute %}
@@ -53,12 +55,11 @@
 		{# Add value [Multivalue] #}
 		<td>
 		{% if attribute.multivalue %}
-			<a href="#" onClick="showModalBox('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}/add/','{{attribute.lbeAttribute.name}}');"><button class="btn">+</button></a>
+			<span  class="btn" onClick="showModalBox('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}/add/','{{attribute.lbeAttribute.name}}');">+</span>
 		{% endif %}
 		</td>
 		</tr>
 	{% endfor %}
-	<div class="addAttribute"></div>
 	
 	{% comment %}
 	<tr><td style="font-weight:bold;">Display Name : </td><td><span class="displayName">{{object.attributes.title.0}}. {{object.attributes.cn.0}}</span></td></tr>
