@@ -80,9 +80,9 @@ def manageObjectInstance(request, obj_id,uid,type):
 			if lbeObjectInstance.is_valid(request.GET):
 				# save value (replace):
 				helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
-				helper.updateFromDict(uid,request.GET)
+				values = helper.updateFromDict(uid,request.GET)
 				helper.modify()
-			html = request.GET[request.GET.keys()[nb]]
+			html = values[values.keys()[0]]#request.GET[request.GET.keys()[nb]]
 		elif type == 'delete':
 			# test if value exists from attribute value:
 			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))

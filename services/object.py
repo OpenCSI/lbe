@@ -78,14 +78,24 @@ class LBEObjectInstanceHelper():
             try:
                 self.instance.attributes[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
             except AttributeError as e:
-                logger.info('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
-    
+                try:
+                    self.instance[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
+                except AttributeError as e:
+                    logger.info('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
+			
     def applyCustomScript(self):
-        # Clean attributes before manage virtuals attributes
-        self.callAttributeScriptMethod(ATTRIBUTE_TYPE_FINAL, 'clean_')
-        # Now, compute virtual attributes
-        self.callAttributeScriptMethod(ATTRIBUTE_TYPE_VIRTUAL, 'compute_')
-        
+		# Clean attributes before manage virtuals attributes
+		self.callAttributeScriptMethod(ATTRIBUTE_TYPE_FINAL, 'clean_')
+		# Now, compute virtual attributes
+		self.callAttributeScriptMethod(ATTRIBUTE_TYPE_VIRTUAL, 'compute_')
+    
+    def applyCustomScriptAttribute(self,attribute):
+		try:
+			attributeInstance = self.template.lbeattributeinstance_set.get(attributeType= ATTRIBUTE_TYPE_FINAL, lbeAttribute= LBEAttribute.objects.get(name__iexact=attribute))
+			self.instance[attributeInstance.lbeAttribute.name] = self.callScriptMethod("clean_" + attributeInstance.lbeAttribute.name)
+		except BaseException as e:
+			print e
+	
     def createFromDict(self, request):
         attributes = {}
         for attributeInstance in self.template.lbeattributeinstance_set.all():
@@ -144,6 +154,9 @@ class LBEObjectInstanceHelper():
 					    qDict[keyB] = [val]
         self.instance = qDict
         self.ID = ID
+        for key in values:
+			self.applyCustomScriptAttribute(key.split('_')[0])
+        return self.instance
         
     def removeFromDict(self,ID,values):
         self._backend()
@@ -155,7 +168,7 @@ class LBEObjectInstanceHelper():
 			key, pos = keyV.split('_')
 			# check if this value exists on attributes field, if not:
 			# we can remove it, else set it empty.
-			replace = backendValues['attributes'].has_key(key) and len(backendValues['attributes'][key]) >= int(pos)+1
+			replace = backendValues['attributes'].has_key(key) and len(backendValues['attributes'][key]) >= int(pos)+1 # boolean
 			num = 0
 			tabValue = list()
 			for val in backendValues['changes']['set'][key]:

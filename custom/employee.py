@@ -47,18 +47,24 @@ class EmployeePostConfig:
     # def compute_<attributeName>(self): (NOT the displayName) for VIRTUAL attributes
 
     def clean_givenName(self):
-        # TODO: Try to implement a uidNumber
-        return [ self.instance.attributes['givenName'][0].capitalize() ]
+		try:
+			# TODO: Try to implement a uidNumber
+			return [ self.instance.attributes['givenName'][0].capitalize() ]
+		except:
+			return [ self.instance['givenName'][0].capitalize() ]
     
     def clean_sn(self):
-        return [ self.instance.attributes['sn'][0].capitalize() ]
+		try:
+			return [ self.instance.attributes['sn'][0].capitalize() ]
+		except:
+			return [ self.instance['sn'][0].capitalize() ]
 
     def compute_cn(self):
-        return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
+		return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
     
     def compute_uid(self):
-        # TODO: Provide an example to use two letters of the givenName if the uid already exists in the backend
-        return [ (self.instance.attributes['givenName'][0][0] + self.instance.attributes['sn'][0].replace(' ', '')).lower() ]
+		# TODO: Provide an example to use two letters of the givenName if the uid already exists in the backend
+		return [ (self.instance.attributes['givenName'][0][0] + self.instance.attributes['sn'][0].replace(' ', '')).lower() ]
 
     def compute_mail(self):
         return [ self.compute_uid()[0] + '@opencsi.com' ]
