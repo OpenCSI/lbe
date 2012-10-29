@@ -130,7 +130,6 @@ class LBEObjectInstanceHelper():
         qDict = QueryDict('')
         qDict = qDict.copy()# make it mutable
         for keyB,valB in backendValues['changes']['set'].items():
-            #dic = {}
             for key,val in values.items():
                 if keyB == key.split('_')[0]:
                     # is multivalues?:

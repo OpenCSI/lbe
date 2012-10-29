@@ -117,7 +117,7 @@ def manageObjectInstance(request, obj_id,uid,type):
 						helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
 						helper.updateFromDict(uid,request.GET)
 						helper.modify()
-						# need to update virtual attributes too [TODO]
+						# need to update virtual attributes too [?]
 						html = 'Value added.'
 						html += '<script type="text/javascript">location.reload();</script>'
 					else:
@@ -131,6 +131,7 @@ def manageObjectInstance(request, obj_id,uid,type):
 	objectValue = backend.getObjectByName(lbeObject,uniqueName=uid)
 	return render_to_response('directory/default/object/manage.html',{'object':objectValue,'lbeObjectId':lbeObject.id,'lbeAttribute':lbeAttribute,'uid':uid},context_instance=RequestContext(request))
 
+# REMOVE:
 #@manage_acl('modify')
 def modifyObjectInstance(request,obj_id,uid):
 	return HttpResponse('')

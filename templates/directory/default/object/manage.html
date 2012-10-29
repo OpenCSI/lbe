@@ -47,6 +47,27 @@
 					</span><script>v++;</script>
 					{% if attribute.attributeType == 0 %}<i class="icon-pencil"></i></td><td><a href="#" onClick="remove('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{keySet}}',$(this).closest('tr').index());return false;"><i class='icon-trash'></i></a>{% endif %}</td>
 				</tr>
+				{% empty %}
+				<tr id="tr_{{keySet}}">
+					{% if attribute.attributeType == 0 %}
+					<td>
+						<input type="hidden" name="hidden_{{keySet}}" id="hidden_{{keySet}}" value="{{valS}}"/>
+						<span id="{{keySet}}" {% if attribute.attributeType == 0 %}onClick="update('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{keySet}}','{{valS}}',$(this).closest('tr').index());"{% endif %}>
+					{% endif %}
+					<i>Removed</i>
+					<script>
+						$("#{{keySet}}").toggleClass("{{keySet}}_"+v);
+						$("#{{keySet}}").removeAttr("id");
+						////////////////////////////////////////////////
+						$("#hidden_{{keySet}}").toggleClass("hidden_{{keySet}}_"+v);
+						$("#hidden_{{keySet}}").removeAttr("id");
+						////////////////////////////////////////////////
+						$("#tr_{{keySet}}").toggleClass("tr_{{keySet}}_"+v);
+						$("#tr_{{keySet}}").removeAttr("id");
+					</script>
+					</span><script>v++;</script>
+					{% if attribute.attributeType == 0 %}<i class="icon-pencil"></i></td><td><a href="#" onClick="remove('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid %}','{{keySet}}',$(this).closest('tr').index());return false;"><i class='icon-trash'></i></a>{% endif %}</td>
+				</tr>
 				{% endfor %}
 				</table>
 				</td>

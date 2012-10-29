@@ -55,8 +55,10 @@ class EmployeePostConfig:
     
     def clean_sn(self):
 		try:
+			# create object:
 			return [ self.instance.attributes['sn'][0].capitalize() ]
 		except:
+			# modify attribut object:
 			return [ self.instance['sn'][0].capitalize() ]
 
     def compute_cn(self):
