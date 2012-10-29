@@ -35,8 +35,11 @@ class EmployeePostConfig:
     def is_valid(self,request):
 		valid = True
 		for key,val in request.items():
+			# todo for each attribute:
 			if re.match('givenName',key):
 				print 'TODO'# valid = False or True
+			#elif re.match('<attribute>',key):
+				#	... # valid = False or True
 		return valid
     
     # Validators methods are used to alter, verify, compute the values of an attribute
@@ -59,6 +62,7 @@ class EmployeePostConfig:
 			return [ self.instance.attributes['sn'][0].capitalize() ]
 		except:
 			# modify attribut object:
+			# for multi-value: just create an list to set and return it.
 			return [ self.instance['sn'][0].capitalize() ]
 
     def compute_cn(self):

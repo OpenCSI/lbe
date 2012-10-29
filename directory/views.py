@@ -82,7 +82,9 @@ def manageObjectInstance(request, obj_id,uid,type):
 				helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
 				values = helper.updateFromDict(uid,request.GET)
 				helper.modify()
-			html = values[values.keys()[0]]#request.GET[request.GET.keys()[nb]]
+				html = values[values.keys()[0]]#request.GET[request.GET.keys()[nb]]
+			else:
+				html = "Cannot modify value!<script type='text/javascript'>location.reload();</script>"
 		elif type == 'delete':
 			# test if value exists from attribute value:
 			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
