@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from directory.models import LBEObjectTemplate, LBEObjectInstance
+from directory.models import LBEObjectTemplate, LBEObjectInstance, ATTRIBUTE_TYPE_FINAL
+from directory.forms import LBEObjectInstanceForm
+from django import forms
+from django.forms.formsets import formset_factory
 import re
 
 #
@@ -7,11 +10,14 @@ import re
 #
 
 # TODO: Probably use a better suffix than PostConfig
+# use formset_factory
 class EmployeePostConfig:
     # BEGINNING OF REQUIRED SECTION ----------------------------------------------
-    def __init__(self, lbeObjectTemplate, lbeObjectInstance = None):
+    def __init__(self, lbeObjectTemplate, lbeObjectInstance = None,values=None):
         self.template = lbeObjectTemplate
         self.instance = lbeObjectInstance
+        # self.form TODO: Improve or make it differently
+        self.form = LBEObjectInstanceForm(lbeObjectTemplate,values)
     # END OF REQUIRED SECTION ----------------------------------------------------
     
     # REQUIRED SECTION FOR LDAP BACKEND ------------------------------------------    
@@ -32,7 +38,8 @@ class EmployeePostConfig:
     
     # TODO: Think about implements is_valid method here to be called by LBEObjectInstanceForm if possible    
     # def is_valid():
-    def is_valid(self,request):
+    """
+    def is_valid(self):
 		valid = True
 		for key,val in request.items():
 			# todo for each attribute:
@@ -41,6 +48,7 @@ class EmployeePostConfig:
 			#elif re.match('<attribute>',key):
 				#	... # valid = False or True
 		return valid
+	"""
     
     # Validators methods are used to alter, verify, compute the values of an attribute
     # IMPORTANT: Remembers all attributes are store in a list, even mono valued. Therefore, you must return a list

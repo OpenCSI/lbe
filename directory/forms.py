@@ -3,6 +3,7 @@ from django import forms
 from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
 from django.forms.util import ErrorList
+import sys
 
 # All this forms but ObjectInstanceForm should be in config/forms.py
 class LBEModelChoiceField(ModelChoiceField):
@@ -48,6 +49,12 @@ class LBEObjectInstanceForm(forms.Form):
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 # TODO: Find a better way than exec
                 exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
+                #f = str(attributeInstance.widget).split('.')
+                # get the module (ex. forms):
+                #cl = getattr(sys.modules[__name__],f[0])
+                # get the class from module (ex. CharField):
+                #method = getattr(cl,f[1])
+                #self.fields[attributeInstance.lbeAttribute.name] = method()# Need to set arguments (cast args)
                 try:
                     self.fields[attributeInstance.lbeAttribute.name].label = attributeInstance.lbeAttribute.displayName
                     self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)
@@ -61,7 +68,8 @@ class LBEObjectInstanceAttributeForm(forms.Form):
 class LBEAttributeForm(ModelForm):
     class Meta:
         model = LBEAttribute
-        
+
+"""        
 class LBEAttributeSingle(forms.Form):
 	def __init__(self,lbeAttribute,defaultValue,event, js, *args, **kwargs):
 		super(forms.Form, self).__init__(*args, **kwargs)
@@ -78,4 +86,4 @@ class LBEAttributeSingle(forms.Form):
 				self.fields[lbeAttribute.lbeAttribute.name].required = bool(lbeAttribute.mandatory)
 			except BaseException, e:
 				pass
-
+"""

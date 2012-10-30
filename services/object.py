@@ -36,6 +36,7 @@ class LBEObjectInstanceHelper():
             self.scriptClass = getattr(module, className)
         
             # Create an instance
+            self.scriptInstance = self.scriptClass(self.template,self.instance)
         else:
             logging.error('This object does not have an associate script')
 
@@ -61,6 +62,10 @@ class LBEObjectInstanceHelper():
     def modify(self):
 		self._backend()
 		self.backend.modifyObject(self.template,self.ID,self.instance)
+		
+    def form(self):
+        self._load_script()
+        return self.scriptInstance.form
 
     def callScriptMethod(self, methodName):
         self._create_script_instance()
@@ -95,6 +100,23 @@ class LBEObjectInstanceHelper():
 			self.instance[attributeInstance.lbeAttribute.name] = self.callScriptMethod("clean_" + attributeInstance.lbeAttribute.name)
 		except BaseException as e:
 			print e
+	
+    def getValues(self,UID):
+        """
+		Fonction enables to get values from attributes fields and
+		changes.set fields, return the new values (changes.set > attributes)
+        """
+        self._backend()
+        valuesUser = self.backend.getObjectByName(self.template, UID)
+        # Get all attributes from objects:
+        attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
+        d = dict()
+        for attribute in attributes:
+			if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
+				d[attribute.lbeAttribute.name] = valuesUser['changes']['set'][attribute.lbeAttribute.name][0]
+			else:
+				d[attribute.lbeAttribute.name] = valuesUser['attributes'][attribute.lbeAttribute.name][0] or ""
+        return d
 	
     def createFromDict(self, request):
         attributes = {}
@@ -155,7 +177,7 @@ class LBEObjectInstanceHelper():
         self.ID = ID
         for key in values:
 			self.applyCustomScriptAttribute(key.split('_')[0])
-        return self.instance
+        #return self.instance
         
     def removeFromDict(self,ID,values):
         self._backend()

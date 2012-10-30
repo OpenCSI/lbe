@@ -45,6 +45,8 @@ def addObjectInstance(request, lbeObject_id = None):
 def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
+	
+	"""
 	# BEGIN AJAX PART:
 	if request.is_ajax():
 		nb = 0
@@ -82,9 +84,9 @@ def manageObjectInstance(request, obj_id,uid,type):
 				helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
 				values = helper.updateFromDict(uid,request.GET)
 				helper.modify()
-				html = values[values.keys()[0]]#request.GET[request.GET.keys()[nb]]
+				html = values[values.keys()[0]]
 			else:
-				html = "Cannot modify value!<script type='text/javascript'>location.reload();</script>"
+				html = "Wrong syntax to modify value!<script type='text/javascript'>function reload(){location.reload();}setTimeout('reload()',2000);</script>"
 		elif type == 'delete':
 			# test if value exists from attribute value:
 			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
@@ -129,9 +131,22 @@ def manageObjectInstance(request, obj_id,uid,type):
 					html = '(!) Value not added'
 		return HttpResponse(html)
 		# END AJAX PART.
-	backend = BackendHelper()
-	objectValue = backend.getObjectByName(lbeObject,uniqueName=uid)
-	return render_to_response('directory/default/object/manage.html',{'object':objectValue,'lbeObjectId':lbeObject.id,'lbeAttribute':lbeAttribute,'uid':uid},context_instance=RequestContext(request))
+		"""
+	
+	# Modify part:
+	form = None
+	if request.method == 'POST':
+		form = LBEObjectInstanceForm(lbeObject,request.POST)
+		if form.is_valid():
+			pass
+	instanceHelper = LBEObjectInstanceHelper(lbeObject)
+	print instanceHelper.form()
+	# Get user attributes values:
+	objectValues = instanceHelper.getValues(uid)
+	# Set values into form:
+	form = LBEObjectInstanceForm(lbeObject,objectValues)
+	# Show part:
+	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid},context_instance=RequestContext(request))
 
 # REMOVE:
 #@manage_acl('modify')
