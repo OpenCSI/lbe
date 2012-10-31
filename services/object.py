@@ -34,17 +34,16 @@ class LBEObjectInstanceHelper():
             __import__(moduleName)
             module = sys.modules[moduleName]
             self.scriptClass = getattr(module, className)
-        
             # Create an instance
-            self.scriptInstance = self.scriptClass(self.template,self.instance)
+            #self.scriptInstance = self.scriptClass(self.template,self.instance)
         else:
             logging.error('This object does not have an associate script')
 
-    def _create_script_instance(self):
+    def _create_script_instance(self,data = None):
         self._load_script()
         if self.scriptInstance is not None:
             return
-        self.scriptInstance = self.scriptClass(self.template, self.instance)
+        self.scriptInstance = self.scriptClass(self.template, self.instance,data)
 
     def save(self, ):
         self._backend()
@@ -63,9 +62,11 @@ class LBEObjectInstanceHelper():
 		self._backend()
 		self.backend.modifyObject(self.template,self.ID,self.instance)
 		
-    def form(self):
-        self._load_script()
-        return self.scriptInstance.form
+    def form(self,uid,data=None):
+        if data is None:
+            data = self.getValues(uid)
+        self._create_script_instance(data)
+        return self.scriptInstance
 
     def callScriptMethod(self, methodName):
         self._create_script_instance()

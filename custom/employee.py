@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from directory.models import LBEObjectTemplate, LBEObjectInstance, ATTRIBUTE_TYPE_FINAL
+#from directory.models import LBEObjectTemplate, LBEObjectInstance
 from directory.forms import LBEObjectInstanceForm
 from django import forms
 from django.forms.formsets import formset_factory
-import re
 
 #
 # This file is an example of script called after object creation
@@ -11,15 +10,14 @@ import re
 
 # TODO: Probably use a better suffix than PostConfig
 # use formset_factory
-class EmployeePostConfig:
+class EmployeePostConfig(LBEObjectInstanceForm):
     # BEGINNING OF REQUIRED SECTION ----------------------------------------------
-    def __init__(self, lbeObjectTemplate, lbeObjectInstance = None,values=None):
+    def __init__(self, lbeObjectTemplate, lbeObjectInstance = None, *args, **kwargs):
         self.template = lbeObjectTemplate
         self.instance = lbeObjectInstance
-        # self.form TODO: Improve or make it differently
-        self.form = LBEObjectInstanceForm(lbeObjectTemplate,values)
+        super(EmployeePostConfig, self).__init__(self.template,*args, **kwargs)
     # END OF REQUIRED SECTION ----------------------------------------------------
-    
+
     # REQUIRED SECTION FOR LDAP BACKEND ------------------------------------------    
 
     # These methods are used only for LDAP target. Must be class methods
@@ -32,23 +30,11 @@ class EmployeePostConfig:
     @classmethod
     def object_classes(cls):
         return ['top', 'person', 'organizationalPerson','inetOrgPerson']
-
     # END OF REQUIRED SECTION ----------------------------------------------------
 
     
     # TODO: Think about implements is_valid method here to be called by LBEObjectInstanceForm if possible    
     # def is_valid():
-    """
-    def is_valid(self):
-		valid = True
-		for key,val in request.items():
-			# todo for each attribute:
-			if re.match('givenName',key):
-				print 'TODO'# valid = False or True
-			#elif re.match('<attribute>',key):
-				#	... # valid = False or True
-		return valid
-	"""
     
     # Validators methods are used to alter, verify, compute the values of an attribute
     # IMPORTANT: Remembers all attributes are store in a list, even mono valued. Therefore, you must return a list
@@ -62,19 +48,28 @@ class EmployeePostConfig:
 			# TODO: Try to implement a uidNumber
 			return [ self.instance.attributes['givenName'][0].capitalize() ]
 		except:
-			return [ self.instance['givenName'][0].capitalize() ]
+			try:
+				return [ self.instance['givenName'][0].capitalize() ]
+			except:
+				raise forms.ValidationError("This field must be a valid attribute.")
     
     def clean_sn(self):
 		try:
 			# create object:
 			return [ self.instance.attributes['sn'][0].capitalize() ]
 		except:
+			try:
 			# modify attribut object:
 			# for multi-value: just create an list to set and return it.
-			return [ self.instance['sn'][0].capitalize() ]
+				return [ self.instance['sn'][0].capitalize() ]
+			except:
+				raise forms.ValidationError("This field must be a valid attribute.")
 
     def compute_cn(self):
-		return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
+		try:
+			return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
+		except:
+				raise forms.ValidationError("This field must be a valid attribute.")
     
     def compute_uid(self):
 		# TODO: Provide an example to use two letters of the givenName if the uid already exists in the backend

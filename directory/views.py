@@ -45,6 +45,7 @@ def addObjectInstance(request, lbeObject_id = None):
 def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
+	instanceHelper = LBEObjectInstanceHelper(lbeObject)
 	
 	"""
 	# BEGIN AJAX PART:
@@ -136,15 +137,15 @@ def manageObjectInstance(request, obj_id,uid,type):
 	# Modify part:
 	form = None
 	if request.method == 'POST':
-		form = LBEObjectInstanceForm(lbeObject,request.POST)
+		#form = LBEObjectInstanceForm(lbeObject,request.POST)
+		form = instanceHelper.form(uid,request.POST)
 		if form.is_valid():
 			pass
-	instanceHelper = LBEObjectInstanceHelper(lbeObject)
-	print instanceHelper.form()
+	form = instanceHelper.form(uid)
 	# Get user attributes values:
 	objectValues = instanceHelper.getValues(uid)
 	# Set values into form:
-	form = LBEObjectInstanceForm(lbeObject,objectValues)
+	#form = LBEObjectInstanceForm(lbeObject,objectValues)
 	# Show part:
 	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid},context_instance=RequestContext(request))
 
