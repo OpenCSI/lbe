@@ -106,15 +106,7 @@ class LBEObjectInstance:
 
     # TODO: implement
     def is_valid(self,request):
-		# import the class from module:
-		#ex: (current) custom.employee.EmployeePostConfig by EmployeePostConfig.
-        mod = __import__(str(self.template.script.file),fromlist=[ self.template.script.name.split('.')[2] ])# 2-> 0: dir; 1: file; 2: class
-        # get the class type:
-        cl = getattr(mod,self.template.script.name.split('.')[2])
-        # instance the class:
-        instance = cl(self.template)
-        # execute the is_valid() method:
-        return instance.is_valid(request)
+		pass
     
     def search(self, filter):
         pass

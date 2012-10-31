@@ -36,11 +36,16 @@ class MongoService:
             # In order to not lose values:
             newValues = {} # new dict because 'values' is QueryDict.
             # replace values:
+            print changeSet
             for kset in changeSet:
 				if not values.has_key(kset):
 					newValues[kset] = changeSet[kset] # get other values
 				else:
-					newValues[kset] = values[kset] # new values
+					print values[kset]
+					if isinstance(values[kset],unicode) or isinstance(values[kset],str):
+						newValues[kset] = [ values[kset] ] # new values
+					else:
+						newValues[kset] = values[kset] # new values
 			# add new (key) value:
             for kval in values:
                 if not newValues.has_key(kval):
