@@ -43,9 +43,6 @@ class LBEObjectInstanceHelper():
         self._load_script()
         if self.scriptInstance is not None:
             return
-        if data is not None:
-			self.instance = LBEObjectInstance(self.instance,data)
-        print self.instance.attributes
         self.scriptInstance = self.scriptClass(self.template, self.instance,data)
 
     def save(self, ):
@@ -54,7 +51,7 @@ class LBEObjectInstanceHelper():
         searchResult = self.backend.getObjectByName(self.template, self.instance.name)
         if searchResult is None:
             return self.backend.createObject(self.template, self.instance)
-        else:
+        else:# modify values [TODO]
             raise BackendObjectAlreadyExist('Already exists')
 
     def update(self):
@@ -157,31 +154,14 @@ class LBEObjectInstanceHelper():
         qDict = qDict.copy()# make it mutable
         for keyB,valB in backendValues['changes']['set'].items():
             for key,val in values.items():
-                if keyB == key.split('_')[0]:
-                    # is multivalues?:
-                    attribute = LBEAttributeInstance.objects.get(lbeObjectTemplate = self.template,lbeAttribute=LBEAttribute.objects.get(name__iexact=keyB))
-                    if attribute.multivalue:
-                        pos = int(key.split('_')[1])
-                        cur = 0
-                        tabValue = list()
-                        added = False
-                        for value in valB:
-                            if pos == cur:
-							    tabValue.append(val)
-							    added = True
-                            else:
-                                tabValue.append(value)
-                            cur += 1
-                        if not added:# new value
-							tabValue.append(val)
-                        qDict[keyB] = tabValue
-                    else:
-					    qDict[keyB] = [val]
+                if keyB == key:
+                    # is multivalues?: [TODO]
+                    #attribute = LBEAttributeInstance.objects.get(lbeObjectTemplate = self.template,lbeAttribute=LBEAttribute.objects.get(name__iexact=keyB))
+                    qDict[keyB] = val
         self.instance = qDict
         self.ID = ID
-        for key in values:
-			self.applyCustomScriptAttribute(key.split('_')[0])
-        #return self.instance
+        #for key in values:
+		#	self.applyCustomScriptAttribute(key)
         
     def removeFromDict(self,ID,values):
         self._backend()

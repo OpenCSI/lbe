@@ -46,16 +46,19 @@ def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
 	instanceHelper = LBEObjectInstanceHelper(lbeObject)
-	# Modify part:
-	form = None
+	#form = None
 	if request.method == 'POST':
+		# Modify part:
 		form = instanceHelper.form(uid,request.POST)
 		if form.is_valid():
-			pass
-	# Get user attributes values:
-	objectValues = instanceHelper.getValues(uid)
-	# Set values into form:
-	form = instanceHelper.form(uid,objectValues)
+			instanceHelper.updateFromDict(uid,form.clean())
+			instanceHelper.modify()
+			messages.add_message(request, messages.SUCCESS, 'Object saved')
+	else:
+		# Get user attributes values:
+		objectValues = instanceHelper.getValues(uid)
+		# Set values into form:
+		form = instanceHelper.form(uid,objectValues)
 	# Show part:
 	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid},context_instance=RequestContext(request))
 

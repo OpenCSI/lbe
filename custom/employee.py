@@ -49,7 +49,7 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 			return [ self.instance.attributes['givenName'][0].capitalize() ]
 		except:
 			try:
-				return [ self.cleaned_data['givenName'][0].capitalize() ]
+				return [ self.cleaned_data['givenName'].capitalize() ]
 			except:
 				raise forms.ValidationError("This field must be a valid attribute.")
     
@@ -61,7 +61,7 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 			try:
 			# modify attribut object:
 			# for multi-value: just create an list to set and return it.
-				return [ self.cleaned_data['sn'][0].capitalize() ]
+				return [ self.cleaned_data['sn'].capitalize() ]
 			except:
 				raise forms.ValidationError("This field must be a valid attribute.")
 
