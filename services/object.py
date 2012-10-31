@@ -43,6 +43,9 @@ class LBEObjectInstanceHelper():
         self._load_script()
         if self.scriptInstance is not None:
             return
+        if data is not None:
+			self.instance = LBEObjectInstance(self.instance,data)
+        print self.instance.attributes
         self.scriptInstance = self.scriptClass(self.template, self.instance,data)
 
     def save(self, ):

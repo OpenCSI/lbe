@@ -46,106 +46,16 @@ def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
 	instanceHelper = LBEObjectInstanceHelper(lbeObject)
-	
-	"""
-	# BEGIN AJAX PART:
-	if request.is_ajax():
-		nb = 0
-		if type == 'modify':
-			# get dynamic single input type from forms:
-			attr = request.GET.keys()[nb].split('_')[0]# attribute name without the number.
-			attribute = LBEAttribute.objects.get(name__iexact=attr)
-			attributeInstance = LBEAttributeInstance.objects.get(lbeObjectTemplate=lbeObject,lbeAttribute=attribute)
-			# Form:
-			js = "save(\'/directory/object/manage/"+obj_id+"/"+uid+"','"+attr+"',$(\'#id_"+attr+"').val(),'"+request.GET.keys()[nb].split('_')[1]+"');"
-			f = LBEAttributeSingle(lbeAttribute=attributeInstance,defaultValue=request.GET[request.GET.keys()[nb]],event='onBlur',js=js)
-			# no value: not modified
-			if not f.visible_fields() == []:
-				html = str(f.visible_fields()[0])
-			else:
-				html = request.GET[request.GET.keys()[nb]]
-		elif type == 'check':
-			if request.method != 'GET':# no value:
-				html = -2
-			else:
-				if request.GET[request.GET.keys()[0]] == '':# empty value:
-					html = -1
-				else:# check if value is correct:
-					lbeObjectInstance = LBEObjectInstance(lbeObject)
-					if lbeObjectInstance.is_valid(request.GET):
-						html = 0
-					else:
-						html = -2
-					#html = 0 # 0: no error; -1: error (empty); -2: wrong checking 
-		elif type == 'save':
-			lbeObjectInstance = LBEObjectInstance(lbeObject)
-			# check value before saving:
-			if lbeObjectInstance.is_valid(request.GET):
-				# save value (replace):
-				helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
-				values = helper.updateFromDict(uid,request.GET)
-				helper.modify()
-				html = values[values.keys()[0]]
-			else:
-				html = "Wrong syntax to modify value!<script type='text/javascript'>function reload(){location.reload();}setTimeout('reload()',2000);</script>"
-		elif type == 'delete':
-			# test if value exists from attribute value:
-			helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
-			remove = helper.removeFromDict(uid,request.GET)
-			helper.modify()
-			# if not: remove the attribute value
-			if remove:
-				html = 'delete'
-			else:
-				html = 'empty'
-			# else set empty string value
-		elif type == 'add':
-			# ModalBox:
-			if request.method == 'GET' and request.GET.has_key('attribute'):
-				attribute = LBEAttribute.objects.get(name__iexact=request.GET['attribute'])
-				# input (widget):
-				attributeInstance = LBEAttributeInstance.objects.get(lbeObjectTemplate=lbeObject,lbeAttribute=attribute)
-				if attributeInstance.widget == 'forms.CharField':
-					event='onKeyUp'
-				else:
-					event='onChange'
-				js = "check(\'/directory/object/manage/"+obj_id+"/"+uid+"/check\','"+attribute.name+"',$(\'#id_"+attribute.name+"').val());"
-				widget = LBEAttributeSingle(lbeAttribute=attributeInstance,defaultValue="",event=event,js=js)
-				return render_to_response('ajax/directory/addAttribute.html',{'user':uid,'attribute':attribute,'widget':widget,'uid':uid,'lbeObjectId':obj_id})
-			# Save part:
-			else:
-				try:
-					# add value:
-					# Before adding; need to check (again) value
-					lbeObjectInstance = LBEObjectInstance(lbeObject)
-					if lbeObjectInstance.is_valid(request.GET):
-						helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = obj_id))
-						helper.updateFromDict(uid,request.GET)
-						helper.modify()
-						# need to update virtual attributes too [?]
-						html = 'Value added.'
-						html += '<script type="text/javascript">location.reload();</script>'
-					else:
-						raise BaseException('Check values are incorrect.')
-				except BaseException as e:
-					print 'Error to add value: ' + str(e)
-					html = '(!) Value not added'
-		return HttpResponse(html)
-		# END AJAX PART.
-		"""
-	
 	# Modify part:
 	form = None
 	if request.method == 'POST':
-		#form = LBEObjectInstanceForm(lbeObject,request.POST)
 		form = instanceHelper.form(uid,request.POST)
 		if form.is_valid():
 			pass
-	form = instanceHelper.form(uid)
 	# Get user attributes values:
 	objectValues = instanceHelper.getValues(uid)
 	# Set values into form:
-	#form = LBEObjectInstanceForm(lbeObject,objectValues)
+	form = instanceHelper.form(uid,objectValues)
 	# Show part:
 	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid},context_instance=RequestContext(request))
 
