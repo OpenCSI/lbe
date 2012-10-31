@@ -157,9 +157,14 @@ class LBEObjectInstanceHelper():
                 if keyB == key:
                     # is multivalues?: [TODO]
                     #attribute = LBEAttributeInstance.objects.get(lbeObjectTemplate = self.template,lbeAttribute=LBEAttribute.objects.get(name__iexact=keyB))
-                    qDict[keyB] = val
+                    # check if values are equals: [Do not change value if same value from attribute field]
+                    if not backendValues['attributes'].has_key(key):
+						qDict[keyB] = val
+                    elif not backendValues['attributes'][key] == val:
+						qDict[keyB] = val
         self.instance = qDict
         self.ID = ID
+        print self.instance
         #for key in values:
 		#	self.applyCustomScriptAttribute(key)
         

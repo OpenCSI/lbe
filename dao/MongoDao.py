@@ -41,7 +41,6 @@ class MongoService:
 				if not values.has_key(kset):
 					newValues[kset] = changeSet[kset] # get other values
 				else:
-					print values[kset]
 					if isinstance(values[kset],unicode) or isinstance(values[kset],str):
 						newValues[kset] = [ values[kset] ] # new values
 					else:

@@ -46,7 +46,6 @@ def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
 	instanceHelper = LBEObjectInstanceHelper(lbeObject)
-	#form = None
 	if request.method == 'POST':
 		# Modify part:
 		form = instanceHelper.form(uid,request.POST)
