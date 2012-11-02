@@ -46,6 +46,14 @@ def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
 	instanceHelper = LBEObjectInstanceHelper(lbeObject)
+	# Get multiValue attributes:
+	multivalue = []
+	# get all attributInstance of ObjectTemplate:
+	attributeInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
+	for attribute in attributeInstance:
+		# check if multivalue is checked (True):
+		if attribute.multivalue:
+			multivalue.append(attribute.lbeAttribute.name)
 	if request.method == 'POST':
 		# Modify part:
 		form = instanceHelper.form(uid,request.POST)
@@ -59,7 +67,7 @@ def manageObjectInstance(request, obj_id,uid,type):
 		# Set values into form:
 		form = instanceHelper.form(uid,objectValues)
 	# Show part:
-	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid},context_instance=RequestContext(request))
+	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
 
 # REMOVE:
 #@manage_acl('modify')

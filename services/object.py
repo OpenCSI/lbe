@@ -149,7 +149,6 @@ class LBEObjectInstanceHelper():
     def updateFromDict(self,ID,values):
         self._backend()
         backendValues = self.backend.getObjectByName(self.template,ID)
-		# Get values; attr; pos:
         qDict = QueryDict('')
         qDict = qDict.copy()# make it mutable
         for keyB,valB in backendValues['changes']['set'].items():
@@ -164,7 +163,6 @@ class LBEObjectInstanceHelper():
 						qDict[keyB] = val
         self.instance = qDict
         self.ID = ID
-        print self.instance
         #for key in values:
 		#	self.applyCustomScriptAttribute(key)
         
