@@ -2,7 +2,7 @@
 #from directory.models import LBEObjectTemplate, LBEObjectInstance
 from directory.forms import LBEObjectInstanceForm
 from django import forms
-from django.forms.formsets import formset_factory
+#from django.forms.formsets import formset_factory
 
 #
 # This file is an example of script called after object creation

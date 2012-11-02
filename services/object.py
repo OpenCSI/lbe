@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys, logging
 from services.backend import BackendHelper
+from django.forms.formsets import formset_factory
 logger = logging.getLogger(__name__)
 from django.contrib import messages
 from django.http import QueryDict
@@ -44,14 +45,27 @@ class LBEObjectInstanceHelper():
         if self.scriptInstance is not None:
             return
         self.scriptInstance = self.scriptClass(self.template, self.instance,data)
-
+	
+    def _compress_data(self,data):
+		query = {}
+		for key in data:
+			if len(data.getlist(key)) == 1:
+				query[key] = data[key]
+			else: # compress MultiValue:
+				query[key] = '--'.join(str(val) for val in data.getlist(key))
+		return query
+	
+	def decompress_data(self,key,data):
+		return 0
+			
+			
     def save(self, ):
         self._backend()
         # Search for an existing object
         searchResult = self.backend.getObjectByName(self.template, self.instance.name)
         if searchResult is None:
             return self.backend.createObject(self.template, self.instance)
-        else:# modify values [TODO]
+        else:
             raise BackendObjectAlreadyExist('Already exists')
 
     def update(self):
@@ -65,8 +79,11 @@ class LBEObjectInstanceHelper():
     def form(self,uid,data=None):
         if data is None:
             data = self.getValues(uid)
+        else:
+			data = self._compress_data(data)
         self._create_script_instance(data)
         return self.scriptInstance
+        #return formset_factory(self.scriptInstance)
 
     def callScriptMethod(self, methodName):
         self._create_script_instance()

@@ -42,6 +42,7 @@ class LBEScriptForm(ModelForm):
         model = LBEScript
         
 class LBEObjectInstanceForm(forms.Form):
+    #__name__ = "formInstance"
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)
         for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():

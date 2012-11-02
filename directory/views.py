@@ -62,10 +62,8 @@ def manageObjectInstance(request, obj_id,uid,type):
 			instanceHelper.modify()
 			messages.add_message(request, messages.SUCCESS, 'Object saved')
 	else:
-		# Get user attributes values:
-		objectValues = instanceHelper.getValues(uid)
 		# Set values into form:
-		form = instanceHelper.form(uid,objectValues)
+		form = instanceHelper.form(uid)
 	# Show part:
 	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
 

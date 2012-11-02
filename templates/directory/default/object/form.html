@@ -3,11 +3,24 @@
 {{ hidden }}
 {% endfor %}
 {# Include the visible fields #}
+{% if multivalue %}
+<script type="text/javascript" src="/static/js/common/addForm.js"></script>
+{% endif %}
+<script type="text/javascript">
+function multivalue(key,values)
+{
+	tab = values.split("--");
+	for (i in tab)
+	{
+			//alert(tab[i]);
+	}
+}
+</script>
 <table class='table table-condensed'>
 {% for field in form.visible_fields %}
     <tr>
         <th> {{ field.label }} </th>
-        <td> {{ field }}{% for mv in multivalue %}{% if mv == field.name %} <a class="btn btn-primary" onClick="addField('{{mv}}','{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}');">+</a><div class="{{mv}}"></div> {%endif %} {% endfor %}
+        <td> {{ field }}{% for mv in multivalue %}{% if mv == field.name %} <a class="btn btn-primary" onClick="addField('{{mv}}','{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}');">+</a><div class="{{mv}}"></div> <script>multivalue("{{mv}}","{{field.data}}");</script> {%endif %} {% endfor %}
             {% for error in field.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
         </td>
     </tr>
@@ -16,6 +29,3 @@
         <td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn'></td>
     </tr>
 </table>
-{% if multivalue %}
-<script type="text/javascript" src="/static/js/common/addForm.js"></script>
-{% endif %}
