@@ -70,6 +70,9 @@ class LBEAttributeForm(ModelForm):
     class Meta:
         model = LBEAttribute
 
+#class LBEFactory(forms.Form):
+#	texte = forms.CharField()
+#	titre = forms.CharField()
 """        
 class LBEAttributeSingle(forms.Form):
 	def __init__(self,lbeAttribute,defaultValue,event, js, *args, **kwargs):

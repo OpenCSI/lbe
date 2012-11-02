@@ -55,8 +55,8 @@ class LBEObjectInstanceHelper():
 				query[key] = '--'.join(str(val) for val in data.getlist(key))
 		return query
 	
-	def decompress_data(self,key,data):
-		return 0
+    def decompress_data(self,key,data):
+        return 0
 			
 			
     def save(self, ):
