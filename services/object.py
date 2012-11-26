@@ -55,8 +55,8 @@ class LBEObjectInstanceHelper():
 				query[key] = '--'.join(str(val) for val in data.getlist(key))
 		return query
 	
-    def decompress_data(self,key,data):
-        return 0
+    #def decompress_data(self,key,data):
+    #    return 0
 			
 			
     def save(self, ):
@@ -79,11 +79,11 @@ class LBEObjectInstanceHelper():
     def form(self,uid,data=None):
         if data is None:
             data = self.getValues(uid)
+            print data
         else:
 			data = self._compress_data(data)
         self._create_script_instance(data)
         return self.scriptInstance
-        #return formset_factory(self.scriptInstance)
 
     def callScriptMethod(self, methodName):
         self._create_script_instance()
@@ -131,9 +131,17 @@ class LBEObjectInstanceHelper():
         d = dict()
         for attribute in attributes:
 			if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
-				d[attribute.lbeAttribute.name] = valuesUser['changes']['set'][attribute.lbeAttribute.name][0]
+				q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+				q = q.copy()
+				for value in valuesUser['changes']['set'][attribute.lbeAttribute.name][1:]:
+					q.update({attribute.lbeAttribute.name:value})
+				d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
 			else:
-				d[attribute.lbeAttribute.name] = valuesUser['attributes'][attribute.lbeAttribute.name][0] or ""
+				q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+				q = q.copy()
+				for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
+					q.update({attribute.lbeAttribute.name:value})
+				d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
         return d
 	
     def createFromDict(self, request):

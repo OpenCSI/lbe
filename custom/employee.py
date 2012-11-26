@@ -49,9 +49,15 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 			return [ self.instance.attributes['givenName'][0].capitalize() ]
 		except:
 			try:
-				return [ self.cleaned_data['givenName'].capitalize() ]
+				# Multi value:
+				tab = []
+				i=1
+				for value in self.cleaned_data['givenName'].split('--'):
+					tab.append(value.capitalize())
+					i = i + 1
+				return tab
 			except:
-				raise forms.ValidationError("This field must be a valid attribute.")
+				raise forms.ValidationError("The field #"+i+" must be a valid attribute.")
     
     def clean_sn(self):
 		try:

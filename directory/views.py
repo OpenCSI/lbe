@@ -47,7 +47,7 @@ def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
 	instanceHelper = LBEObjectInstanceHelper(lbeObject)
-	# Get multiValue attributes:
+	# Get multiValue attributes: ('+' button)
 	multivalue = []
 	# get all attributInstance of ObjectTemplate:
 	attributeInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
@@ -67,7 +67,7 @@ def manageObjectInstance(request, obj_id,uid,type):
 		form = instanceHelper.form(uid)
 	
 	# Factory TEST:
-	#formSet = formset_factory(LBEFactory)
+	#formSet = formset_factory(LBEFactory,extra=5)
 	#form = formSet()
 	#for f in form:
 	#	print f.as_table()
