@@ -45,13 +45,13 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 
     def clean_givenName(self):
 		try:
+			i=1
 			# TODO: Try to implement a uidNumber
 			return [ self.instance.attributes['givenName'][0].capitalize() ]
 		except:
 			try:
 				# Multi value:
 				tab = []
-				i=1
 				for value in self.cleaned_data['givenName'].split('--'):
 					tab.append(value.capitalize())
 					i = i + 1

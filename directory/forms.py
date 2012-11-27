@@ -42,7 +42,6 @@ class LBEScriptForm(ModelForm):
         model = LBEScript
         
 class LBEObjectInstanceForm(forms.Form):
-    #__name__ = "formInstance"
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)
         for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
@@ -69,25 +68,3 @@ class LBEObjectInstanceAttributeForm(forms.Form):
 class LBEAttributeForm(ModelForm):
     class Meta:
         model = LBEAttribute
-
-#class LBEFactory(forms.Form):
-#	texte = forms.CharField()
-#	titre = forms.CharField()
-"""        
-class LBEAttributeSingle(forms.Form):
-	def __init__(self,lbeAttribute,defaultValue,event, js, *args, **kwargs):
-		super(forms.Form, self).__init__(*args, **kwargs)
-		# Display only finals attributes
-		if lbeAttribute.attributeType == ATTRIBUTE_TYPE_FINAL:
-			# TODO: Find a better way than exec
-			exec 'self.fields[lbeAttribute.lbeAttribute.name] = ' + lbeAttribute.widget + '(' + lbeAttribute.widgetArgs +')'
-			# default Value:
-			self.fields[lbeAttribute.lbeAttribute.name].initial= defaultValue
-			# add special attribute tag for js: [AJAX]
-			self.fields[lbeAttribute.lbeAttribute.name].widget.attrs[event]= js
-			try:
-				self.fields[lbeAttribute.lbeAttribute.name].label = lbeAttribute.lbeAttribute.displayName
-				self.fields[lbeAttribute.lbeAttribute.name].required = bool(lbeAttribute.mandatory)
-			except BaseException, e:
-				pass
-"""

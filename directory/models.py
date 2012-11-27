@@ -9,6 +9,7 @@ OBJECT_STATE_SYNC_ERROR = -1
 OBJECT_STATE_SYNCED = 0
 OBJECT_STATE_AWAITING_SYNC = 1
 OBJECT_STATE_AWAITING_APPROVAL = 2
+OBJECT_STATE_DELETED = 4
 OBJECT_STATE_IMPORTED = 0
 
 OBJECT_CHANGE_CREATE_OBJECT = 0
@@ -105,14 +106,14 @@ class LBEObjectInstance:
             setattr(self, key, value)
 
     # TODO: implement
-    def is_valid(self,request):
-		pass
+    #def is_valid(self):
+	#	pass
     
-    def search(self, filter):
-        pass
+    #def search(self, filter):
+    #    pass
         
-    def save(self):
-        pass
+    #def save(self):
+    #    pass
     
     def __unicode__(self):
         return 'name: ' + self.name + ', displayName: ' + self.displayName + ', attributes: ' + self.attributes

@@ -1,0 +1,10 @@
+{% extends 'index.html' %}
+{% block content %}
+<h4>{{object.cn.0}}</h4>
+<table class='table'>
+   {% for key,value in object.items %}
+	<tr><th>{{key}}</th><td>{% for val in value %}{{val}} {% endfor %}</td></tr>
+   {% endfor %}
+</table>
+<center><a href="/" class="btn btn-primary">Users list</a></center>
+{% endblock %}

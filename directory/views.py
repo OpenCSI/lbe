@@ -17,6 +17,17 @@ def index(request):
     lbeObject = LBEObjectTemplate.objects.get(name__iexact="employee")
     return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
 
+def deleteObjectInstance(request, objectName):
+    backend = BackendHelper()
+    objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
+    return render_to_response('directory/default/index.html', { 'objects': objects }, context_instance=RequestContext(request))
+
+#@managel_acl()
+def viewObjectInstance(request,obj_id,objectName = None):
+	instanceHelper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id=obj_id))
+	obj = instanceHelper.getValuesDecompressed(objectName)
+	return render_to_response('directory/default/object/view.html', {'object':obj}, context_instance=RequestContext(request))
+	
 # Create an instance of LBEObjectInstance from LBEObject definition. Save it into MongoDB with status AWAITING_SYNC
 def addObjectInstance(request, lbeObject_id = None):
     form = None
@@ -65,12 +76,6 @@ def manageObjectInstance(request, obj_id,uid,type):
 	else:
 		# Set values into form:
 		form = instanceHelper.form(uid)
-	
-	# Factory TEST:
-	#formSet = formset_factory(LBEFactory,extra=5)
-	#form = formSet()
-	#for f in form:
-	#	print f.as_table()
 	# Show part:
 	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
 
@@ -78,3 +83,7 @@ def manageObjectInstance(request, obj_id,uid,type):
 #@manage_acl('modify')
 def modifyObjectInstance(request,obj_id,uid):
 	return HttpResponse('')
+	
+#@manage_acl('delete')
+#def deleteObjectInstance(request,obj_id,uid):
+#	return HttpResponse('')

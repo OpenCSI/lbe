@@ -55,8 +55,14 @@ class LBEObjectInstanceHelper():
 				query[key] = '--'.join(str(val) for val in data.getlist(key))
 		return query
 	
-    #def decompress_data(self,key,data):
-    #    return 0
+    def decompress_data(self,data):
+		query = {}
+		for key in data:
+			if len(data.getlist(key)) == 1:
+				query[key] = data[key]
+			else: # compress MultiValue:
+				query[key] = data[key].split('--')
+		return query
 			
 			
     def save(self, ):
@@ -143,6 +149,23 @@ class LBEObjectInstanceHelper():
 					q.update({attribute.lbeAttribute.name:value})
 				d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
         return d
+        
+    def getValuesDecompressed(self,UID):
+        """
+		Fonction enables to get values from attributes fields and
+		changes.set fields, return the new values (changes.set > attributes)
+        """
+        self._backend()
+        valuesUser = self.backend.getObjectByName(self.template, UID)
+        # Get all attributes from objects:
+        attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
+        d = dict()
+        for attribute in attributes:
+			if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
+				d[attribute.lbeAttribute.name] = valuesUser['changes']['set'][attribute.lbeAttribute.name]
+			else:
+				d[attribute.lbeAttribute.name] = valuesUser['attributes'][attribute.lbeAttribute.name]
+        return d
 	
     def createFromDict(self, request):
         attributes = {}
@@ -179,8 +202,6 @@ class LBEObjectInstanceHelper():
         for keyB,valB in backendValues['changes']['set'].items():
             for key,val in values.items():
                 if keyB == key:
-                    # is multivalues?: [TODO]
-                    #attribute = LBEAttributeInstance.objects.get(lbeObjectTemplate = self.template,lbeAttribute=LBEAttribute.objects.get(name__iexact=keyB))
                     # check if values are equals: [Do not change value if same value from attribute field]
                     if not backendValues['attributes'].has_key(key):
 						qDict[keyB] = val
@@ -190,28 +211,3 @@ class LBEObjectInstanceHelper():
         self.ID = ID
         #for key in values:
 		#	self.applyCustomScriptAttribute(key)
-        
-    def removeFromDict(self,ID,values):
-        self._backend()
-        backendValues = self.backend.getObjectByName(self.template,ID)
-        qDict = QueryDict('')
-        qDict = qDict.copy()# make it mutable
-        for keyV, attrV in values.items():
-			# get the attribute position:
-			key, pos = keyV.split('_')
-			# check if this value exists on attributes field, if not:
-			# we can remove it, else set it empty.
-			replace = backendValues['attributes'].has_key(key) and len(backendValues['attributes'][key]) >= int(pos)+1 # boolean
-			num = 0
-			tabValue = list()
-			for val in backendValues['changes']['set'][key]:
-				if num == int(pos):
-					if replace:
-						tabValue.append("")
-				else:
-					tabValue.append(val)
-				num += 1
-			qDict[key] = tabValue
-        self.instance = qDict
-        self.ID = ID
-        return not replace # remove
