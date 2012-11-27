@@ -64,6 +64,9 @@ class LBEObjectInstanceHelper():
 				query[key] = data[key].split('--')
 		return query
 			
+    def remove(self,uid):
+        self._backend()
+        return self.backend.removeObject(self.template,uid)
 			
     def save(self, ):
         self._backend()

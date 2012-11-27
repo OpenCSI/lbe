@@ -64,6 +64,9 @@ class BackendMongoImpl:
     
     def modifyObject(self, lbeObjectTemplate, ID, values):
         return self.handler.modifyDocument(lbeObjectTemplate.name,ID,values)
+    
+    def removeObject(self,lbeObjectTemplate, ID):
+		return self.handler.removeDocument(lbeObjectTemplate.name,ID)
         
     # TODO: Implement per page search
     def searchObjects(self, lbeObjectTemplate, index = 0, size = 0):

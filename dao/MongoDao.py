@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pymongo import Connection, errors
 from django.conf import settings
-from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_OBJECT
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_STATE_DELETED
 import sys, logging
 
 import datetime
@@ -36,7 +36,6 @@ class MongoService:
             # In order to not lose values:
             newValues = {} # new dict because 'values' is QueryDict.
             # replace values:
-            print changeSet
             for kset in changeSet:
 				if not values.has_key(kset):
 					newValues[kset] = changeSet[kset] # get other values
@@ -59,6 +58,14 @@ class MongoService:
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
 		
+    def removeDocument(self,collection,ID):
+		db = self.db[collection]
+		try:
+			# TODO?: change value into chages.set.status to OBJECT_CHANGE_DELETE_OBJECT
+			return db.update({'_id':ID},{'$set':{'status':OBJECT_STATE_DELETED}})
+		except BaseException as e:
+			logger.error('Error while removeing document: ' + e.__str__())
+			
 # Pensee
 # Dans le cas d'un target LDAP, on utilise ce champ pour calculer le DN à partir d'une méthode définie dans le script
 
