@@ -14,6 +14,8 @@ from django import forms
 
 def index(request,page=1):
     lengthMax=10
+    if page is None:
+		page=1
     if int(page)-lengthMax < 0:
 		index = 0
     else:

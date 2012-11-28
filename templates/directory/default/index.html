@@ -24,7 +24,7 @@
 <div class="pagination">
     <ul>
     {% for i in length %}
-    <li {% if i == page %}class="disabled"{% endif %}><a href="{% url 'directory.views.index' page=i %}">{{i}}</a></li>
+    <li {% if i == page %}class="disabled"{% endif %}><a href="{% if i == page %}#{% else %}{% url 'directory.views.index' page=i %}{% endif %}">{{i}}</a></li>
     {% endfor %}
     </ul>
 </div>
