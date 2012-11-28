@@ -20,4 +20,13 @@
      </tr>
     {% endfor %}
 </table>
+<center>
+<div class="pagination">
+    <ul>
+    {% for i in length %}
+    <li {% if i == page %}class="disabled"{% endif %}><a href="{% url 'directory.views.index' page=i %}">{{i}}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+</center>
 {% endblock %}

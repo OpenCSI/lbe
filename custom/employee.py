@@ -52,12 +52,13 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 			try:
 				# Multi value:
 				tab = []
+				i = 0
 				for value in self.cleaned_data['givenName'].split('--'):
 					tab.append(value.capitalize())
 					i = i + 1
 				return tab
 			except:
-				raise forms.ValidationError("The field #"+i+" must be a valid attribute.")
+				raise forms.ValidationError("The field #"+str(i)+" must be a valid attribute.")
     
     def clean_sn(self):
 		try:
@@ -75,7 +76,7 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 		try:
 			return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
 		except:
-				raise forms.ValidationError("This field must be a valid attribute.")
+			raise forms.ValidationError("This field must be a valid attribute.")
     
     def compute_uid(self):
 		# TODO: Provide an example to use two letters of the givenName if the uid already exists in the backend

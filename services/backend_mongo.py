@@ -68,10 +68,13 @@ class BackendMongoImpl:
     def removeObject(self,lbeObjectTemplate, ID):
 		return self.handler.removeDocument(lbeObjectTemplate.name,ID)
         
+    def lengthObjects(self,lbeObjectTemplate):
+		return self.handler.sizeDocuments(lbeObjectTemplate.name,{ 'status': { '$gt': OBJECT_STATE_INVALID } })
+		
     # TODO: Implement per page search
     def searchObjects(self, lbeObjectTemplate, index = 0, size = 0):
-        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': { '$gt': OBJECT_STATE_INVALID } }))
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': { '$gt': OBJECT_STATE_INVALID } }, index, size))
 
     # Search objects with synced_at <= lbeObjectTemplate.synced_at
     def searchObjectsToUpdate(self, lbeObjectTemplate, index = 0, size = 0):
-        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': OBJECT_STATE_AWAITING_SYNC }))
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': OBJECT_STATE_AWAITING_SYNC }, index, size))

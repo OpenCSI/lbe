@@ -32,7 +32,7 @@ class LBEAttribute(models.Model):
 
 class LBEScript(models.Model):
     name      = models.CharField(max_length=64)
-    file      = models.FileField(upload_to='script')
+    file      = models.FileField(upload_to='custom')
     # TODO: Probablement à supprimer, juste avoir une référence vers le nom du fichier
     #value     = models.CharField(max_length=64)
     #tab       = models.CharField(max_length=64)

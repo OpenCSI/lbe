@@ -14,9 +14,13 @@ class MongoService:
         self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
         self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
 
-    def searchDocuments(self, collection, filters = {}):
+    def searchDocuments(self, collection, filters = {},index = 0, size = 0):
         logger.debug('Performing MongoDB search on collection: ' + collection + ' with filter: ' + filters.__str__())
-        return self.db[collection].find(filters)
+        return self.db[collection].find(filters).skip(index).limit(size)
+    
+    def sizeDocuments(self, collection, filters = {}):
+		logger.debug('Performing MongoDB size on collection: ' + collection + ' with filter: ' + filters.__str__())
+		return self.db[collection].find(filters).count()
 
     def createDocument(self, collection, document):
         db = self.db[collection]
@@ -34,12 +38,13 @@ class MongoService:
             changeSet = self.searchDocuments(collection,{'_id':ID})[0]['changes']['set']
             # change the set dict with new values:
             # In order to not lose values:
-            newValues = {} # new dict because 'values' is QueryDict.
+            newValues = {} # new dict because of 'values' is QueryDict.
             # replace values:
             for kset in changeSet:
 				if not values.has_key(kset):
 					newValues[kset] = changeSet[kset] # get other values
 				else:
+					# list or not list ?:
 					if isinstance(values[kset],unicode) or isinstance(values[kset],str):
 						newValues[kset] = [ values[kset] ] # new values
 					else:

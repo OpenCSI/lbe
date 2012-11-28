@@ -60,10 +60,13 @@ class LBEObjectInstanceHelper():
 		for key in data:
 			if len(data.getlist(key)) == 1:
 				query[key] = data[key]
-			else: # compress MultiValue:
+			else: # decompress MultiValue:
 				query[key] = data[key].split('--')
 		return query
 			
+    """
+		MANAGE Object/Values:
+	"""
     def remove(self,uid):
         self._backend()
         return self.backend.removeObject(self.template,uid)
@@ -85,10 +88,13 @@ class LBEObjectInstanceHelper():
 		self._backend()
 		self.backend.modifyObject(self.template,self.ID,self.instance)
 		
+    """
+		END MANAGE Object/Values:
+	"""
+	
     def form(self,uid,data=None):
         if data is None:
             data = self.getValues(uid)
-            print data
         else:
 			data = self._compress_data(data)
         self._create_script_instance(data)
@@ -194,9 +200,7 @@ class LBEObjectInstanceHelper():
             print e.__str__()
             # TODO: Remove technical message, use another handler to send message to administrator
             messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')
-        print self.instance.attributes
 
-	# IMPROVE:
     def updateFromDict(self,ID,values):
         self._backend()
         backendValues = self.backend.getObjectByName(self.template,ID)
@@ -212,5 +216,3 @@ class LBEObjectInstanceHelper():
 						qDict[keyB] = val
         self.instance = qDict
         self.ID = ID
-        #for key in values:
-		#	self.applyCustomScriptAttribute(key)

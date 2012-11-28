@@ -8,15 +8,28 @@ from django.template import RequestContext
 from services.backend import BackendHelper, BackendObjectAlreadyExist
 from django.contrib import messages
 from django.forms.formsets import formset_factory
+import math
 
 from django import forms
 
-def index(request):
+def index(request,page=1):
+    lengthMax=10
+    if int(page)-lengthMax < 0:
+		index = 0
+    else:
+        index = int(page)-lengthMax
     backend = BackendHelper()
-    objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
+    objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'),index,lengthMax)
     lbeObject = LBEObjectTemplate.objects.get(name__iexact="employee")
-    return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
+    # Pagination:
+    size = int(math.ceil(backend.lengthObjects(LBEObjectTemplate.objects.get(name='employee'))/ float(lengthMax)))
+    tabSize = []
+    for i in range(0,size):
+        tabSize.append(i+1)
+    return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id, 'length': tabSize,'page': int(page) }, context_instance=RequestContext(request))
 
+# REMOVE object
+#@manage_acl('delete')
 def deleteObjectInstance(request, objectName):
     backend = BackendHelper()
     objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
@@ -26,13 +39,14 @@ def deleteObjectInstance(request, objectName):
     instanceHelper.remove(objectName)
     return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
 
-#@managel_acl()
+#@manage_acl('view')
 def viewObjectInstance(request,obj_id,objectName = None):
 	instanceHelper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id=obj_id))
 	obj = instanceHelper.getValuesDecompressed(objectName)
-	return render_to_response('directory/default/object/view.html', {'object':obj}, context_instance=RequestContext(request))
+	return render_to_response('directory/default/object/view.html', {'object':obj,'obj_id':obj_id}, context_instance=RequestContext(request))
 	
 # Create an instance of LBEObjectInstance from LBEObject definition. Save it into MongoDB with status AWAITING_SYNC
+#@manage_acl('create')
 def addObjectInstance(request, lbeObject_id = None):
     form = None
     if request.method == 'POST':
@@ -47,8 +61,8 @@ def addObjectInstance(request, lbeObject_id = None):
                 return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
             # Redirect to list
             return redirect('/directory/')
-        else:
-            render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
+        #else:
+            #render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
         return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
     else:
         if lbeObject_id is None:
@@ -57,6 +71,7 @@ def addObjectInstance(request, lbeObject_id = None):
     form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id))
     return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
 
+# Modify, remove values
 #@manage_acl()    
 def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
@@ -87,7 +102,3 @@ def manageObjectInstance(request, obj_id,uid,type):
 #@manage_acl('modify')
 def modifyObjectInstance(request,obj_id,uid):
 	return HttpResponse('')
-	
-#@manage_acl('delete')
-#def deleteObjectInstance(request,obj_id,uid):
-#	return HttpResponse('')
