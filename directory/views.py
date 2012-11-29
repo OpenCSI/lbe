@@ -34,12 +34,13 @@ def index(request,page=1):
 #@manage_acl('delete')
 def deleteObjectInstance(request, objectName):
     backend = BackendHelper()
-    objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
+    #objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
     lbeObject = LBEObjectTemplate.objects.get(name__iexact="employee")
     # change status code user:
     instanceHelper = LBEObjectInstanceHelper(lbeObject)
     instanceHelper.remove(objectName)
-    return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
+    return index(request)
+    #return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
 
 #@manage_acl('view')
 def viewObjectInstance(request,obj_id,objectName = None):

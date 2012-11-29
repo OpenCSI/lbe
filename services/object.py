@@ -21,6 +21,9 @@ class LBEObjectInstanceHelper():
             return
         self.backend = BackendHelper()
 
+    """
+		LOAD Script
+	"""
     def _load_script(self):
         if self.scriptInstance is not None:
             return
@@ -45,7 +48,13 @@ class LBEObjectInstanceHelper():
         if self.scriptInstance is not None:
             return
         self.scriptInstance = self.scriptClass(self.template, self.instance,data)
+	"""
+		END LOAD Script
+	"""
 	
+    """
+		DE/COMPRESS Datas:
+	"""
     def _compress_data(self,data):
 		query = {}
 		for key in data:
@@ -63,14 +72,13 @@ class LBEObjectInstanceHelper():
 			else: # decompress MultiValue:
 				query[key] = data[key].split('--')
 		return query
+    """
+		END DE/COMPRESS Datas
+	"""
 			
     """
 		MANAGE Object/Values:
-	"""
-    def remove(self,uid):
-        self._backend()
-        return self.backend.removeObject(self.template,uid)
-			
+	"""			
     def save(self, ):
         self._backend()
         # Search for an existing object
@@ -88,10 +96,10 @@ class LBEObjectInstanceHelper():
 		self._backend()
 		self.backend.modifyObject(self.template,self.ID,self.instance)
 		
-    """
-		END MANAGE Object/Values:
-	"""
-	
+    def remove(self,uid):
+        self._backend()
+        return self.backend.removeObject(self.template,uid)	
+        
     def form(self,uid,data=None):
         if data is None:
             data = self.getValues(uid)
@@ -99,7 +107,13 @@ class LBEObjectInstanceHelper():
 			data = self._compress_data(data)
         self._create_script_instance(data)
         return self.scriptInstance
+    """
+		END MANAGE Object/Values:
+	"""
 
+    """
+		CALL Script
+    """
     def callScriptMethod(self, methodName):
         self._create_script_instance()
         method = getattr(self.scriptInstance, methodName)
@@ -133,7 +147,9 @@ class LBEObjectInstanceHelper():
 			self.instance[attributeInstance.lbeAttribute.name] = self.callScriptMethod("clean_" + attributeInstance.lbeAttribute.name)
 		except BaseException as e:
 			print e
-	
+    """
+		END CALL Script
+    """	
     def getValues(self,UID):
         """
 		Fonction enables to get values from attributes fields and
