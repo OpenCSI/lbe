@@ -70,6 +70,9 @@ class BackendMongoImpl:
         
     def lengthObjects(self,lbeObjectTemplate):
 		return self.handler.sizeDocuments(lbeObjectTemplate.name,{ 'status': { '$gt': OBJECT_STATE_INVALID } })
+	
+    def positionObject(self,lbeObjectTemplate,ID):
+		return self.handler.posDocument(lbeObjectTemplate,ID)	
 		
     # TODO: Implement per page search
     def searchObjects(self, lbeObjectTemplate, index = 0, size = 0):

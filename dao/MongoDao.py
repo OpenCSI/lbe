@@ -22,6 +22,15 @@ class MongoService:
 		logger.debug('Performing MongoDB size on collection: ' + collection + ' with filter: ' + filters.__str__())
 		return self.db[collection].find(filters).count()
 
+    def posDocument(self, collection, id):
+		array = self.db[collection].find({},{'_id':''})
+		i = 0
+		for value in array:
+			i += 1
+			if value['_id']  == id:
+				return i
+		return 0
+		
     def createDocument(self, collection, document):
         db = self.db[collection]
         try:

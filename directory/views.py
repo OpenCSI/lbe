@@ -39,7 +39,10 @@ def deleteObjectInstance(request, objectName):
     # change status code user:
     instanceHelper = LBEObjectInstanceHelper(lbeObject)
     instanceHelper.remove(objectName)
-    return index(request)
+    position = backend.positionObject(lbeObject.name,objectName)
+    lengthMax = 10
+    page = int(math.ceil(position/float(lengthMax)))
+    return index(request,page)
     #return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
 
 #@manage_acl('view')
