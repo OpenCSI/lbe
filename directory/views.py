@@ -39,6 +39,7 @@ def deleteObjectInstance(request, objectName):
     # change status code user:
     instanceHelper = LBEObjectInstanceHelper(lbeObject)
     instanceHelper.remove(objectName)
+    # Current page from the object deleted:
     position = backend.positionObject(lbeObject.name,objectName)
     lengthMax = 10
     page = int(math.ceil(position/float(lengthMax)))
@@ -55,9 +56,9 @@ def viewObjectInstance(request,obj_id,objectName = None):
 #@manage_acl('create')
 def addObjectInstance(request, lbeObject_id = None):
     form = None
+    helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
     if request.method == 'POST':
-        form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id), request.POST)
-        helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
+        form = helper.form(LBEObjectTemplate.objects.get(id = lbeObject_id), request.POST)
         if form.is_valid():
             helper.createFromDict(request)
             try:
@@ -67,14 +68,12 @@ def addObjectInstance(request, lbeObject_id = None):
                 return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
             # Redirect to list
             return redirect('/directory/')
-        #else:
-            #render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
         return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
     else:
         if lbeObject_id is None:
             # TODO: Redirect to a form to choose which object to add
             print 'error'
-    form = LBEObjectInstanceForm(LBEObjectTemplate.objects.get(id = lbeObject_id))
+    form = helper.form(LBEObjectTemplate.objects.get(id = lbeObject_id))
     return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
 
 # Modify, remove values

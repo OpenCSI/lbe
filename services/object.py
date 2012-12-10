@@ -137,7 +137,7 @@ class LBEObjectInstanceHelper():
 			
     def applyCustomScript(self):
 		# Clean attributes before manage virtuals attributes
-		self.callAttributeScriptMethod(ATTRIBUTE_TYPE_FINAL, 'clean_')
+		#self.callAttributeScriptMethod(ATTRIBUTE_TYPE_FINAL, 'clean_')
 		# Now, compute virtual attributes
 		self.callAttributeScriptMethod(ATTRIBUTE_TYPE_VIRTUAL, 'compute_')
     
@@ -150,30 +150,35 @@ class LBEObjectInstanceHelper():
     """
 		END CALL Script
     """	
+    
     def getValues(self,UID):
         """
 		Fonction enables to get values from attributes fields and
 		changes.set fields, return the new values (changes.set > attributes)
         """
-        self._backend()
-        valuesUser = self.backend.getObjectByName(self.template, UID)
-        # Get all attributes from objects:
-        attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
-        d = dict()
-        for attribute in attributes:
-			if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
-				q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
-				q = q.copy()
-				for value in valuesUser['changes']['set'][attribute.lbeAttribute.name][1:]:
-					q.update({attribute.lbeAttribute.name:value})
-				d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
-			else:
-				q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
-				q = q.copy()
-				for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
-					q.update({attribute.lbeAttribute.name:value})
-				d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
-        return d
+        try:
+			self._backend()
+			valuesUser = self.backend.getObjectByName(self.template, UID)
+			# Get all attributes from objects:
+			attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
+			d = dict()
+			for attribute in attributes:
+				if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
+					q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+					q = q.copy()
+					for value in valuesUser['changes']['set'][attribute.lbeAttribute.name][1:]:
+						q.update({attribute.lbeAttribute.name:value})
+					d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+				else:
+					q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+					q = q.copy()
+					for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
+						q.update({attribute.lbeAttribute.name:value})
+					d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+			return d
+        except BaseException:
+			# Create part:
+			return None
         
     def getValuesDecompressed(self,UID):
         """
@@ -193,6 +198,9 @@ class LBEObjectInstanceHelper():
         return d
 	
     def createFromDict(self, request):
+        # Reinit script configuration file:
+        self.scriptInstance = None
+        # attributes:
         attributes = {}
         for attributeInstance in self.template.lbeattributeinstance_set.all():
             # Only fetch real attributes from the request
@@ -204,6 +212,7 @@ class LBEObjectInstanceHelper():
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
         # TODO: Maybe check here if the object need approvals
         self.instance.status = OBJECT_STATE_AWAITING_SYNC
+        print self.instance.attributes
         self.applyCustomScript()
         # Set uniqueName and displayName
         try:

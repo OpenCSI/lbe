@@ -26,7 +26,7 @@ ATTRIBUTE_TYPE_REFERENCE = 2
 class LBEAttribute(models.Model):
     displayName       = models.CharField(unique = True, max_length=64)
     name               = models.CharField(unique = True, max_length=64)
-    # some fields (like syntax, max size) will be added later
+    # some fields (like syntax, max size) will be added later (not in LBEAttributeInstance ?)
     def __unicode__(self):
         return str(self.displayName + ":" + self.name)
 

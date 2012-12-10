@@ -45,38 +45,26 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 
     def clean_givenName(self):
 		try:
-			i=1
-			# TODO: Try to implement a uidNumber
-			return [ self.instance.attributes['givenName'][0].capitalize() ]
+			# Multi value:
+			tab = []
+			i = 0
+			for value in self.cleaned_data['givenName'].split('--'):
+				tab.append(value.capitalize())
+				i = i + 1
+			return tab
 		except:
-			try:
-				# Multi value:
-				tab = []
-				i = 0
-				for value in self.cleaned_data['givenName'].split('--'):
-					tab.append(value.capitalize())
-					i = i + 1
-				return tab
-			except:
-				raise forms.ValidationError("The field #"+str(i)+" must be a valid attribute.")
+			raise forms.ValidationError("The field #"+str(i)+" must be a valid attribute.")
     
     def clean_sn(self):
 		try:
-			# create object:
-			return [ self.instance.attributes['sn'][0].capitalize() ]
-		except:
-			try:
 			# modify attribut object:
 			# for multi-value: just create an list to set and return it.
-				return [ self.cleaned_data['sn'].capitalize() ]
-			except:
-				raise forms.ValidationError("This field must be a valid attribute.")
+			return [ self.cleaned_data['sn'].capitalize() ]
+		except BaseException:
+			raise forms.ValidationError("This field must be a valid attribute.")
 
     def compute_cn(self):
-		try:
-			return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
-		except:
-			raise forms.ValidationError("This field must be a valid attribute.")
+		return [ self.instance.attributes['givenName'][0] + ' ' + self.instance.attributes['sn'][0] ]
     
     def compute_uid(self):
 		# TODO: Provide an example to use two letters of the givenName if the uid already exists in the backend
