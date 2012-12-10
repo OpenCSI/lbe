@@ -49,7 +49,8 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 			tab = []
 			i = 0
 			for value in self.cleaned_data['givenName'].split('\0'):
-				tab.append(value.capitalize())
+				if not value == "":
+					tab.append(value.capitalize())
 				i = i + 1
 			return tab
 		except:
