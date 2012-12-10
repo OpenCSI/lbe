@@ -61,7 +61,7 @@ class LBEObjectInstanceHelper():
 			if len(data.getlist(key)) == 1:
 				query[key] = data[key]
 			else: # compress MultiValue:
-				query[key] = '--'.join(str(val) for val in data.getlist(key))
+				query[key] = '\0'.join(str(val) for val in data.getlist(key))
 		return query
 	
     def decompress_data(self,data):
@@ -70,7 +70,7 @@ class LBEObjectInstanceHelper():
 			if len(data.getlist(key)) == 1:
 				query[key] = data[key]
 			else: # decompress MultiValue:
-				query[key] = data[key].split('--')
+				query[key] = data[key].split('\0')
 		return query
     """
 		END DE/COMPRESS Datas

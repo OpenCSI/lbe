@@ -48,7 +48,7 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 			# Multi value:
 			tab = []
 			i = 0
-			for value in self.cleaned_data['givenName'].split('--'):
+			for value in self.cleaned_data['givenName'].split('\0'):
 				tab.append(value.capitalize())
 				i = i + 1
 			return tab
