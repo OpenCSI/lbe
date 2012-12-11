@@ -74,7 +74,7 @@ class LBEAttributeInstance(models.Model):
     secure              = models.BooleanField(default = False)
     attributeType        = models.SmallIntegerField(default = ATTRIBUTE_TYPE_FINAL)
     # The HTML widget used to display/edit attribute. We'll inject classname
-    widget            = models.CharField(max_length=64, default = 'forms.CharField', blank = True)
+    widget            = models.CharField(max_length=64, default = 'forms.CharField')
     widgetArgs        = models.CharField(max_length=255, default = 'None')
 
 class LBEDirectoryACL(models.Model):
