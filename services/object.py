@@ -212,7 +212,6 @@ class LBEObjectInstanceHelper():
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
         # TODO: Maybe check here if the object need approvals
         self.instance.status = OBJECT_STATE_AWAITING_SYNC
-        print self.instance.attributes
         self.applyCustomScript()
         # Set uniqueName and displayName
         try:

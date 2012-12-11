@@ -77,6 +77,7 @@ def addObjectAttribute(request, obj_id):
         form = LBEAttributeInstanceForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.add_message(request, messages.SUCCESS, 'Attribute added.')
             return redirect('/config/object/modify/' + obj_id)
         else:
             # TODO: manage errors

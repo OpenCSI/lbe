@@ -40,7 +40,7 @@ class EmployeePostConfig(LBEObjectInstanceForm):
     # IMPORTANT: Remembers all attributes are store in a list, even mono valued. Therefore, you must return a list
     
     # Prototype:
-    # def clean_<attributeName>(self): (NOT the displayName) for FINAL attributes
+    # def clean_<attributeName>(self): (NOT the displayName) for FINAL attributes [django form template]
     # def compute_<attributeName>(self): (NOT the displayName) for VIRTUAL attributes
 
     def clean_givenName(self):
