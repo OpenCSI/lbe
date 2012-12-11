@@ -35,7 +35,7 @@ class LBEAttributeInstanceForm(ModelForm):
     lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
     class Meta:
         model = LBEAttributeInstance
-        exclude = ('lbeObjectTemplate','widgetArgs','attributeType' )
+        exclude = ('widgetArgs','attributeType' )
 
 class LBEScriptForm(ModelForm):
     class Meta:
