@@ -38,10 +38,10 @@ def index(request,lbeObject_id=1,page=1):
 
 # REMOVE object
 #@manage_acl('delete')
-def deleteObjectInstance(request, objectName):
+def deleteObjectInstance(request,lbeObject_id,objectName):
     backend = BackendHelper()
     #objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
-    lbeObject = LBEObjectTemplate.objects.get(name__iexact="employee")
+    lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
     # change status code user:
     instanceHelper = LBEObjectInstanceHelper(lbeObject)
     instanceHelper.remove(objectName)
@@ -49,7 +49,7 @@ def deleteObjectInstance(request, objectName):
     position = backend.positionObject(lbeObject.name,objectName)
     lengthMax = 10
     page = int(math.ceil(position/float(lengthMax)))
-    return index(request,page)
+    return index(request,lbeObject_id,page)
     #return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
 
 #@manage_acl('view')
