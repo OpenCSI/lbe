@@ -12,8 +12,12 @@ import math
 
 from django import forms
 
-def index(request,page=1):
+def index(request,lbeObject_id=1,page=1):
+	# init object:
+    if lbeObject_id is None:
+		lbeObject_id = 1
     lengthMax=10
+    # init pagination:
     if page is None:
 		page=1
     if int(page)-lengthMax < 0:
@@ -21,14 +25,16 @@ def index(request,page=1):
     else:
         index = int(page)-lengthMax
     backend = BackendHelper()
-    objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'),index,lengthMax)
-    lbeObject = LBEObjectTemplate.objects.get(name__iexact="employee")
+    objects = backend.searchObjects(LBEObjectTemplate.objects.get(id=lbeObject_id),index,lengthMax)
+    lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
+    lbeObjects = LBEObjectTemplate.objects.all()
+    print lbeObjects
     # Pagination:
-    size = int(math.ceil(backend.lengthObjects(LBEObjectTemplate.objects.get(name='employee'))/ float(lengthMax)))
+    size = int(math.ceil(backend.lengthObjects(LBEObjectTemplate.objects.get(id=lbeObject_id))/ float(lengthMax)))
     tabSize = []
     for i in range(0,size):
         tabSize.append(i+1)
-    return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id, 'length': tabSize,'page': int(page) }, context_instance=RequestContext(request))
+    return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id,'lbeObjects':lbeObjects, 'length': tabSize,'page': int(page) }, context_instance=RequestContext(request))
 
 # REMOVE object
 #@manage_acl('delete')

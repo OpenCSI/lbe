@@ -6,7 +6,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^/?(?P<page>\d+)?$', 'directory.views.index'),
+    url(r'^/?(?P<lbeObject_id>\d+)?/?(?P<page>\d+)?$', 'directory.views.index'),
     url(r'^directory/?$', 'directory.views.index'),
     url(r'^directory/object/add/?$', 'directory.views.addObjectInstance'),
     url(r'^directory/object/add/(?P<lbeObject_id>\d+)$', 'directory.views.addObjectInstance'),
