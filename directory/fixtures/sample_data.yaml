@@ -78,10 +78,15 @@
     attributeType: 0
 
 - model: directory.LBEScript
-  pk: 1
+  pk: 2
   fields:
     name: custom.employee.EmployeePostConfig
     file: 'custom.employee'
+- model: directory.LBEScript
+  pk: 1
+  fields:
+    name: custom.base.BASEPostConfig
+    file: 'custom.base'
 
 - model: directory.LBEObjectTemplate
   pk: 1
@@ -91,4 +96,4 @@
     instanceNameAttribute: 1
     instanceDisplayNameAttribute: 1
     approval: 0
-    script: 1
+    script: 2

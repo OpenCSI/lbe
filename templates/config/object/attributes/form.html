@@ -9,6 +9,7 @@
 	<tr>
 		<th>Name</th>
 		<th>Default value</th>
+		<th>Attribut Type</th>
 		<th>Flags</th>
 		<th>Reference</th>
 	</tr>
@@ -16,6 +17,7 @@
 		<!-- TODO replace this field by an ajax autocompletion -->
 		<td>{{attributeForm.lbeAttribute}} {% for error in attributeForm.lbeAttribute.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
 		<td>{{attributeForm.defaultValue}} {% for error in attributeForm.defaultValue.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
+		<td>{{attributeForm.attributeType}} {% for error in attributeForm.defaultValue.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
 		<td>Mandatory: {{attributeForm.mandatory}}<br/>
 			Multivalued: {{attributeForm.multivalue}}<br/>
 			Ciphered: {{attributeForm.secure}}</td>

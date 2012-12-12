@@ -52,7 +52,7 @@ class LBEObjectTemplate(models.Model):
     # To increment each time an object is changed
     version           = models.SmallIntegerField(default = 0)
     # Every template must be associated to a class provided by the administrator
-    script               = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
+    script               = models.ForeignKey(LBEScript, default = 1)
     # Date of last import. Used to detect new objects in target by searching on createTimestamp (for LDAP) > last import
     imported_at     = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
     # Date of last sync

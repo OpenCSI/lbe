@@ -35,7 +35,10 @@ class LBEAttributeInstanceForm(ModelForm):
     lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
     class Meta:
         model = LBEAttributeInstance
-        exclude = ('widget','widgetArgs','attributeType')
+        exclude = ('widget','widgetArgs')
+        def clean_attributeType(self):
+			if self.cleaned_data['attributeType'] < 0:
+				raise forms.ValidationError("This field must be null or positive.")
 
 class LBEScriptForm(ModelForm):
     class Meta:
