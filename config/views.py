@@ -188,20 +188,19 @@ def addScript(request):
 		form = LBEScriptForm()
 	return render_to_response('config/script/add.html',{'scriptForm':form},context_instance=RequestContext(request))
 	
-def manageScript(request):
+def manageScript(request,scriptId = None):
+	if scriptId == None:
+		scriptId = 1
+	script = LBEScript.objects.get(id = scriptId)
 	if request.method == 'POST':
-		form = LBEScriptManageForm(request.POST)
+		form = LBEScriptForm(request.POST,instance=script)
 		if form.is_valid():
-			script = LBEScript.objects.get(id=request.POST['script'])
-			mscript = ScriptFile(script.name,script.file)
-			try:
-				message = mscript.execute(request.POST['test'])
-				messages.add_message(request, messages.SUCCESS, 'script tested successfully. Return value:' + message)
-			except BaseException as e:
-				messages.add_message(request, messages.ERROR, 'Error while testing the script file: ' + str(e))
+			if form.save():
+				messages.add_message(request, messages.SUCCESS, 'script managed.')
 			return redirect('/config/script/manage')
 		else:
-			messages.add_message(request, messages.ERROR, 'Error while testing the script file.')
+			messages.add_message(request, messages.ERROR, 'Error while managing the script file.')
 	else:
-		form = LBEScriptManageForm()
-	return render_to_response('config/script/manage.html',{'scriptForm':form},context_instance=RequestContext(request))
+		form = LBEScriptForm(instance=script)
+	scriptList = LBEScript.objects.all()
+	return render_to_response('config/script/manage.html',{'scriptForm':form, 'scriptList':scriptList},context_instance=RequestContext(request))
