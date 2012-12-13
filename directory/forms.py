@@ -3,6 +3,7 @@ from django import forms
 from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
 from django.forms.util import ErrorList
+import os
 
 # All this forms but ObjectInstanceForm should be in config/forms.py
 class LBEModelChoiceField(ModelChoiceField):
@@ -43,23 +44,32 @@ class LBEScriptForm(ModelForm):
 	# test if the name already exists:
 	def clean_name(self):
 		value = self.cleaned_data['name']
+		exist = False
 		try:
-			name = LBEScript.objects.filter(name__iexact=value)
-			exist = True
+			if LBEScript.objects.filter(name__iexact='custom.'+value):
+				exist = True
 		except BaseException:
-			exists = False
+			pass
 		if exist:
 			raise forms.ValidationError("This name is already used, change it.")
-		return value
+		return 'custom.' + value
 	# test if a filename already exists:
 	def clean_file(self):
 		value = self.cleaned_data['file']
+		exist = False
 		try:
-			file = LBEScript.objects.filter(file__iexact=value)
-			exist = True
+			if LBEScript.objects.filter(file__iexact='custom.'+value):
+				exist = True
 		except BaseException:
-			exist = False
+			pass
 		if exist:
+			raise forms.ValidationError("The file already exists, change its name and class name too.")
+		return 'custom.'+value
+	
+	def clean_fileUpload(self):
+		value = self.cleaned_data['fileUpload']
+		# file already exists?:
+		if os.path.exists("custom/" + str(value)):
 			raise forms.ValidationError("The file already exists, change its name and class name too.")
 		return value
 

@@ -4,14 +4,18 @@
 {% endfor %}
 {# Include the visible fields #}
 <table class='table table-condensed'>
-{% for field in scriptForm.visible_fields %}
-    <tr>
-        <th> {{ field.label }} </th>
-        <td> {{ field }}
-            {% for error in field.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
-        </td>
-    </tr>
-    {% endfor %}
+	<tr>
+		<th>Full name</th>
+		<td>{{scriptForm.name}} Format: <i>fileName.ClassName</i>{% for error in scriptForm.name.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
+	</tr>
+	<tr>
+		<th>File name</th>
+		<td>{{scriptForm.file}} {% for error in scriptForm.file.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
+	</tr>
+	<tr>
+		<th>File</th>
+		<td>{{scriptForm.fileUpload}} {% for error in scriptForm.fileUpload.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td>
+	</tr>
     <tr>
         <td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn'></td>
     </tr>

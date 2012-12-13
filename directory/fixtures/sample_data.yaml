@@ -92,8 +92,16 @@
 - model: directory.LBEScript
   pk: 1
   fields:
+    name: custom.base.BASEPostConfig
+    file: custom.base
+    fileUpload: 'custom/base.py'
+    
+- model: directory.LBEScript
+  pk: 2
+  fields:
     name: custom.employee.EmployeePostConfig
-    file: 'custom.employee'
+    file: custom.employee
+    fileUpload: 'custom/employee.py'
 
 - model: directory.LBEObjectTemplate
   pk: 1
@@ -103,4 +111,4 @@
     instanceNameAttribute: 1
     instanceDisplayNameAttribute: 1
     approval: 0
-    script: 1
+    script: 2

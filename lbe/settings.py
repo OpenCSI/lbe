@@ -198,8 +198,10 @@ MESSAGE_TAGS = {
 }
 
 # Import local_settings.py, thanks to Graphite
+"""
 try:
     from lbe.local_settings import *
 except ImportError:
     print >> sys.stderr, "Could not import local_settings.py, please create it"
     sys.exit(1)
+"""

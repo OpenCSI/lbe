@@ -38,11 +38,9 @@ class LBEAttribute(models.Model):
         return str(self.displayName + ":" + self.name)
 
 class LBEScript(models.Model):
-    name      = models.CharField(max_length=64)
-    file      = models.FileField(upload_to='script')
-    # TODO: Probablement à supprimer, juste avoir une référence vers le nom du fichier
-    #value     = models.CharField(max_length=64)
-    #tab       = models.CharField(max_length=64)
+    name        = models.CharField(max_length=64)
+    file        = models.CharField(max_length=64)
+    fileUpload = models.FileField(upload_to='custom')
     def __unicode__(self):
         return str(self.name)
 
