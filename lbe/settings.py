@@ -166,14 +166,6 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'db': {
-            #'level': 'DEBUG',
-            'class': 'services.loggerHandler.logDB',#'logging.StreamHandler',
-        },
-        'request': {
-            #'level': 'DEBUG',
-            'class': 'services.loggerHandler.logRequest',#'logging.StreamHandler',
-        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',

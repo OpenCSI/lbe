@@ -1,0 +1,14 @@
+{% load url from future %}
+<div id="MBAddAttribute" class="modal hide fade">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h3><span id="AttrTitle">Add value for {{user}}</span></h3>
+	</div>
+	<div class="modal-body">
+		<table class="table table-condensed">
+			<tr><th>Value:<th></td>{{widget}}</td></tr>	
+			<tr><td colspan="2"><center><input id="create" class="btn" type="submit" disabled="disabled" onClick="add('{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=uid  %}','{{ attribute.name }}',$('#id_{{attribute.name}}').val());" /></center></td></tr>
+			<tr><td colspan="2"><center><i><span class="state"></span></i></center></td></tr>
+		</table>
+	</div>
+</div>

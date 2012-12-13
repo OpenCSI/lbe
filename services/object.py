@@ -1,23 +1,29 @@
 # -*- coding: utf-8 -*-
 import sys, logging
 from services.backend import BackendHelper
+from django.forms.formsets import formset_factory
 logger = logging.getLogger(__name__)
 from django.contrib import messages
-from directory.models import LBEObjectInstance, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
+from django.http import QueryDict
+from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
 from services.backend import BackendObjectAlreadyExist
 
 class LBEObjectInstanceHelper():
     def __init__(self, lbeObjectTemplate):
         self.template = lbeObjectTemplate
+        self.ID = None
         self.instance = None
         self.scriptInstance = None
         self.backend = None
-
+		
     def _backend(self):
         if self.backend is not None:
             return
         self.backend = BackendHelper()
 
+    """
+		LOAD Script
+	"""
     def _load_script(self):
         if self.scriptInstance is not None:
             return
@@ -32,17 +38,47 @@ class LBEObjectInstanceHelper():
             __import__(moduleName)
             module = sys.modules[moduleName]
             self.scriptClass = getattr(module, className)
-        
             # Create an instance
+            #self.scriptInstance = self.scriptClass(self.template,self.instance)
         else:
             logging.error('This object does not have an associate script')
 
-    def _create_script_instance(self):
+    def _create_script_instance(self,data = None):
         self._load_script()
         if self.scriptInstance is not None:
             return
-        self.scriptInstance = self.scriptClass(self.template, self.instance)
-
+        self.scriptInstance = self.scriptClass(self.template, self.instance,data)
+	"""
+		END LOAD Script
+	"""
+	
+    """
+		DE/COMPRESS Datas:
+	"""
+    def _compress_data(self,data):
+		query = {}
+		for key in data:
+			if len(data.getlist(key)) == 1:
+				query[key] = data[key]
+			else: # compress MultiValue:
+				query[key] = '\0'.join(str(val) for val in data.getlist(key))
+		return query
+	
+    def decompress_data(self,data):
+		query = {}
+		for key in data:
+			if len(data.getlist(key)) == 1:
+				query[key] = data[key]
+			else: # decompress MultiValue:
+				query[key] = data[key].split('\0')
+		return query
+    """
+		END DE/COMPRESS Datas
+	"""
+			
+    """
+		MANAGE Object/Values:
+	"""			
     def save(self, ):
         self._backend()
         # Search for an existing object
@@ -55,7 +91,29 @@ class LBEObjectInstanceHelper():
     def update(self):
         self._backend()
         self.backend.createObject(self.template, self.instance)
+        
+    def modify(self):
+		self._backend()
+		self.backend.modifyObject(self.template,self.ID,self.instance)
+		
+    def remove(self,uid):
+        self._backend()
+        return self.backend.removeObject(self.template,uid)	
+        
+    def form(self,uid,data=None):
+        if data is None:
+            data = self.getValues(uid)
+        else:
+			data = self._compress_data(data)
+        self._create_script_instance(data)
+        return self.scriptInstance
+    """
+		END MANAGE Object/Values:
+	"""
 
+    """
+		CALL Script
+    """
     def callScriptMethod(self, methodName):
         self._create_script_instance()
         method = getattr(self.scriptInstance, methodName)
@@ -72,22 +130,84 @@ class LBEObjectInstanceHelper():
             try:
                 self.instance.attributes[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
             except AttributeError as e:
-                logger.info('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
-    
+                try:
+                    self.instance[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
+                except AttributeError as e:
+                    logger.info('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
+			
     def applyCustomScript(self):
-        # Clean attributes before manage virtuals attributes
-        self.callAttributeScriptMethod(ATTRIBUTE_TYPE_FINAL, 'clean_')
-        # Now, compute virtual attributes
-        self.callAttributeScriptMethod(ATTRIBUTE_TYPE_VIRTUAL, 'compute_')
+		# Clean attributes before manage virtuals attributes
+		#self.callAttributeScriptMethod(ATTRIBUTE_TYPE_FINAL, 'clean_')
+		# Now, compute virtual attributes
+		self.callAttributeScriptMethod(ATTRIBUTE_TYPE_VIRTUAL, 'compute_')
+    
+    def applyCustomScriptAttribute(self,attribute):
+		try:
+			attributeInstance = self.template.lbeattributeinstance_set.get(attributeType= ATTRIBUTE_TYPE_FINAL, lbeAttribute= LBEAttribute.objects.get(name__iexact=attribute))
+			self.instance[attributeInstance.lbeAttribute.name] = self.callScriptMethod("clean_" + attributeInstance.lbeAttribute.name)
+		except BaseException as e:
+			print e
+    """
+		END CALL Script
+    """	
+    
+    def getValues(self,UID):
+        """
+		Fonction enables to get values from attributes fields and
+		changes.set fields, return the new values (changes.set > attributes)
+        """
+        try:
+			self._backend()
+			valuesUser = self.backend.getObjectByName(self.template, UID)
+			# Get all attributes from objects:
+			attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
+			d = dict()
+			for attribute in attributes:
+				if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
+					q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+					q = q.copy()
+					for value in valuesUser['changes']['set'][attribute.lbeAttribute.name][1:]:
+						q.update({attribute.lbeAttribute.name:value})
+					d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+				else:
+					q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+					q = q.copy()
+					for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
+						q.update({attribute.lbeAttribute.name:value})
+					d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+			return d
+        except BaseException:
+			# Create part:
+			return None
         
+    def getValuesDecompressed(self,UID):
+        """
+		Fonction enables to get values from attributes fields and
+		changes.set fields, return the new values (changes.set > attributes)
+        """
+        self._backend()
+        valuesUser = self.backend.getObjectByName(self.template, UID)
+        # Get all attributes from objects:
+        attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
+        d = dict()
+        for attribute in attributes:
+			if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
+				d[attribute.lbeAttribute.name] = valuesUser['changes']['set'][attribute.lbeAttribute.name]
+			else:
+				d[attribute.lbeAttribute.name] = valuesUser['attributes'][attribute.lbeAttribute.name]
+        return d
+	
     def createFromDict(self, request):
+        # Reinit script configuration file:
+        self.scriptInstance = None
+        # attributes:
         attributes = {}
         for attributeInstance in self.template.lbeattributeinstance_set.all():
             # Only fetch real attributes from the request
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 attributeName = attributeInstance.lbeAttribute.name
-                # manage multivalue:
-                attributes[attributeName] = request.POST.getlist(attributeName)
+                # TODO: manage multivalue here
+                attributes[attributeName] = [ request.POST[attributeName] ]
         # IMPORTANT: We need to create an instance without the uniqueBecause because it may be a computed attribute, for example uid (compute from firstname/name)
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
         # TODO: Maybe check here if the object need approvals
@@ -104,4 +224,19 @@ class LBEObjectInstanceHelper():
             print e.__str__()
             # TODO: Remove technical message, use another handler to send message to administrator
             messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')
-        print self.instance.attributes
+
+    def updateFromDict(self,ID,values):
+        self._backend()
+        backendValues = self.backend.getObjectByName(self.template,ID)
+        qDict = QueryDict('')
+        qDict = qDict.copy()# make it mutable
+        for keyB,valB in backendValues['changes']['set'].items():
+            for key,val in values.items():
+                if keyB == key:
+                    # check if values are equals: [Do not change value if same value from attribute field]
+                    if not backendValues['attributes'].has_key(key):
+						qDict[keyB] = val
+                    elif not backendValues['attributes'][key] == val:
+						qDict[keyB] = val
+        self.instance = qDict
+        self.ID = ID

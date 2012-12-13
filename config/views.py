@@ -7,7 +7,6 @@ from directory.models import *
 from directory.forms import *
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
-from services.scriptHelper import ScriptFile
 
 def addObject(request):
     if request.method == 'POST':
@@ -108,6 +107,7 @@ def addObjectAttribute(request, obj_id):
         form = LBEAttributeInstanceForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.add_message(request, messages.SUCCESS, 'Attribute added.')
             return redirect('/config/object/modify/' + obj_id)
         else:
             # TODO: manage errors
@@ -203,4 +203,4 @@ def manageScript(request,scriptId = None):
 	else:
 		form = LBEScriptForm(instance=script)
 	scriptList = LBEScript.objects.all()
-	return render_to_response('config/script/manage.html',{'scriptForm':form, 'scriptList':scriptList},context_instance=RequestContext(request))
+	return render_to_response('config/script/manage.html',{'scriptForm':form, 'scriptList':scriptList,'scriptId':scriptId},context_instance=RequestContext(request))

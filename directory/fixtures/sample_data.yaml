@@ -90,7 +90,7 @@
     attributeType: 0
 
 - model: directory.LBEScript
-  pk: 1
+  pk: 2
   fields:
     name: custom.base.BASEPostConfig
     file: custom.base
@@ -100,8 +100,12 @@
   pk: 2
   fields:
     name: custom.employee.EmployeePostConfig
-    file: custom.employee
-    fileUpload: 'custom/employee.py'
+    file: 'custom.employee'
+- model: directory.LBEScript
+  pk: 1
+  fields:
+    name: custom.base.BASEPostConfig
+    file: 'custom.base'
 
 - model: directory.LBEObjectTemplate
   pk: 1

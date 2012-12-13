@@ -1,0 +1,11 @@
+{% extends 'index.html' %}
+{% load url from future %}
+
+{% block content %}
+<div class="message"></div>
+<div class="addAttribute"></div>
+<h3>{{uid}}</h3>
+<form method="post" action="">{% csrf_token %}
+       {% include 'directory/default/object/form.html' %}
+</form>
+{% endblock %}

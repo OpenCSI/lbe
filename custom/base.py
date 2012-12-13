@@ -16,8 +16,6 @@ class BASEPostConfig(LBEObjectInstanceForm):
         super(BASEPostConfig, self).__init__(self.template,*args, **kwargs)
     # END OF REQUIRED SECTION ----------------------------------------------------
 
-    # REQUIRED SECTION FOR LDAP BACKEND ------------------------------------------
-
     # These methods are used only for LDAP target. Must be class methods
     # instanceNameAttribute will be used as RDN attribute
     @classmethod
@@ -30,10 +28,6 @@ class BASEPostConfig(LBEObjectInstanceForm):
         return ['top', 'person', 'organizationalPerson','inetOrgPerson']
     # END OF REQUIRED SECTION ----------------------------------------------------
 
-    
-    # TODO: Think about implements is_valid method here to be called by LBEObjectInstanceForm if possible
-    # def is_valid():
-    
     # Validators methods are used to alter, verify, compute the values of an attribute
     # IMPORTANT: Remembers all attributes are store in a list, even mono valued. Therefore, you must return a list
     

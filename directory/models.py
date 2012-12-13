@@ -9,6 +9,7 @@ OBJECT_STATE_SYNC_ERROR = -1
 OBJECT_STATE_SYNCED = 0
 OBJECT_STATE_AWAITING_SYNC = 1
 OBJECT_STATE_AWAITING_APPROVAL = 2
+OBJECT_STATE_DELETED = 4
 OBJECT_STATE_IMPORTED = 0
 OBJECT_STATE_DELETED = 4
 
@@ -33,7 +34,7 @@ ATTRIBUTE_TYPE_REFERENCE = 2
 class LBEAttribute(models.Model):
     displayName       = models.CharField(unique = True, max_length=64)
     name               = models.CharField(unique = True, max_length=64)
-    # some fields (like syntax, max size) will be added later
+    # some fields (like syntax, max size) will be added later (not in LBEAttributeInstance ?)
     def __unicode__(self):
         return str(self.displayName + ":" + self.name)
 
@@ -57,7 +58,7 @@ class LBEObjectTemplate(models.Model):
     # To increment each time an object is changed
     version           = models.SmallIntegerField(default = 0)
     # Every template must be associated to a class provided by the administrator
-    script               = models.ForeignKey(LBEScript, null = True, blank = True, default = None)
+    script               = models.ForeignKey(LBEScript, default = 1)
     # Date of last import. Used to detect new objects in target by searching on createTimestamp (for LDAP) > last import
     imported_at     = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
     # Date of last sync
@@ -81,7 +82,7 @@ class LBEAttributeInstance(models.Model):
     secure            = models.BooleanField(default = False)
     attributeType     = models.SmallIntegerField(default = ATTRIBUTE_TYPE_FINAL)
     # The HTML widget used to display/edit attribute. We'll inject classname
-    widget            = models.CharField(max_length=64, default = 'forms.CharField', blank = True)
+    widget            = models.CharField(max_length=64, default = 'forms.CharField')
     widgetArgs        = models.CharField(max_length=255, default = 'None')
 
 class LBEDirectoryACL(models.Model):
@@ -119,16 +120,6 @@ class LBEObjectInstance:
 
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
-
-    # TODO: implement
-    def is_valid(self):
-        pass
-    
-    def search(self, filter):
-        pass
-        
-    def save(self):
-        pass
     
     def __unicode__(self):
         return 'name: ' + self.name + ', displayName: ' + self.displayName + ', attributes: ' + self.attributes

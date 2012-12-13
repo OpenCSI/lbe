@@ -3,7 +3,7 @@ from django import forms
 from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
 from django.forms.util import ErrorList
-import os
+import os, sys
 
 # All this forms but ObjectInstanceForm should be in config/forms.py
 class LBEModelChoiceField(ModelChoiceField):
@@ -32,11 +32,13 @@ class LBEObjectTemplateForm(ModelForm):
         return instanceNameAttribute
 
 class LBEAttributeInstanceForm(ModelForm):
-	lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
-	#attributeType = forms.IntegerField(widget=forms.Select(choices=CHOICE_ATTRIBUT_TYPE))# TODO: Improve
-	class Meta:
-		model = LBEAttributeInstance
-		exclude = ( 'lbeObjectTemplate', 'widgetArgs', 'objectType', 'attributeType' )
+    lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
+    class Meta:
+        model = LBEAttributeInstance
+        exclude = ('widget','widgetArgs')
+        def clean_attributeType(self):
+			if self.cleaned_data['attributeType'] < 0:
+				raise forms.ValidationError("This field must be null or positive.")
 
 class LBEScriptForm(ModelForm):
 	class Meta:
@@ -94,6 +96,12 @@ class LBEObjectInstanceForm(forms.Form):
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 # TODO: Find a better way than exec
                 exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
+                #f = str(attributeInstance.widget).split('.')
+                # get the module (ex. forms):
+                #cl = getattr(sys.modules[__name__],f[0])
+                # get the class from module (ex. CharField):
+                #method = getattr(cl,f[1])
+                #self.fields[attributeInstance.lbeAttribute.name] = method()# Need to set arguments (cast args)
                 try:
                     self.fields[attributeInstance.lbeAttribute.name].label = attributeInstance.lbeAttribute.displayName
                     self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)
