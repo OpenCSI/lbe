@@ -32,7 +32,7 @@ urlpatterns = patterns('',
 	url(r'^config/script/manage/(?P<scriptId>\d+)?$', 'config.views.manageScript'),
 	
 	url(r'^ajax/config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObjectAJAX'),
-    url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
+	url(r'^ajax/config/attribute/modify/(?P<obj_id>\d+)/(?P<attr_id>\d+)$', 'config.views.modifyAttributeAJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
 	
 	url(r'^config/object/addattribute/(?P<obj_id>\d+)$', 'config.views.addObjectAttribute'),

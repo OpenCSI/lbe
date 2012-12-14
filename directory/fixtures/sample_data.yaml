@@ -101,11 +101,13 @@
   fields:
     name: custom.employee.EmployeePostConfig
     file: 'custom.employee'
+    fileUpload: 'custom/employee.py'
 - model: directory.LBEScript
   pk: 1
   fields:
     name: custom.base.BASEPostConfig
     file: 'custom.base'
+    fileUpload: 'custom/base.py'
 
 - model: directory.LBEObjectTemplate
   pk: 1

@@ -191,16 +191,15 @@ def addScript(request):
 def manageScript(request,scriptId = None):
 	if scriptId == None:
 		scriptId = 1
+	scriptList = LBEScript.objects.all()
 	script = LBEScript.objects.get(id = scriptId)
 	if request.method == 'POST':
 		form = LBEScriptForm(request.POST,instance=script)
 		if form.is_valid():
 			if form.save():
 				messages.add_message(request, messages.SUCCESS, 'script managed.')
-			return redirect('/config/script/manage')
 		else:
 			messages.add_message(request, messages.ERROR, 'Error while managing the script file.')
 	else:
 		form = LBEScriptForm(instance=script)
-	scriptList = LBEScript.objects.all()
 	return render_to_response('config/script/manage.html',{'scriptForm':form, 'scriptList':scriptList,'scriptId':scriptId},context_instance=RequestContext(request))
