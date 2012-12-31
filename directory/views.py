@@ -108,8 +108,3 @@ def manageObjectInstance(request, obj_id,uid,type):
 		form = instanceHelper.form(uid)
 	# Show part:
 	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
-
-# REMOVE:
-#@manage_acl('modify')
-def modifyObjectInstance(request,obj_id,uid):
-	return HttpResponse('')

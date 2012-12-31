@@ -96,12 +96,6 @@ class LBEObjectInstanceForm(forms.Form):
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 # TODO: Find a better way than exec
                 exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
-                #f = str(attributeInstance.widget).split('.')
-                # get the module (ex. forms):
-                #cl = getattr(sys.modules[__name__],f[0])
-                # get the class from module (ex. CharField):
-                #method = getattr(cl,f[1])
-                #self.fields[attributeInstance.lbeAttribute.name] = method()# Need to set arguments (cast args)
                 try:
                     self.fields[attributeInstance.lbeAttribute.name].label = attributeInstance.lbeAttribute.displayName
                     self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)
