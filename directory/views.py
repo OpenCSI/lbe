@@ -28,7 +28,6 @@ def index(request,lbeObject_id=1,page=1):
     objects = backend.searchObjects(LBEObjectTemplate.objects.get(id=lbeObject_id),index,lengthMax)
     lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
     lbeObjects = LBEObjectTemplate.objects.all()
-    print lbeObjects
     # Pagination:
     size = int(math.ceil(backend.lengthObjects(LBEObjectTemplate.objects.get(id=lbeObject_id))/ float(lengthMax)))
     tabSize = []
@@ -40,7 +39,6 @@ def index(request,lbeObject_id=1,page=1):
 #@manage_acl('delete')
 def deleteObjectInstance(request,lbeObject_id,objectName):
     backend = BackendHelper()
-    #objects = backend.searchObjects(LBEObjectTemplate.objects.get(name='employee'))
     lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
     # change status code user:
     instanceHelper = LBEObjectInstanceHelper(lbeObject)
@@ -50,7 +48,6 @@ def deleteObjectInstance(request,lbeObject_id,objectName):
     lengthMax = 10
     page = int(math.ceil(position/float(lengthMax)))
     return index(request,lbeObject_id,page)
-    #return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id }, context_instance=RequestContext(request))
 
 #@manage_acl('view')
 def viewObjectInstance(request,obj_id,objectName = None):
