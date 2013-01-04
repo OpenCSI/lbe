@@ -23,3 +23,7 @@ class LDAPDAO:
     def update(self, basedn, modlist):
         logger.debug('LDAP update ' + basedn + ' object')
         return self.handler.modify_s(basedn, modlist)
+        
+    def delete(self,basedn):
+		logger.debug('LDAP delete ' + basedn + ' object')
+		return self.hanfler.delete_s(basedn)
