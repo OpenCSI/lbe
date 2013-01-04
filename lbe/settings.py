@@ -4,7 +4,7 @@ from django.contrib import messages
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -26,7 +26,7 @@ DATABASES = {
 }
 
 LDAP_SERVER = {
-	# [¿TODO?]: regroup PROTOCOL + HOST + PORT to URL
+	# [TODO?]: regroup PROTOCOL + HOST + PORT to URL
 	'PROTOCOL' : 'ldap://',
 	'HOST': 'localhost',
 	'PORT': 389,
