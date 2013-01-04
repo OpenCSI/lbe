@@ -138,4 +138,4 @@ class TargetLDAPImplementation():
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
         dn =  rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]  + ',' + objectHelper.callScriptClassMethod('base_dn')
 
-        self.handler.add(dn, lbeObjectInstanceToAddModList(lbeObjectInstance, objectHelper.callScriptClassMethod('object_classes')))
+        return self.handler.add(dn, lbeObjectInstanceToAddModList(lbeObjectInstance, objectHelper.callScriptClassMethod('object_classes')))

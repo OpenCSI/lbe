@@ -48,6 +48,7 @@ class Reconciliation():
                 logger.debug('Object to create or update: ' + objectInstance.name)
                 if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
                     try:
+						# [TODO] : Need to check here if insert was successfully done:
                         self.target.create(objectTemplate, objectInstance)
                         # Ok, the object is added, empty changes set, and update object status
                         changes = {}

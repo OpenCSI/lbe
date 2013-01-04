@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pymongo import Connection, errors
 from django.conf import settings
-from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_ATTR, OBJECT_STATE_DELETED
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_ATTR, OBJECT_STATE_DELETED,OBJECT_CHANGE_UPDATE_OBJECT
 import sys, logging
 
 import datetime
@@ -45,7 +45,8 @@ class MongoService:
         db = self.db[collection]
         try:
 			# Get ID values:
-            changeSet = self.searchDocuments(collection,{'_id':ID})[0]['changes']['set']
+            change = self.searchDocuments(collection,{'_id':ID})[0]['changes']
+            changeSet = change['set']
             # change the set dict with new values:
             # In order to not lose values:
             newValues = {} # new dict because of 'values' is QueryDict.
@@ -64,9 +65,14 @@ class MongoService:
                 if not newValues.has_key(kval):
                     newValues[kval] = [ values[kval] ]
             # set status for changes:
-            newValues['status'] = OBJECT_CHANGE_UPDATE_ATTR
+            if change.has_key('type'):
+				type = change['type']
+				if type == -1 or type == 2: # SYNCH or OBJECT_CHANGE_DELETE_OBJECT
+					type = OBJECT_CHANGE_UPDATE_OBJECT
+            elif not type == 0:
+				type = OBJECT_CHANGE_UPDATE_OBJECT
             # updage Mongo:
-            return db.update({'_id':ID},{'$set':{'changes':{'set':newValues},'updated_at':datetime.datetime.now(utc),'status':OBJECT_STATE_AWAITING_SYNC}})
+            return db.update({'_id':ID},{'$set':{'changes':{'set':newValues,'type':type},'updated_at':datetime.datetime.now(utc),'status':OBJECT_STATE_AWAITING_SYNC}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
 		
