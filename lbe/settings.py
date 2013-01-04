@@ -4,7 +4,7 @@ from django.contrib import messages
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -26,16 +26,6 @@ DATABASES = {
 }
 
 LDAP_SERVER = {
-	'PROTOCOL' : 'ldap://',
-	'HOST': 'localhost',
-	'PORT': 1389,
-	'BASE_DN': 'dc=opencsi,dc=com',
-	'BIND_DN': 'cn=Root',
-	'BIND_PWD': 'root'
-}
-
-"""
-LDAP_SERVER = {
 	# [¿TODO?]: regroup PROTOCOL + HOST + PORT to URL
 	'PROTOCOL' : 'ldap://',
 	'HOST': 'localhost',
@@ -44,7 +34,6 @@ LDAP_SERVER = {
 	'BIND_DN': 'cn=Directory Manager',
 	'BIND_PWD': 'password'
 }
-"""
 
 MONGODB_SERVER = {
 	'HOST': 'localhost',
