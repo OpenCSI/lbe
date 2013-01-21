@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pymongo import Connection, errors
 from django.conf import settings
-from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_ATTR, OBJECT_STATE_DELETED,OBJECT_CHANGE_UPDATE_OBJECT,OBJECT_CHANGE_DELETE_OBJECT
+from directory.models import LBEObjectInstance,OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_DELETED,OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT
 import sys, logging
 
 import datetime
@@ -44,28 +44,28 @@ class MongoService:
     def modifyDocument(self, collection, ID, values):
         db = self.db[collection]
         try:
-			# Get ID values:
-            change = self.searchDocuments(collection,{'_id':ID})[0]['changes']
+			# Get Data values:
+            collection = self.searchDocuments(collection,{'_id':ID})[0]
+            change = collection['changes']
             changeSet = change['set']
-            # change the set dict with new values:
-            # In order to not lose values:
-            newValues = {} # new dict because of 'values' is QueryDict.
-            # replace values:
+            # if values exist into Changes.set but not in values, add them:
             for kset in changeSet:
 				if not values.has_key(kset):
-					newValues[kset] = changeSet[kset] # get other values
-				else:
-					# list or not list ?:
-					if isinstance(values[kset],unicode) or isinstance(values[kset],str):
-						newValues[kset] = [ values[kset] ] # new values
-					else:
-						newValues[kset] = values[kset] # new values
-			# add new (key) value:
-            for kval in values:
-                if not newValues.has_key(kval):
-                    newValues[kval] = [ values[kval] ]
+					values[kset] = changeSet[kset] # get other values
+			# replace String values to array values:
+            for kvalues in values:
+				if isinstance(values[kvalues],unicode) or isinstance(values[kvalues],str):
+					values[kvalues] = [ values[kvalues] ]
+            # set status for changes:
+            if collection.has_key('status'):
+                if collection['status'] == 4 or change['type'] == 0: # OBJECT_STATE_DELETED or OBJECT_CHANGE_CREATE_OBJECT
+                    type = OBJECT_CHANGE_CREATE_OBJECT
+                else:
+					type = OBJECT_CHANGE_UPDATE_OBJECT
+            else:
+			    type = OBJECT_CHANGE_UPDATE_OBJECT
             # updage Mongo:
-            return db.update({'_id':ID},{'$set':{'changes':{'set':newValues,'type':OBJECT_CHANGE_UPDATE_OBJECT},'updated_at':datetime.datetime.now(utc),'status':OBJECT_STATE_AWAITING_SYNC}})
+            return db.update({'_id':ID},{'$set':{'changes':{'set':values,'type':type},'updated_at':datetime.datetime.now(utc),'status':OBJECT_STATE_AWAITING_SYNC}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
 	

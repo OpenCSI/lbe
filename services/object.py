@@ -163,18 +163,20 @@ class LBEObjectInstanceHelper():
 			attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
 			d = dict()
 			for attribute in attributes:
-				if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
-					q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
-					q = q.copy()
-					for value in valuesUser['changes']['set'][attribute.lbeAttribute.name][1:]:
-						q.update({attribute.lbeAttribute.name:value})
-					d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
-				else:
-					q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
-					q = q.copy()
-					for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
-						q.update({attribute.lbeAttribute.name:value})
-					d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+				# Only FINAL Attributes:
+				if attribute.attributeType == 0:
+					if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
+						q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+						q = q.copy()
+						for value in valuesUser['changes']['set'][attribute.lbeAttribute.name][1:]:
+							q.update({attribute.lbeAttribute.name:value})
+						d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+					else:
+						q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+						q = q.copy()
+						for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
+							q.update({attribute.lbeAttribute.name:value})
+						d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
 			return d
         except BaseException:
 			# Create part:
@@ -226,17 +228,5 @@ class LBEObjectInstanceHelper():
             messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')
 
     def updateFromDict(self,ID,values):
-        self._backend()
-        backendValues = self.backend.getObjectByName(self.template,ID)
-        qDict = QueryDict('')
-        qDict = qDict.copy()# make it mutable
-        for keyB,valB in backendValues['changes']['set'].items():
-            for key,val in values.items():
-                if keyB == key:
-                    # check if values are equals: [Do not change value if same value from attribute field]
-                    if not backendValues['attributes'].has_key(key):
-						qDict[keyB] = val
-                    elif not backendValues['attributes'][key] == val:
-						qDict[keyB] = val
-        self.instance = qDict
+        self.instance = values
         self.ID = ID

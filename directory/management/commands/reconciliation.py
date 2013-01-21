@@ -75,11 +75,17 @@ class Reconciliation():
                         changes['changes']['type'] = -1
                         changes['synced_at'] = datetime.datetime.now()
                         self.backend.updateObject(objectTemplate, objectInstance, changes)
-                    except Exception as e:
-                        print e
+                    except BaseException as e:
+                        logger.debug('Object "' + objectInstance.name + '" does not exist')
+                        print 'Object ' + objectInstance.name + ' does not exist'
                         pass
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_UPDATE_OBJECT:
                     print "update"
+                    try:
+					    print "ok"
+                    except BaseException as e:
+                        print e
+                        pass
 
 
 class Command(BaseCommand):
