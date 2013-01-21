@@ -69,11 +69,17 @@ class MongoService:
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
 	
-    def updateDocument(self, collectionName, filter, changes):
+    def updateDocument(self, collectionName, lbeObjectInstance, filter, changes):
         collection = self.db[collectionName]
         logger.debug('Update MongoDB object in collection ' + collectionName + ', with query:' + filter.__str__() + ' , with changes: ' + changes.__str__())
         collection = self.db[collectionName]
+        # Update Attributes:
+        attributes = {}
+        attributes['attributes'] = {}
+        for key,val in lbeObjectInstance.changes['set'].items():
+			attributes['attributes'][key] = val
         collection.update(filter, changes)
+        collection.update(filter, {'$set':attributes})
         	
     def removeDocument(self,collection,ID):
 		db = self.db[collection]
