@@ -139,3 +139,11 @@ class TargetLDAPImplementation():
         dn =  rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]  + ',' + objectHelper.callScriptClassMethod('base_dn')
 
         return self.handler.add(dn, lbeObjectInstanceToAddModList(lbeObjectInstance, objectHelper.callScriptClassMethod('object_classes')))
+
+    def delete(self, lbeObjectTemplate, lbeObjectInstance):
+        objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+
+        rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
+        dn =  rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]  + ',' + objectHelper.callScriptClassMethod('base_dn')
+        
+        return self.handler.delete(dn)

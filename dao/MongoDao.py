@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pymongo import Connection, errors
 from django.conf import settings
-from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_ATTR, OBJECT_STATE_DELETED,OBJECT_CHANGE_UPDATE_OBJECT
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_ATTR, OBJECT_STATE_DELETED,OBJECT_CHANGE_UPDATE_OBJECT,OBJECT_CHANGE_DELETE_OBJECT
 import sys, logging
 
 import datetime
@@ -64,22 +64,20 @@ class MongoService:
             for kval in values:
                 if not newValues.has_key(kval):
                     newValues[kval] = [ values[kval] ]
-            # set status for changes:
-            if change.has_key('type'):
-				type = change['type']
-				if type == -1 or type == 2: # SYNCH or OBJECT_CHANGE_DELETE_OBJECT
-					type = OBJECT_CHANGE_UPDATE_OBJECT
-            elif not type == 0:
-				type = OBJECT_CHANGE_UPDATE_OBJECT
             # updage Mongo:
-            return db.update({'_id':ID},{'$set':{'changes':{'set':newValues,'type':type},'updated_at':datetime.datetime.now(utc),'status':OBJECT_STATE_AWAITING_SYNC}})
+            return db.update({'_id':ID},{'$set':{'changes':{'set':newValues,'type':OBJECT_CHANGE_UPDATE_OBJECT},'updated_at':datetime.datetime.now(utc),'status':OBJECT_STATE_AWAITING_SYNC}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
-		
+	
+    def updateDocument(self, collectionName, filter, changes):
+        collection = self.db[collectionName]
+        logger.debug('Update MongoDB object in collection ' + collectionName + ', with query:' + filter.__str__() + ' , with changes: ' + changes.__str__())
+        collection = self.db[collectionName]
+        collection.update(filter, changes)
+        	
     def removeDocument(self,collection,ID):
 		db = self.db[collection]
 		try:
-			# TODO?: change value into chages.set.status to OBJECT_CHANGE_DELETE_OBJECT
-			return db.update({'_id':ID},{'$set':{'status':OBJECT_STATE_DELETED}})
+			return db.update({'_id':ID},{'$set':{'status':OBJECT_STATE_AWAITING_SYNC,'changes':{'set':{},'type':OBJECT_CHANGE_DELETE_OBJECT}}})
 		except BaseException as e:
-			logger.error('Error while removeing document: ' + e.__str__())
+			logger.error('Error while removing document: ' + e.__str__())

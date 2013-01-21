@@ -61,6 +61,10 @@ class BackendMongoImpl:
 
     def createObject(self, lbeObjectTemplate, lbeObjectInstance):
         return self.handler.createDocument(lbeObjectTemplate.name, LBEObjectInstanceToDict(lbeObjectInstance) )
+        
+    def updateObject(self, lbeObjectTemplate, lbeObjectInstance, changes):
+        # Changes is already a dict with key = newvalue, no need to transform it
+        return self.handler.updateDocument(lbeObjectTemplate.name, { '_id' : lbeObjectInstance.name.__str__() }, {'$set': changes })
     
     def modifyObject(self, lbeObjectTemplate, ID, values):
         return self.handler.modifyDocument(lbeObjectTemplate.name,ID,values)

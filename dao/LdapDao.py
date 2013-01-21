@@ -26,4 +26,4 @@ class LDAPDAO:
         
     def delete(self,basedn):
 		logger.debug('LDAP delete ' + basedn + ' object')
-		return self.hanfler.delete_s(basedn)
+		return self.handler.delete_s(basedn)

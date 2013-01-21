@@ -29,10 +29,10 @@ LDAP_SERVER = {
 	# [TODO?]: regroup PROTOCOL + HOST + PORT to URL
 	'PROTOCOL' : 'ldap://',
 	'HOST': 'localhost',
-	'PORT': 389,
+	'PORT': 1389,
 	'BASE_DN': 'dc=example,dc=com',
-	'BIND_DN': 'cn=Directory Manager',
-	'BIND_PWD': 'password'
+	'BIND_DN': 'cn=Root',
+	'BIND_PWD': 'root'
 }
 
 MONGODB_SERVER = {
