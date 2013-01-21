@@ -47,7 +47,6 @@ class Reconciliation():
             for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
                 logger.debug('Object to create or update: ' + objectInstance.name)
                 if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
-                    print "create"
                     try:
                         self.target.create(objectTemplate, objectInstance)
                         # Ok, the object is added, empty changes set, and update object status
@@ -64,7 +63,6 @@ class Reconciliation():
                         print 'Object ' + objectInstance.name + ' already exists'
                         pass
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
-                    print "delete"
                     try:
                         self.target.delete(objectTemplate, objectInstance)
                         # Update Backend value:
@@ -80,9 +78,16 @@ class Reconciliation():
                         print 'Object ' + objectInstance.name + ' does not exist'
                         pass
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_UPDATE_OBJECT:
-                    print "update"
                     try:
-					    print "ok"
+                        self.target.update(objectTemplate,objectInstance)
+                        # Update Backend value:
+                        changes = {}
+                        changes['status'] = OBJECT_STATE_SYNCED
+                        changes['changes'] = {}
+                        changes['changes']['set'] = {}
+                        changes['changes']['type'] = -1
+                        changes['synced_at'] = datetime.datetime.now()
+                        self.backend.updateObject(objectTemplate, objectInstance, changes)
                     except BaseException as e:
                         print e
                         pass
