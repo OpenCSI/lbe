@@ -128,6 +128,7 @@ class LBEObjectInstanceHelper():
         for attributeInstance in self.template.lbeattributeinstance_set.filter(attributeType= attributeType):
             attributeName = attributeInstance.lbeAttribute.name
             try:
+                self.instance.changes['set'][attributeName] = self.callScriptMethod(methodPrefix + attributeName)
                 self.instance.attributes[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
             except AttributeError as e:
                 try:
@@ -208,7 +209,6 @@ class LBEObjectInstanceHelper():
             # Only fetch real attributes from the request
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 attributeName = attributeInstance.lbeAttribute.name
-                # TODO: manage multivalue here
                 attributes[attributeName] = [ request.POST[attributeName] ]
         # IMPORTANT: We need to create an instance without the uniqueBecause because it may be a computed attribute, for example uid (compute from firstname/name)
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
@@ -230,3 +230,7 @@ class LBEObjectInstanceHelper():
     def updateFromDict(self,ID,values):
         self.instance = values
         self.ID = ID
+        
+    def compute(self,lbeObjectInstance):
+		self.instance = lbeObjectInstance
+		self.applyCustomScript()

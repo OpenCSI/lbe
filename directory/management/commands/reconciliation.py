@@ -2,6 +2,7 @@ import datetime
 from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT,OBJECT_CHANGE_DELETE_OBJECT,OBJECT_CHANGE_UPDATE_OBJECT, LBEObjectInstance, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED
 from services.backend import BackendHelper
 from services.target import TargetHelper
+from services.object import LBEObjectInstanceHelper
 from django.core.management.base import BaseCommand, CommandError
 import ldap
 import logging
@@ -40,11 +41,13 @@ class Reconciliation():
         pass
 
     def start(self):
-        # First of all, applies all changes stored in backend
-        
         for objectTemplate in LBEObjectTemplate.objects.all():
             # We're looking for all objects with state = OBJECT_STATE_AWAITING_SYNC
             for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
+				# First of all, applies all changes stored in backend [ such Virtual attributes ]  
+                obj = LBEObjectInstanceHelper(objectTemplate)
+                obj.compute(objectInstance)
+                # then, upgrade:
                 logger.debug('Object to create or update: ' + objectInstance.name)
                 if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
                     try:
