@@ -233,4 +233,6 @@ class LBEObjectInstanceHelper():
         
     def compute(self,lbeObjectInstance):
 		self.instance = lbeObjectInstance
-		self.applyCustomScript()
+		# Do not make change if changes.set is empty:
+		if not lbeObjectInstance.changes['set'] == {}:
+			self.applyCustomScript()

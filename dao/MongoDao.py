@@ -79,7 +79,9 @@ class MongoService:
         for key,val in lbeObjectInstance.changes['set'].items():
 			attributes['attributes'][key] = val
         collection.update(filter, changes)
-        collection.update(filter, {'$set':attributes})
+        # Do not apply attributes save if changes.set is empty:
+        if not lbeObjectInstance.changes['set'] == {}:
+			collection.update(filter, {'$set':attributes})
         	
     def removeDocument(self,collection,ID):
 		db = self.db[collection]
