@@ -50,7 +50,11 @@ class Reconciliation():
 			dn = dn + settings.LDAP_SERVER['BASE_DN']
 			attrs = {}
 			attrs['objectclass'] = ['top','organizationalUnit']
-			self.target.createParent(dn,modlist.addModlist(attrs))
+			# do not care if the ou already exists
+			try:
+			    self.target.createParent(dn,modlist.addModlist(attrs))
+			except:
+				pass
 				
 
     def start(self):
