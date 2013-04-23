@@ -9,10 +9,10 @@ from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribu
 from services.backend import BackendObjectAlreadyExist
 
 class LBEObjectInstanceHelper():
-    def __init__(self, lbeObjectTemplate):
+    def __init__(self, lbeObjectTemplate,lbeObjectInstance=None):
         self.template = lbeObjectTemplate
         self.ID = None
-        self.instance = None
+        self.instance = lbeObjectInstance
         self.scriptInstance = None
         self.backend = None
 		
@@ -135,6 +135,7 @@ class LBEObjectInstanceHelper():
                     self.instance[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
                 except AttributeError as e:
                     logger.info('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
+                    #print ('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
 			
     def applyCustomScript(self):
 		# Clean attributes before manage virtuals attributes
@@ -233,6 +234,7 @@ class LBEObjectInstanceHelper():
         
     def compute(self,lbeObjectInstance):
 		self.instance = lbeObjectInstance
+		self._create_script_instance()
 		# Do not make change if changes.set is empty:
 		if not lbeObjectInstance.changes['set'] == {}:
 			self.applyCustomScript()

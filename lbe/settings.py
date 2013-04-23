@@ -31,8 +31,8 @@ LDAP_SERVER = {
 	'HOST': 'localhost',
 	'PORT': 1389,
 	'BASE_DN': 'dc=opencsi,dc=com',
-	'BIND_DN': 'cn=Root',
-	'BIND_PWD': 'root'
+	'BIND_DN': 'cn=Directory Manager',
+	'BIND_PWD': 'password'
 }
 
 MONGODB_SERVER = {

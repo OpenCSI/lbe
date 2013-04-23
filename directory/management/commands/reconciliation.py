@@ -55,7 +55,40 @@ class Reconciliation():
 			    self.target.createParent(dn,modlist.addModlist(attrs))
 			except:
 				pass
-				
+			
+    def _createObject(self,objectTemplate,objectInstance):
+        self.target.create(objectTemplate, objectInstance)
+        # Ok, the object is added, empty changes set, and update object status
+        changes = {}
+        changes['status'] = OBJECT_STATE_SYNCED
+        changes['changes'] = {}
+        changes['changes']['set'] = {}
+        changes['changes']['type'] = -1
+        changes['synced_at'] = datetime.datetime.now()
+        self.backend.updateObject(objectTemplate, objectInstance, changes)
+        
+    def _modifyObject(self,objectTemplate,objectInstance):
+        self.target.update(objectTemplate,objectInstance)
+        # Update Backend value:
+        changes = {}
+        changes['status'] = OBJECT_STATE_SYNCED
+        changes['changes'] = {}
+        changes['changes']['set'] = {}
+        changes['changes']['type'] = -1
+        changes['synced_at'] = datetime.datetime.now()
+        self.backend.updateObject(objectTemplate, objectInstance, changes)
+       
+    def _deleteObject(self,objectTemplate,objectInstance):
+		self.target.delete(objectTemplate, objectInstance)
+		# Update Backend value:
+		changes = {}
+		changes['status'] = OBJECT_STATE_DELETED
+		changes['changes'] = {}
+		changes['changes']['set'] = {}
+		changes['changes']['type'] = -1
+		changes['synced_at'] = datetime.datetime.now()
+		self.backend.updateObject(objectTemplate, objectInstance, changes)
+     		
 
     def start(self):
         for objectTemplate in LBEObjectTemplate.objects.all():
@@ -63,22 +96,15 @@ class Reconciliation():
             for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
 				# First of all, applies all changes stored in backend [ such Virtual attributes ]  
 				# & create the parent DN if not exist:
-                obj = LBEObjectInstanceHelper(objectTemplate)
+                obj = LBEObjectInstanceHelper(objectTemplate,objectInstance)
                 self.createParent(objectTemplate,obj)
                 obj.compute(objectInstance)
                 # then, upgrade:
                 logger.debug('Object to create or update: ' + objectInstance.name)
                 if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
                     try:
-                        self.target.create(objectTemplate, objectInstance)
-                        # Ok, the object is added, empty changes set, and update object status
-                        changes = {}
-                        changes['status'] = OBJECT_STATE_SYNCED
-                        changes['changes'] = {}
-                        changes['changes']['set'] = {}
-                        changes['changes']['type'] = -1
-                        changes['synced_at'] = datetime.datetime.now()
-                        self.backend.updateObject(objectTemplate, objectInstance, changes)
+                        print "Object '" + objectInstance.name + "' is creating."
+                        self._createObject(objectTemplate, objectInstance)
                     # TODO: We should have a target exception rather ldap
                     except ldap.ALREADY_EXISTS:
                         logger.debug('Object "' + objectInstance.name + '" already exists')
@@ -86,8 +112,11 @@ class Reconciliation():
                         pass
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
                     try:
-                        self.target.delete(objectTemplate, objectInstance)
-                        # Update Backend value:
+                        print "Object '" + objectInstance.name + "' is deleting."
+                        self._deleteObject(objectTemplate, objectInstance)
+                    except BaseException as e:
+                        logger.debug('Object "' + objectInstance.name + '" does not exist')
+                        print 'Object ' + objectInstance.name + ' does not exist.'
                         changes = {}
                         changes['status'] = OBJECT_STATE_DELETED
                         changes['changes'] = {}
@@ -95,23 +124,21 @@ class Reconciliation():
                         changes['changes']['type'] = -1
                         changes['synced_at'] = datetime.datetime.now()
                         self.backend.updateObject(objectTemplate, objectInstance, changes)
-                    except BaseException as e:
-                        logger.debug('Object "' + objectInstance.name + '" does not exist')
-                        print 'Object ' + objectInstance.name + ' does not exist'
                         pass
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_UPDATE_OBJECT:
                     try:
-                        self.target.update(objectTemplate,objectInstance)
-                        # Update Backend value:
-                        changes = {}
-                        changes['status'] = OBJECT_STATE_SYNCED
-                        changes['changes'] = {}
-                        changes['changes']['set'] = {}
-                        changes['changes']['type'] = -1
-                        changes['synced_at'] = datetime.datetime.now()
-                        self.backend.updateObject(objectTemplate, objectInstance, changes)
+                        print "Object '" + objectInstance.name + "' is updating."
+                        self._modifyObject(objectTemplate, objectInstance)
                     except BaseException as e:
-                        print e
+                        print "Object '" + objectInstance.name + "' does not exist, being created."
+                        # Create object if not exists:
+                        # Firstly, compute attributes values:
+                        # Then, create it:
+                        try:
+                            self._createObject(objectTemplate, objectInstance)
+                        except Exception as e:
+							print e
+							pass
                         pass
 
 
