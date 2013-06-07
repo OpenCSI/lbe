@@ -8,6 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 	url(r'^$', 'directory.views.index'),
 	url(r'^directory/?$', 'directory.views.index'),
+	url(r'^ajax/directory/search/(?P<obj_id>\d+)/(?P<search>.*)$', 'directory.views.searchAJAX'),
     url(r'^directory/object/add/?$', 'directory.views.addObjectInstance'),
     url(r'^directory/object/add/(?P<lbeObject_id>\d+)$', 'directory.views.addObjectInstance'),
     url(r'^directory/object/delete/(?P<lbeObject_id>\d+)/(?P<objectName>[\w\d ]+)$', 'directory.views.deleteObjectInstance'),

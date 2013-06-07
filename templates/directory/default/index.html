@@ -2,28 +2,36 @@
 {% load url from future %}
 {% block content %}
 <table class="table">
-	<tr><td style="width:20%">Choose the Object:</td><td><select onChange="window.location.href=(window.location.pathname.split('/')[0]+'/'+$('select option:selected').val())">{% for obj in lbeObjects %} <option value="{{obj.id}}" {% if obj.id == lbeObjectId %}selected="selected"{% endif %}>{{obj.displayName}}</option>  {% endfor %}</select></td></tr>
+	<tr>
+		<td style="width:20%">Choose the Object:</td><td><select onChange="window.location.href=(window.location.pathname.split('/')[0]+'/'+$('select option:selected').val())">{% for obj in lbeObjects %} <option value="{{obj.id}}" {% if obj.id == lbeObjectId %}selected="selected"{% endif %}>{{obj.displayName}}</option>  {% endfor %}</select></td>
+		<td style="width:10%">Research:</td><td><input placeholder="research & Enter" type="text" id="search" name="search" onKeyUp="search(event,$('select option:selected').val(),this.value)"/></td>
+		</tr>
 </table>
 
 <table class='table'>
-    <tr>
-        <th>Name</th>
-        <th style='text-align: center;'>Status</th>
-        <th style='text-align: center;'>Actions</th>
-    </tr>
-    {% for object in objects %}
-    <tr>
-        <td> <a href="{% url 'directory.views.viewObjectInstance' obj_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
-        <td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
-        <td style='text-align: center;'>
-			<a href="{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=object.name %}" class="icon-edit"></a>
-            <a href="{% url 'directory.views.deleteObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}">
-                <span class='label label-important'>x</span>
-            </a>
-        </td>
-     </tr>
-    {% endfor %}
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th style='text-align: center;'>Status</th>
+			<th style='text-align: center;'>Actions</th>
+		</tr>
+    </thead>
+    <tbody class="Tdata">
+		{% for object in objects %}
+		<tr>
+			<td> <a href="{% url 'directory.views.viewObjectInstance' obj_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
+			<td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
+			<td style='text-align: center;'>
+				<a href="{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=object.name %}" class="icon-edit"></a>
+				<a href="{% url 'directory.views.deleteObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}">
+					<span class='label label-important'>x</span>
+				</a>
+			</td>
+		 </tr>
+		{% endfor %}
+	</tbody>
 </table>
+
 <center>
 <div class="pagination">
     <ul>

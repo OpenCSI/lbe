@@ -105,3 +105,13 @@ def manageObjectInstance(request, obj_id,uid,type):
 		form = instanceHelper.form(uid)
 	# Show part:
 	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
+
+
+def searchAJAX(request, obj_id, search):
+    if len(search) == 0:
+        return HttpResponse('/')
+    backend = BackendHelper()
+    objects = backend.searchObjectsByPattern(LBEObjectTemplate.objects.get(id=obj_id),search)
+    print objects
+    return render_to_response('ajax/directory/search.html', { 'lbeObjectId':obj_id, 'objects': objects}, context_instance=RequestContext(request))
+

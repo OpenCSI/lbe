@@ -78,10 +78,24 @@ class BackendMongoImpl:
     def positionObject(self,lbeObjectTemplate,ID):
 		return self.handler.posDocument(lbeObjectTemplate,ID)	
 		
-    # TODO: Implement per page search
     def searchObjects(self, lbeObjectTemplate, index = 0, size = 0):
         return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': { '$gt': OBJECT_STATE_INVALID } }, index, size))
-
+	
+    def searchObjectsByPattern(self, lbeObjectTemplate, pattern):
+        value = {}
+        if pattern != '':
+            _id = {'_id':{'$regex' : pattern}}
+            _valid = {'status' : { '$gt' : OBJECT_STATE_INVALID }}
+			
+            value['$and'] = []
+            value['$and'].insert(0,_id)
+            value['$and'].insert(1,_valid)
+        else:
+            value['status'] = {}
+            value['status']['$gt'] = OBJECT_STATE_INVALID
+        print value
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, value, 0, 0))
+        
     # Search objects with synced_at <= lbeObjectTemplate.synced_at
     def searchObjectsToUpdate(self, lbeObjectTemplate, index = 0, size = 0):
         return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, { 'status': OBJECT_STATE_AWAITING_SYNC }, index, size))

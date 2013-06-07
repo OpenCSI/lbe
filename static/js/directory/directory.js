@@ -46,3 +46,22 @@ function loadDirectoryfrom(value,id,to)
 	 });
 }
 
+function search(e,object,pattern)
+{
+	if (e.which == 13)
+		$.ajax({
+		   type: "GET",
+		   url: "/ajax/directory/search/" + object + "/" + pattern,
+		   async:false,
+		   success: function(data){
+			    if (data == "/")
+				   window.location.href=data;
+			    else
+			    {
+					$('.Tdata').text('');
+					$('.Tdata').html(data);
+				}
+			   }
+		 });
+}
+
