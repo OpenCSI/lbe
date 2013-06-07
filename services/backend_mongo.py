@@ -84,7 +84,7 @@ class BackendMongoImpl:
     def searchObjectsByPattern(self, lbeObjectTemplate, pattern):
         value = {}
         if pattern != '':
-            _id = {'_id':{'$regex' : pattern}}
+            _id = {'_id':{'$regex' : pattern, '$options' : 'i'}}
             _valid = {'status' : { '$gt' : OBJECT_STATE_INVALID }}
 			
             value['$and'] = []
@@ -93,7 +93,6 @@ class BackendMongoImpl:
         else:
             value['status'] = {}
             value['status']['$gt'] = OBJECT_STATE_INVALID
-        print value
         return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, value, 0, 0))
         
     # Search objects with synced_at <= lbeObjectTemplate.synced_at
