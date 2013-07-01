@@ -4,6 +4,7 @@ from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
 from django.forms.util import ErrorList
 import os, sys
+from services.ACL import ACLHelper
 
 # All this forms but ObjectInstanceForm should be in config/forms.py
 class LBEModelChoiceField(ModelChoiceField):
@@ -125,3 +126,12 @@ class LBEReferenceForm(ModelForm):
 class LBEReferenceSelectForm(forms.Form):
 	reference = LBEModelChoiceField(queryset = LBEReference.objects.all())
 
+class LBEACLForm(ModelForm):
+	class Meta:
+		model = LBEDirectoryACL
+		exclude = ('attribut')
+	def clean_condition(self):
+		acl = ACLHelper(None,self.cleaned_data["condition"])
+		if acl.check() == -1:
+			raise forms.ValidationError(acl.traceback)
+		return self.cleaned_data['condition']

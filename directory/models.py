@@ -84,11 +84,15 @@ class LBEAttributeInstance(models.Model):
     # The HTML widget used to display/edit attribute. We'll inject classname
     widget            = models.CharField(max_length=64, default = 'forms.CharField')
     widgetArgs        = models.CharField(max_length=255, default = 'None')
+    
+    def __unicode__(self):
+		return str(self.lbeObjectTemplate.name + ':' + self.lbeAttribute.name)
 
 class LBEDirectoryACL(models.Model):
-	object = models.CharField(max_length=25) # TODO: Why it's not a foreign key?
-	type = models.CharField(max_length=10) # TODO: DOCUMENT probably use constants
-	attribut = models.CharField(max_length=35) # TODO: Why it's not a foreign key?
+	object = models.ForeignKey(LBEObjectTemplate)
+	TYPE_CHOICE = (('select','Select'),('create','Create'),('update','Update'),('delete','Delete'))
+	type = models.CharField(max_length=10,choices=TYPE_CHOICE,default="select")
+	attribut = models.ForeignKey(LBEAttributeInstance,default=None,null=True)
 	condition = models.CharField(max_length=100)
 	
 class log(models.Model):

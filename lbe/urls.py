@@ -26,11 +26,15 @@ urlpatterns = patterns('',
 	url(r'^config/reference/modify/(?P<ref_id>\d+)?$', 'config.views.modifyReference'),
 	
 	url(r'^ajax/config/reference/modify/(?P<ref_id>\d+)?$', 'config.views.modifyReferenceAJAX'),
+	
+	url(r'^config/acl/add/?$', 'config.views.addACL'),
+	url(r'^config/acl/manage/(?P<aclId>\d+)?$', 'config.views.manageACL'),
 
 	url(r'^config/object/modify/(?P<obj_id>\d+)/(?P<attr_id>\d+)$', 'config.views.modifyAttribute'),
 	url(r'^config/script/add/?$', 'config.views.addScript'),
 	url(r'^config/script/manage/(?P<scriptId>\d+)?$', 'config.views.manageScript'),
 	
+	url(r'^ajax/config/acl/check/(?P<query>.*)$', 'config.views.checkACL_AJAX'),
 	url(r'^ajax/config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObjectAJAX'),
 	url(r'^ajax/config/attribute/modify/(?P<obj_id>\d+)/(?P<attr_id>\d+)$', 'config.views.modifyAttributeAJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),

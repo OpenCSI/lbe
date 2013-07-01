@@ -1,0 +1,10 @@
+{% extends "index.html" %}
+{% block content %}
+	<h4>Manage ACL:</h4>
+	<table class="table">
+		<tr><td style="width:20%">Choose the ACL:</td><td><select onChange="window.location.href=(window.location.pathname.substring(0,window.location.pathname.indexOf('manage/'))+'manage/'+$('select option:selected').val())">{% for acl in aclList %} <option value="{{acl.id}}" {% if acl.id == aclId %}selected="selected"{% endif %}>{{acl.object}}:{{acl.type}}</option> {% endfor %}</select></td></tr>
+	</table>
+    <form method="post"  action="">{% csrf_token %}
+       {% include 'config/acl/form.html' %}
+    </form>
+{% endblock %}

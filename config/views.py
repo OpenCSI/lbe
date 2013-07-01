@@ -9,6 +9,8 @@ from directory.forms import *
 from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
 
+from services.ACL import ACLHelper
+
 @staff_member_required
 def addObject(request):
     if request.method == 'POST':
@@ -219,3 +221,35 @@ def manageScript(request,scriptId = None):
 	else:
 		form = LBEScriptForm(instance=script)
 	return render_to_response('config/script/manage.html',{'scriptForm':form, 'scriptList':scriptList,'scriptId':scriptId},context_instance=RequestContext(request))
+
+@staff_member_required
+def addACL(request):
+	if request.method == 'POST':
+		form = LBEACLForm(request.POST)
+		if form.is_valid():
+			form.save()
+			messages.add_message(request, messages.SUCCESS, 'ACL created.')
+			return redirect('/config/acl/add')
+		else:
+			messages.add_message(request, messages.ERROR, 'Error while adding ACL.')
+	else:
+		form = LBEACLForm()
+	return render_to_response('config/acl/create.html',{'aclForm':form},context_instance=RequestContext(request))
+	
+@staff_member_required
+def manageACL(request, aclId = None):
+	aclList = LBEDirectoryACL.objects.all()
+	try:
+		if aclId == None:
+			form = LBEACLForm(aclList[0])
+		else:
+			form = LBEACLForm(LBEDirectoryACL.objects.get(id=aclId))
+	except BaseException:
+		form = None
+	return render_to_response('config/acl/manage.html',{'aclList':aclList,'aclForm':form,'aclId':aclId},context_instance=RequestContext(request))
+
+@staff_member_required
+def checkACL_AJAX(request,query = None):
+	acl = ACLHelper(None,query)
+	print acl.check()
+	return HttpResponse(acl.traceback)

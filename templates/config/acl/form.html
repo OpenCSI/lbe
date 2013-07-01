@@ -1,0 +1,45 @@
+{% load url from future %}
+{% if aclForm %}
+	{# Include the hidden fields #}
+	{% for hidden in aclForm.hidden_fields %}
+	{{ hidden }}
+	{% endfor %}
+	{# Include the visible fields #}
+	<table class='table table-condensed'>
+		<tr>
+			<th> Object </th>
+			<td> {{aclForm.object}}
+				{% for error in aclForm.object.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+			</td>
+		</tr>
+		<tr>
+			<th> Type </th>
+			<td> {{aclForm.type}}
+				{% for error in aclForm.type.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+			</td>
+		</tr>
+		<tr>
+			<th> Query </th>
+			<td> {{aclForm.condition}} <button class="btn" onClick="checkACL();return false;"><i class="icon-refresh"></i></button>
+				{% for error in aclForm.condition.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn' ></td>
+		</tr>
+	</table>
+<script type="text/javascript">
+function checkACL()
+{
+	$.ajax({
+	   type: "GET",
+	   url: '/ajax/config/acl/check/' + $('#id_condition').val(),
+	   async:false,
+	   success: function(data){
+		    $('.show').html(data);
+		}
+	 });
+}
+</script>
+{% endif %}

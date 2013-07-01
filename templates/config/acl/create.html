@@ -1,0 +1,7 @@
+{% extends "index.html" %}
+{% block content %}
+<h4>Create ACL:</h4>
+<form method="post" action="">{% csrf_token %}
+   {% include 'config/acl/form.html' %}
+</form>
+{% endblock %}
