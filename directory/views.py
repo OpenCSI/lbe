@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse
 from directory.models import *
@@ -12,7 +13,9 @@ import math
 
 from django import forms
 
+@login_required
 def index(request,lbeObject_id=1,page=1):
+    print request
 	# init object:
     if lbeObject_id is None:
 		lbeObject_id = 1
@@ -37,6 +40,7 @@ def index(request,lbeObject_id=1,page=1):
 
 # REMOVE object
 #@manage_acl('delete')
+@login_required
 def deleteObjectInstance(request,lbeObject_id,objectName):
     backend = BackendHelper()
     lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
@@ -50,6 +54,7 @@ def deleteObjectInstance(request,lbeObject_id,objectName):
     return index(request,lbeObject_id,page)
 
 #@manage_acl('view')
+@login_required
 def viewObjectInstance(request,obj_id,objectName = None):
 	instanceHelper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id=obj_id))
 	obj = instanceHelper.getValuesDecompressed(objectName)
@@ -57,6 +62,7 @@ def viewObjectInstance(request,obj_id,objectName = None):
 	
 # Create an instance of LBEObjectInstance from LBEObject definition. Save it into MongoDB with status AWAITING_SYNC
 #@manage_acl('create')
+@login_required
 def addObjectInstance(request, lbeObject_id = None):
     form = None
     helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
@@ -80,7 +86,8 @@ def addObjectInstance(request, lbeObject_id = None):
     return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
 
 # Modify, remove values
-#@manage_acl()    
+#@manage_acl() 
+@login_required   
 def manageObjectInstance(request, obj_id,uid,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
@@ -106,7 +113,7 @@ def manageObjectInstance(request, obj_id,uid,type):
 	# Show part:
 	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
 
-
+@login_required
 def searchAJAX(request, obj_id, search):
     if len(search) == 0:
         return HttpResponse('/')
