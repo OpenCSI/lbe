@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.shortcuts import render_to_response
 from django.core.exceptions import PermissionDenied
 import re
 from django.db.models import Q
@@ -240,6 +241,7 @@ class ACLHelper:
 		return False
 
 
+
 	@staticmethod
 	def select(view_func):
 		def wraps(request,*args,**kwargs):
@@ -257,8 +259,8 @@ class ACLHelper:
 				# if ACL is working, go to the view:
 				if check:
 					return view_func(request,*args,**kwargs)
-			# Return other view: [TODO]
-			return view_func(request,*args,**kwargs)
+			# Return other view:
+			return render_to_response('error/denied.html')
 		return wraps
 		
 	@staticmethod
@@ -275,8 +277,8 @@ class ACLHelper:
 				# if ACL is working, go to the view:
 				if check:
 					return view_func(request,*args,**kwargs)
-			# Return other view: [TODO]
-			return view_func(request,*args,**kwargs)
+			# Return other view:
+			return render_to_response('error/denied.html')
 		return wraps
 
 	@staticmethod
@@ -293,8 +295,8 @@ class ACLHelper:
 				# if ACL is working, go to the view:
 				if check:
 					return view_func(request,*args,**kwargs)
-			# Return other view: [TODO]
-			return view_func(request,*args,**kwargs)
+			# Return other view: 
+			return render_to_response('error/denied.html')
 		return wraps
 		
 	@staticmethod
@@ -311,6 +313,6 @@ class ACLHelper:
 				# if ACL is working, go to the view:
 				if check:
 					return view_func(request,*args,**kwargs)
-			# Return other view: [TODO]
-			return view_func(request,*args,**kwargs)
+			# Return other view:
+			return render_to_response('error/denied.html')
 		return wraps
