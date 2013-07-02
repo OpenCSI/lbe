@@ -8,5 +8,5 @@
    {% endfor %}
 </table>
 {# ACL right here to modify values #}
-<center><a href="{% url 'directory.views.manageObjectInstance' obj_id=obj_id uid=object.cn.0 %}" class="btn btn-primary">Modify</a></center>
+<center><a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=obj_id uid=object.cn.0 %}" class="btn btn-primary">Modify</a></center>
 {% endblock %}

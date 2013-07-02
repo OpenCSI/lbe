@@ -53,7 +53,19 @@ class BackendMongoImpl:
             logging.error("Can't connect to MongoDB server (", settings.MONGODB_SERVER['HOST'], ' ',  settings.MONGODB_SERVER['PORT'], " )")
             raise BackendConnectionError("Can't connect to the backend server")
 
-    def getObjectByName(self, lbeObjectTemplate, uniqueName):
+	"""
+	Get User values from his UID attribute.
+	"""
+    def getUserUIDForObject(self, lbeObjectTemplate, UID):
+        searchResult = self.handler.searchDocuments(lbeObjectTemplate.name, { 'attributes.uid': UID })
+        if searchResult.count() > 0:
+            return searchResult[0]
+        return None
+        
+    """
+    Get User values from his _id attribute.
+    """
+    def getUserForObject(self, lbeObjectTemplate, uniqueName):
         searchResult = self.handler.searchDocuments(lbeObjectTemplate.name, { '_id': uniqueName })
         if searchResult.count() > 0:
             return searchResult[0]

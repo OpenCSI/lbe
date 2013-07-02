@@ -19,10 +19,10 @@
     <tbody class="Tdata">
 		{% for object in objects %}
 		<tr>
-			<td> <a href="{% url 'directory.views.viewObjectInstance' obj_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
+			<td> <a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
 			<td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
 			<td style='text-align: center;'>
-				<a href="{% url 'directory.views.manageObjectInstance' obj_id=lbeObjectId uid=object.name %}" class="icon-edit"></a>
+				<a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=lbeObjectId uid=object.name %}" class="icon-edit"></a>
 				<a href="{% url 'directory.views.deleteObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}">
 					<span class='label label-important'>x</span>
 				</a>

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import PermissionDenied
 import re
 from django.db.models import Q
 from services.backend import BackendHelper
@@ -166,8 +167,8 @@ class ACLHelper:
 		backend = BackendHelper()
 		values = self.word[2].split(',')
 		for objectName in values:
-			self.object = LBEObjectTemplate.objects.filter(Q(name=objectName) | Q(displayName=objectName) )[0]
-			if backend.getObjectByName(self.object,userID):
+			obj = LBEObjectTemplate.objects.filter(Q(name=objectName) | Q(displayName=objectName) )[0]
+			if backend.getUserUIDForObject(obj,userID):
 				return True
 		# No value:
 		return False
@@ -176,7 +177,7 @@ class ACLHelper:
 	def __executePerson(self,userID):
 		# backend db:
 		backend = BackendHelper()
-		obj = backend.getObjectByName(self.object,userID)
+		obj = backend.getUserUIDForObject(self.object,userID)
 		# check if characters:
 		if self.word[3] != '':
 			# split ',' values:
@@ -238,31 +239,78 @@ class ACLHelper:
 		# not necessary:
 		return False
 
-	# remove T from attributes function 'apply_acl' use them from kwargs attribute?
-	# How to use this function:
-	#@ACLHelper.apply_acl("create")
-	#def Myview(request,obj_id,(type_acl)?,...): # with type_acl : create/read/update/...
-	#	...
+
 	@staticmethod
-	def apply_acl(T=None):
-		# function:
-		def decorate(func):
-			# function's arguments
-			def wrapper(*args,**kwargs):
-				try:
-					lbeOT = LBEObjectTemplate.objects.get(id=kwargs['obj_id'])
-					if T != None:
-						lbeacls = LBEDirectoryACL.objects.filter(lbeObjectTemplate=lbeOT,type=T)
-					else:
-						lbeacls = LBEDirectoryACL.objects.filter(lbeObjectTemplate=lbeOT,type=kwargs['type_acl'])
-				except BaseException:
-					raise Http404
-				for lbeacl in lbeacls:
-					acl = ACLHelper(lbeOT,lbeacl.query)
-					# execute the function if correct (test)
-					if acl.execute("userID[_id from backend]"):
-						response = func(*args,**kwargs)
-						return response
-				return HttpResponse(status=403)
-			return wrapper
-		return decorate
+	def select(view_func):
+		def wraps(request,*args,**kwargs):
+			# get the current object:
+			try:
+				obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
+			except: # Or the First by default:
+				obj = LBEObjectTemplate.objects.get(id=1)
+			# get all ACLs:
+			acls = LBEDirectoryACL.objects.filter(object=obj,type="select")
+			# Then, check for the current user:
+			check = False
+			for acl in acls:
+				check =  ACLHelper(obj,acl.condition).execute(str(request.user))
+				# if ACL is working, go to the view:
+				if check:
+					return view_func(request,*args,**kwargs)
+			# Return other view: [TODO]
+			return view_func(request,*args,**kwargs)
+		return wraps
+		
+	@staticmethod
+	def create(view_func):
+		def wraps(request,*args,**kwargs):
+			# get the current object:
+			obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
+			# get all ACLs:
+			acls = LBEDirectoryACL.objects.filter(object=obj,type="create")
+			# Then, check for the current user:
+			check = False
+			for acl in acls:
+				check =  ACLHelper(obj,acl.condition).execute(str(request.user))
+				# if ACL is working, go to the view:
+				if check:
+					return view_func(request,*args,**kwargs)
+			# Return other view: [TODO]
+			return view_func(request,*args,**kwargs)
+		return wraps
+
+	@staticmethod
+	def update(view_func):
+		def wraps(request,*args,**kwargs):
+			# get the current object:
+			obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
+			# get all ACLs:
+			acls = LBEDirectoryACL.objects.filter(object=obj,type="update")
+			# Then, check for the current user:
+			check = False
+			for acl in acls:
+				check =  ACLHelper(obj,acl.condition).execute(str(request.user))
+				# if ACL is working, go to the view:
+				if check:
+					return view_func(request,*args,**kwargs)
+			# Return other view: [TODO]
+			return view_func(request,*args,**kwargs)
+		return wraps
+		
+	@staticmethod
+	def delete(view_func):
+		def wraps(request,*args,**kwargs):
+			# get the current object:
+			obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
+			# get all ACLs:
+			acls = LBEDirectoryACL.objects.filter(object=obj,type="delete")
+			# Then, check for the current user:
+			check = False
+			for acl in acls:
+				check =  ACLHelper(obj,acl.condition).execute(str(request.user))
+				# if ACL is working, go to the view:
+				if check:
+					return view_func(request,*args,**kwargs)
+			# Return other view: [TODO]
+			return view_func(request,*args,**kwargs)
+		return wraps

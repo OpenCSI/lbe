@@ -14,8 +14,8 @@ import math
 from django import forms
 
 @login_required
+@ACLHelper.select
 def index(request,lbeObject_id=1,page=1):
-    print request
 	# init object:
     if lbeObject_id is None:
 		lbeObject_id = 1
@@ -38,9 +38,8 @@ def index(request,lbeObject_id=1,page=1):
         tabSize.append(i+1)
     return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id,'lbeObjects':lbeObjects, 'length': tabSize,'page': int(page) }, context_instance=RequestContext(request))
 
-# REMOVE object
-#@manage_acl('delete')
 @login_required
+@ACLHelper.delete
 def deleteObjectInstance(request,lbeObject_id,objectName):
     backend = BackendHelper()
     lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
@@ -53,16 +52,15 @@ def deleteObjectInstance(request,lbeObject_id,objectName):
     page = int(math.ceil(position/float(lengthMax)))
     return index(request,lbeObject_id,page)
 
-#@manage_acl('view')
 @login_required
-def viewObjectInstance(request,obj_id,objectName = None):
-	instanceHelper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id=obj_id))
+@ACLHelper.select
+def viewObjectInstance(request,lbeObject_id,objectName = None):
+	instanceHelper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id=lbeObject_id))
 	obj = instanceHelper.getValuesDecompressed(objectName)
-	return render_to_response('directory/default/object/view.html', {'object':obj,'obj_id':obj_id}, context_instance=RequestContext(request))
+	return render_to_response('directory/default/object/view.html', {'object':obj,'obj_id':lbeObject_id}, context_instance=RequestContext(request))
 	
-# Create an instance of LBEObjectInstance from LBEObject definition. Save it into MongoDB with status AWAITING_SYNC
-#@manage_acl('create')
 @login_required
+@ACLHelper.create
 def addObjectInstance(request, lbeObject_id = None):
     form = None
     helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
@@ -85,11 +83,10 @@ def addObjectInstance(request, lbeObject_id = None):
     form = helper.form(LBEObjectTemplate.objects.get(id = lbeObject_id))
     return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
 
-# Modify, remove values
-#@manage_acl() 
 @login_required   
-def manageObjectInstance(request, obj_id,uid,type):
-	lbeObject = LBEObjectTemplate.objects.get(id=obj_id)
+@ACLHelper.update
+def manageObjectInstance(request, lbeObject_id,uid,type):
+	lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
 	instanceHelper = LBEObjectInstanceHelper(lbeObject)
 	# Get multiValue attributes: ('+' button)
@@ -111,14 +108,15 @@ def manageObjectInstance(request, obj_id,uid,type):
 		# Set values into form:
 		form = instanceHelper.form(uid)
 	# Show part:
-	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':obj_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
+	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':lbeObject_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
 
 @login_required
-def searchAJAX(request, obj_id, search):
+@ACLHelper.select
+def searchAJAX(request, lbeObject_id, search):
     if len(search) == 0:
         return HttpResponse('/')
     backend = BackendHelper()
-    objects = backend.searchObjectsByPattern(LBEObjectTemplate.objects.get(id=obj_id),search)
+    objects = backend.searchObjectsByPattern(LBEObjectTemplate.objects.get(id=lbeObject_id),search)
     print objects
-    return render_to_response('ajax/directory/search.html', { 'lbeObjectId':obj_id, 'objects': objects}, context_instance=RequestContext(request))
+    return render_to_response('ajax/directory/search.html', { 'lbeObjectId':lbeObject_id, 'objects': objects}, context_instance=RequestContext(request))
 

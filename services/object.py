@@ -82,7 +82,7 @@ class LBEObjectInstanceHelper():
     def save(self, ):
         self._backend()
         # Search for an existing object
-        searchResult = self.backend.getObjectByName(self.template, self.instance.name)
+        searchResult = self.backend.getUserForObject(self.template, self.instance.name)
         if searchResult is None:
             return self.backend.createObject(self.template, self.instance)
         else:
@@ -160,7 +160,7 @@ class LBEObjectInstanceHelper():
         """
         try:
 			self._backend()
-			valuesUser = self.backend.getObjectByName(self.template, UID)
+			valuesUser = self.backend.getUserForObject(self.template, UID)
 			# Get all attributes from objects:
 			attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
 			d = dict()
@@ -190,7 +190,7 @@ class LBEObjectInstanceHelper():
 		changes.set fields, return the new values (changes.set > attributes)
         """
         self._backend()
-        valuesUser = self.backend.getObjectByName(self.template, UID)
+        valuesUser = self.backend.getUserForObject(self.template, UID)
         # Get all attributes from objects:
         attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
         d = dict()
