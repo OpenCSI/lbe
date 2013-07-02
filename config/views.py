@@ -241,9 +241,17 @@ def manageACL(request, aclId = None):
 	aclList = LBEDirectoryACL.objects.all()
 	try:
 		if aclId == None:
-			form = LBEACLForm(aclList[0])
+			form = LBEACLForm(instance=aclList[0])
+			aclId = aclList[0].id
+		elif request.method == 'POST':
+				form = LBEACLForm(request.POST,instance=LBEDirectoryACL.objects.get(id=aclId))
+				if form.is_valid():
+					if form.save():
+						messages.add_message(request, messages.SUCCESS, 'ACL managed.')
+				else:
+					messages.add_message(request, messages.ERROR, 'Error while adding ACL.')
 		else:
-			form = LBEACLForm(LBEDirectoryACL.objects.get(id=aclId))
+			form = LBEACLForm(instance=LBEDirectoryACL.objects.get(id=aclId))
 	except BaseException:
 		form = None
 	return render_to_response('config/acl/manage.html',{'aclList':aclList,'aclForm':form,'aclId':aclId},context_instance=RequestContext(request))

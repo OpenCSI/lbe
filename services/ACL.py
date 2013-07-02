@@ -191,7 +191,7 @@ class ACLHelper:
 							if attrValue == value:
 								return False
 			except BaseException as e:
-				print e
+				# e
 				# attribute does not exist for user:
 				pass
 			return self.operator == '!='

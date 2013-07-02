@@ -21,7 +21,7 @@
 		<tr>
 			<th> Query </th>
 			<td> {{aclForm.condition}} <button class="btn" onClick="checkACL();return false;"><i class="icon-refresh"></i></button>
-				{% for error in aclForm.condition.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+				<div class="error">{% for error in aclForm.condition.errors %} <span class='label label-important'>{{ error }}</span> {% endfor %}</div>
 			</td>
 		</tr>
 
@@ -37,7 +37,14 @@ function checkACL()
 	   url: '/ajax/config/acl/check/' + $('#id_condition').val(),
 	   async:false,
 	   success: function(data){
-		    $('.show').html(data);
+		    if(data != "")
+		    {
+				$('.error').html(data);
+				$('#id_condition').css('border-color','#ff0000');
+			}
+			else
+				$('#id_condition').css('border-color','#00ff00');
+				$('.error').html(data);
 		}
 	 });
 }
