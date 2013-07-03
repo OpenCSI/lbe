@@ -107,15 +107,6 @@ def modifyAttributeToObject(request,obj_id,attr_id = None):
 	return render_to_response('config/object/attributes/manageAttribute.html',{'attributeForm': form,'attrID':attr_id,'objID':obj_id,'reloadParent':reloadParent}, context_instance=RequestContext(request))
 	
 @staff_member_required
-def showAttributeAJAX(request,attribute = None,value = None):
-    if request.is_ajax():
-        if value == None or value == '':
-            attr = []
-        else:
-            attr = LBEAttribute.objects.filter(name__contains=value)[:5] # LIKE '%attribute%'
-        return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute}, context_instance=RequestContext(request))
-
-@staff_member_required
 def addAttribute(request):
 	if request.method == 'POST':
 		form = LBEAttributeForm(request.POST)
@@ -129,6 +120,21 @@ def addAttribute(request):
 		form = LBEAttributeForm()
 	return render_to_response('config/attribute/create.html',{'attributeForm':form},context_instance=RequestContext(request))
 
+@staff_member_required
+def modifyAttribute(request,obj_id = None,attr_id = None):
+	if request.method == 'POST':
+		if obj_id == None:
+			messages.add_message(request, messages.SUCCESS, 'Cannot modify attribute without object.')
+			redirect('/config/object/add/')
+		form = LBEAttributeInstanceForm(request.POST,instance = LBEAttributeInstance.objects.get(id=attr_id))
+		if form.is_valid():
+			form.save()
+			messages.add_message(request, messages.SUCCESS, 'Attribute modified.')
+		else:
+			messages.add_message(request, messages.ERROR, 'Attribute not modified.')
+			print form.errors
+	return redirect('/config/object/modify/' + obj_id)
+	
 @staff_member_required
 def addReference(request):
 	if request.method == 'POST':
@@ -167,21 +173,6 @@ def modifyReference(request,ref_id = 1):
 	else:
 		form = LBEReferenceForm(instance=ref)
 	return render_to_response('config/reference/modify.html',{'referenceForm':form,'references':referencesList,'refID':ref_id},context_instance=RequestContext(request))
-
-@staff_member_required
-def modifyAttribute(request,obj_id = None,attr_id = None):
-	if request.method == 'POST':
-		if obj_id == None:
-			messages.add_message(request, messages.SUCCESS, 'Cannot modify attribute without object.')
-			redirect('/config/object/add/')
-		form = LBEAttributeInstanceForm(request.POST,instance = LBEAttributeInstance.objects.get(id=attr_id))
-		if form.is_valid():
-			form.save()
-			messages.add_message(request, messages.SUCCESS, 'Attribute modified.')
-		else:
-			messages.add_message(request, messages.ERROR, 'Attribute not modified.')
-			print form.errors
-	return redirect('/config/object/modify/' + obj_id)
 
 @staff_member_required	
 def addScript(request):

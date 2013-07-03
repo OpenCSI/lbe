@@ -22,6 +22,7 @@
                <tr>
                	<th>Name</th>
             	<th>Default value</th>
+            	<th>Type</th>
             	<th>Mandatory</th>
             	<th>Multi Value</th>
             	<th>Ciphered</th>
@@ -31,6 +32,7 @@
                <tr>
                		<td> {{ instance.lbeAttribute.name }} </td>
             		<td> {{ instance.defaultValue }} </td>
+            		<td> {% if instance.attributeType == 0 %} Final {% else %} {% if instance.attributeType == 1 %} Virtual {% else %} Reference {% endif %}{% endif %}</td>
             		<td> {{ instance.mandatory }}</td>
             		<td> {{ instance.multivalue }}</td>
             		<td> {{ instance.secure }}</td>
