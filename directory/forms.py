@@ -35,15 +35,20 @@ class LBEObjectTemplateForm(ModelForm):
         return instanceNameAttribute
 
 class LBEAttributeInstanceForm(ModelForm):
-    lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
-    class Meta:
-        model = LBEAttributeInstance
-        exclude = ('widget','widgetArgs')
-        def clean_attributeType(self):
-			if self.cleaned_data['attributeType'] < 0:
-				raise forms.ValidationError("This field must be null or positive.")
-			print self.cleaned_data
-			#if self.cleaned_data['attributType'] 
+	lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
+	class Meta:
+		model = LBEAttributeInstance
+		exclude = ('widget','widgetArgs')
+		
+	def clean_attributeType(self):
+		if self.cleaned_data['attributeType'] < 0:
+			raise forms.ValidationError("This field must be null or positive.")
+		if self.cleaned_data['attributeType'] == 2:
+			if self.cleaned_data['reference'] == None:
+				raise forms.ValidationError("You need to select a reference.")
+		if self.cleaned_data['reference'] != None and self.cleaned_data['attributeType'] != 2:
+			raise forms.ValidationError("You need to select reference attribute type.")
+		return self.cleaned_data['attributeType']
 
 class LBEScriptForm(ModelForm):
 	class Meta:
@@ -92,7 +97,6 @@ class LBEScriptManageForm(forms.Form):
 			raise forms.ValidationError("This field must be a valid script.")
 		return script
 		
-# Following forms are not used at the moment
 class LBEObjectInstanceForm(forms.Form):
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)

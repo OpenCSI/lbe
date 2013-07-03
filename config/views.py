@@ -91,7 +91,6 @@ def modifyAttributeToObject(request,obj_id,attr_id = None):
 	attribute = LBEAttributeInstance.objects.get(id = attr_id)
 	if request.method == 'POST':
 		form = LBEAttributeInstanceForm(request.POST,instance=attribute)
-		print "oui"
 		if form.is_valid():
 			form.save()
 			messages.add_message(request, messages.SUCCESS, 'Attribute managed.')

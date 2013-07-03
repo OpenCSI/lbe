@@ -20,7 +20,7 @@
 			Multivalued: {{attributeForm.multivalue}}<br/>
 			Ciphered: {{attributeForm.secure}}</td>
 	</tr>
-	<tr><th>Type: </th><td>{{attributeForm.attributeType}}</td></tr>
+	<tr><th>Type: </th><td>{{attributeForm.attributeType}}{% for error in attributeForm.attributeType.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td></tr>		
 	<tr><th>Reference</th><td>{{attributeForm.reference}} {% for error in attributeForm.reference.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}</td></tr>		
 	<td colspan="4" style='text-align: center;'><input type="submit" value="Add" class="btn"/></td>
 	</tr>
