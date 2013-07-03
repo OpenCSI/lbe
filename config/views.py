@@ -107,7 +107,6 @@ def modifyAttributeToObject(request,obj_id,attr_id = None):
 			form = LBEAttributeInstanceForm(instance=attribute)
 	return render_to_response('config/object/attributes/manageAttribute.html',{'attributeForm': form,'attrID':attr_id,'objID':obj_id,'reloadParent':reloadParent}, context_instance=RequestContext(request))
 
-
 @staff_member_required
 def modifyReferenceAJAX(request,ref_id = None):
 	if request.is_ajax():

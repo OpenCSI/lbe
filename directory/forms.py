@@ -3,6 +3,7 @@ from django import forms
 from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
 from services.backend import BackendHelper
+from services.object import LBEObjectInstanceHelper
 from django.forms.util import ErrorList
 import os, sys
 from services.ACL import ACLHelper
@@ -109,7 +110,21 @@ class LBEObjectInstanceForm(forms.Form):
             elif attributeInstance.attributeType == ATTRIBUTE_TYPE_REFERENCE:
 				backend = BackendHelper()
 				values =  backend.searchObjects(attributeInstance.reference.objectTemplate)
-				print values
+				objectHelper = LBEObjectInstanceHelper(attributeInstance.reference.objectTemplate)
+				# Get values into Dict
+				listes = dict()
+				for value in values:
+					# dict[ID] = Attribute value[0] using ID = frontend's UID 
+					key = attributeInstance.reference.objectTemplate.instanceNameAttribute.name + "="+value.name+"," + objectHelper.callScriptClassMethod('base_dn')
+					listes[key]  = str(value.attributes[attributeInstance.reference.objectAttribute.name][0])
+				# Create the Field (Dict to tuples):
+				exec 'self.fields[attributeInstance.lbeAttribute.name] = forms.ChoiceField( '+str(listes.items())+' )'
+				try:
+					self.fields[attributeInstance.lbeAttribute.name].label = attributeInstance.lbeAttribute.displayName
+					self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)
+				except BaseException:
+					pass
+				
 
 class LBEObjectInstanceAttributeForm(forms.Form):
     name = forms.CharField()
