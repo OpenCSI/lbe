@@ -20,7 +20,8 @@ urlpatterns = patterns('',
 	url(r'^config/object/add/?$', 'config.views.addObject'),
 	url(r'^config/object/list/?$', 'config.views.listObjects'),
 	url(r'^config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObject'),
-	url(r'^config/object/addattribute/(?P<obj_id>\d+)$', 'config.views.addObjectAttribute'),
+	url(r'^config/object/addAttribute/(?P<obj_id>\d+)$', 'config.views.addAttributeToObject'),
+	url(r'^config/object/modifyAttribute/modify/(?P<obj_id>\d+)/(?P<attr_id>\d+)$', 'config.views.modifyAttributeToObject'),
 	
 	url(r'^config/reference/add/?$', 'config.views.addReference'),
 	url(r'^config/reference/modify/(?P<ref_id>\d+)?$', 'config.views.modifyReference'),
@@ -35,11 +36,7 @@ urlpatterns = patterns('',
 	url(r'^config/script/manage/(?P<scriptId>\d+)?$', 'config.views.manageScript'),
 	
 	url(r'^ajax/config/acl/check/(?P<query>.*)$', 'config.views.checkACL_AJAX'),
-	url(r'^ajax/config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObjectAJAX'),
-	url(r'^ajax/config/attribute/modify/(?P<obj_id>\d+)/(?P<attr_id>\d+)$', 'config.views.modifyAttributeAJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
-	
-	url(r'^config/object/addattribute/(?P<obj_id>\d+)$', 'config.views.addObjectAttribute'),
 
     url(r'^/?(?P<lbeObject_id>\d+)?/?(?P<page>\d+)?$', 'directory.views.index'),
     

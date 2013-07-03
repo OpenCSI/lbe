@@ -1,6 +1,11 @@
 {% extends "index.html" %}
 {% load url from future %}
 {% block content %}
+	<script type="text/javascript">
+      function PopupWindow(strWindowToOpen){
+		window.open (strWindowToOpen, 'Attribute', config='height=420, width=550, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
+	  }
+      </script>
     <div class='row-fluid'>
         <div class='span6'>
             <form action="{% url 'config.views.modifyObject' obj_id=lbeObject.id %}" method='POST'>{% csrf_token %}
@@ -17,20 +22,25 @@
                <tr>
                	<th>Name</th>
             	<th>Default value</th>
-            	<th>Reference</th><th>Script</th><th>Action</th>
+            	<th>Mandatory</th>
+            	<th>Multi Value</th>
+            	<th>Ciphered</th>
+            	<th>Reference</th><th>Action</th>
                </tr>
                {% for instance in attributeInstances %}
                <tr>
                		<td> {{ instance.lbeAttribute.name }} </td>
             		<td> {{ instance.defaultValue }} </td>
-            		<td> {{ instance.reference }} </td>
-            		<td> {{ instance.script }} </td>
-            		<td> <a href="#" onClick="showModalBox('{% url 'config.views.modifyAttributeAJAX' obj_id=lbeObject.id attr_id=instance.id  %}')">Modify </a></td>
+            		<td> {{ instance.mandatory }}</td>
+            		<td> {{ instance.multivalue }}</td>
+            		<td> {{ instance.secure }}</td>
+            		<td> {{ instance.reference.name }} </td>
+            		<td> <a href="#" onClick="PopupWindow('{% url 'config.views.modifyAttributeToObject' obj_id=lbeObject.id attr_id=instance.id  %}');return false;">Modify </a></td>
                </tr>
                {% endfor %}
             </table>
 		   
-		   <center><a href="#" onClick="showModalBox('{% url 'config.views.modifyObjectAJAX' obj_id=lbeObject.id  %}');"><button class="btn">Add</button></a></center>
+		   <center><a href="#" onClick="PopupWindow('{% url 'config.views.addAttributeToObject' obj_id=lbeObject.id  %}');return false;"><button class="btn">Add</button></a></center>
             <div class="addAttribute">
             </div>
       </div>

@@ -68,17 +68,45 @@ def showAttributeAJAX(request,attribute = None,value = None):
 		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute}, context_instance=RequestContext(request))
 
 @staff_member_required
-def modifyObjectAJAX(request,obj_id = None):
-	if request.is_ajax():
-		# asyd
-		lbeObjectTemplate = LBEObjectTemplate.objects.get(id = obj_id)
-		if (obj_id == None):
-			messages.add_message(request, messages.INFO, 'Object id is missing.')
-			#return render_to_response('config/object/list.html', { 'objects': LBEObjectTemplate.objects.all() }, context_instance=RequestContext(request))
+def addAttributeToObject(request,obj_id = None):
+    lbeObjectTemplate = LBEObjectTemplate.objects.get(id = obj_id)
+    if request.method == 'POST':
+        form = LBEAttributeInstanceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, 'Attribute added.')
+            reloadParent = '<script>window.opener.location.reload();window.close();</script>'
+        else:
+            reloadParent = ''
+            messages.add_message(request, messages.ERROR, 'Error while adding attribute.')
+    else:
+	    if (obj_id == None):
+		    messages.add_message(request, messages.INFO, 'Object id is missing.')
+	    form = LBEAttributeInstanceForm()
+	    reloadParent = ''
+    return render_to_response('config/object/attributes/addAttribute.html',{'objID': obj_id, 'attributeForm': form,'reloadParent':reloadParent}, context_instance=RequestContext(request))
+
+@staff_member_required
+def modifyAttributeToObject(request,obj_id,attr_id = None):
+	attribute = LBEAttributeInstance.objects.get(id = attr_id)
+	if request.method == 'POST':
+		form = LBEAttributeInstanceForm(request.POST,instance=attribute)
+		print "oui"
+		if form.is_valid():
+			form.save()
+			messages.add_message(request, messages.SUCCESS, 'Attribute managed.')
+			reloadParent = '<script>window.opener.location.reload();window.close();</script>'
 		else:
-			objectForm = LBEObjectTemplateForm(instance=lbeObjectTemplate)
-		attForm = LBEAttributeInstanceForm()
-		return render_to_response('ajax/config/modifyObject.html',{'lbeObject': lbeObjectTemplate,'objectForm': objectForm, 'attributeForm': attForm}, context_instance=RequestContext(request))
+			reloadParent = ''
+			messages.add_message(request, messages.ERROR, 'Error while adding attribute.')
+	else:
+		if (attr_id == None):
+			messages.add_message(request, messages.INFO, 'Attribute id is missing.')
+		else:
+			reloadParent = ''
+			form = LBEAttributeInstanceForm(instance=attribute)
+	return render_to_response('config/object/attributes/manageAttribute.html',{'attributeForm': form,'attrID':attr_id,'objID':obj_id,'reloadParent':reloadParent}, context_instance=RequestContext(request))
+
 
 @staff_member_required
 def modifyReferenceAJAX(request,ref_id = None):
@@ -94,17 +122,6 @@ def modifyReferenceAJAX(request,ref_id = None):
 		return render_to_response('ajax/config/modifyReference.html',{'referenceForm': form,'refID':ref_id}, context_instance=RequestContext(request))
 	
 @staff_member_required
-def modifyAttributeAJAX(request,obj_id,attr_id = None):
-	if request.is_ajax():
-		attribute = LBEAttributeInstance.objects.get(id = attr_id)
-		if (attr_id == None):
-			messages.add_message(request, messages.INFO, 'Attribute id is missing.')
-			#return render_to_response('config/object/list.html', { 'objects': LBEObjectTemplate.objects.all() }, context_instance=RequestContext(request))
-		else:
-			attributeForm = LBEAttributeInstanceForm(instance=attribute)
-		return render_to_response('ajax/config/modifyAttribute.html',{'attributeForm': attributeForm,'attrID':attr_id,'objID':obj_id}, context_instance=RequestContext(request))
-
-@staff_member_required
 def showAttributeAJAX(request,attribute = None,value = None):
     if request.is_ajax():
         if value == None or value == '':
@@ -112,20 +129,6 @@ def showAttributeAJAX(request,attribute = None,value = None):
         else:
             attr = LBEAttribute.objects.filter(name__contains=value)[:5] # LIKE '%attribute%'
         return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute}, context_instance=RequestContext(request))
-
-@staff_member_required
-def addObjectAttribute(request, obj_id):
-    if request.method == 'POST':
-        form = LBEAttributeInstanceForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.add_message(request, messages.SUCCESS, 'Attribute added.')
-            return redirect('/config/object/modify/' + obj_id)
-        else:
-            # TODO: manage errors
-            messages.add_message(request, messages.ERROR, 'Error while adding attribute.')
-            print form.errors
-    return redirect('/config/object/modify/' + obj_id)
 
 @staff_member_required
 def addAttribute(request):

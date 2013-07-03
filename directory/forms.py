@@ -2,6 +2,7 @@
 from django import forms
 from django.forms import ModelForm, ModelChoiceField
 from directory.models import *
+from services.backend import BackendHelper
 from django.forms.util import ErrorList
 import os, sys
 from services.ACL import ACLHelper
@@ -40,6 +41,8 @@ class LBEAttributeInstanceForm(ModelForm):
         def clean_attributeType(self):
 			if self.cleaned_data['attributeType'] < 0:
 				raise forms.ValidationError("This field must be null or positive.")
+			print self.cleaned_data
+			#if self.cleaned_data['attributType'] 
 
 class LBEScriptForm(ModelForm):
 	class Meta:
@@ -93,15 +96,20 @@ class LBEObjectInstanceForm(forms.Form):
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)
         for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
-            # Display only finals attributes
+            # Display finals attributes
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 # TODO: Find a better way than exec
                 exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
                 try:
                     self.fields[attributeInstance.lbeAttribute.name].label = attributeInstance.lbeAttribute.displayName
                     self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)
-                except BaseException, e:
+                except BaseException:
                     pass
+            # Manage & Show references attributes
+            elif attributeInstance.attributeType == ATTRIBUTE_TYPE_REFERENCE:
+				backend = BackendHelper()
+				values =  backend.searchObjects(attributeInstance.reference.objectTemplate)
+				print values
 
 class LBEObjectInstanceAttributeForm(forms.Form):
     name = forms.CharField()
