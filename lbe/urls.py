@@ -26,8 +26,6 @@ urlpatterns = patterns('',
 	url(r'^config/reference/add/?$', 'config.views.addReference'),
 	url(r'^config/reference/modify/(?P<ref_id>\d+)?$', 'config.views.modifyReference'),
 	
-	url(r'^ajax/config/reference/modify/(?P<ref_id>\d+)?$', 'config.views.modifyReferenceAJAX'),
-	
 	url(r'^config/acl/add/?$', 'config.views.addACL'),
 	url(r'^config/acl/manage/(?P<aclId>\d+)?$', 'config.views.manageACL'),
 

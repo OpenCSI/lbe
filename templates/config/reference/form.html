@@ -15,10 +15,7 @@
 		</tr>
 		{% endfor %}
 		<tr>
-			<td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn' {% if ajax %}onClick="showModalBox1V('{% url 'config.views.modifyReferenceAJAX' %}',$('#id_reference :checked').val())"{% endif %}></td>
+			<td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn'></td>
 		</tr>
 	</table>
-	{% if ajax %}
-	<script type="text/javascript" src="/static/js/common/showModalBox.js"></script>
-	{% endif %}
 {% endif %}

@@ -150,9 +150,6 @@ class LBEReferenceForm(ModelForm):
 			raise forms.ValidationError("This field must be an attribute own by the object.")
 		return objectAttribute
 
-class LBEReferenceSelectForm(forms.Form):
-	reference = LBEModelChoiceField(queryset = LBEReference.objects.all())
-
 class LBEACLForm(ModelForm):
 	class Meta:
 		model = LBEDirectoryACL

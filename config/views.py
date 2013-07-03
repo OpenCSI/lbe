@@ -105,19 +105,6 @@ def modifyAttributeToObject(request,obj_id,attr_id = None):
 			reloadParent = ''
 			form = LBEAttributeInstanceForm(instance=attribute)
 	return render_to_response('config/object/attributes/manageAttribute.html',{'attributeForm': form,'attrID':attr_id,'objID':obj_id,'reloadParent':reloadParent}, context_instance=RequestContext(request))
-
-@staff_member_required
-def modifyReferenceAJAX(request,ref_id = None):
-	if request.is_ajax():
-		if (ref_id == None):
-			#messages.add_message(request, messages.ERROR, 'Reference id is missing.')
-			return HttpResponse('')
-		try:
-			form = LBEReferenceForm(instance = LBEReference.objects.get(id=ref_id))
-		except BaseException:
-			messages.add_message(request, messages.ERROR, 'Reference does not exist.')
-			form = []
-		return render_to_response('ajax/config/modifyReference.html',{'referenceForm': form,'refID':ref_id}, context_instance=RequestContext(request))
 	
 @staff_member_required
 def showAttributeAJAX(request,attribute = None,value = None):
@@ -157,10 +144,18 @@ def addReference(request):
 	return render_to_response('config/reference/add.html',{'referenceForm':form},context_instance=RequestContext(request))
 
 @staff_member_required
-def modifyReference(request,ref_id = None):
+def modifyReference(request,ref_id = 1):
+	referencesList = LBEReference.objects.all()
+	try:
+		ref = LBEReference.objects.get(id = ref_id)
+	except BaseException:
+		try:
+			ref = referencesList[0]
+		except:
+			ref = []
 	if request.method == 'POST':
 		try:
-			form = LBEReferenceForm(request.POST,instance=LBEReference.objects.get(id=ref_id))
+			form = LBEReferenceForm(request.POST,instance=ref)
 			if form.is_valid():
 				form.save()
 				messages.add_message(request, messages.SUCCESS, 'Reference modified.')
@@ -169,9 +164,9 @@ def modifyReference(request,ref_id = None):
 				messages.add_message(request, messages.ERROR, 'Error while modifing reference: check if you have respected the form.')
 		except BaseException as e:
 			messages.add_message(request, messages.ERROR, 'Error while modifing reference.')
-	#else:
-	form = LBEReferenceSelectForm()
-	return render_to_response('config/reference/modify.html',{'referenceForm':form,'ajax':True,'refID':ref_id},context_instance=RequestContext(request))
+	else:
+		form = LBEReferenceForm(instance=ref)
+	return render_to_response('config/reference/modify.html',{'referenceForm':form,'references':referencesList,'refID':ref_id},context_instance=RequestContext(request))
 
 @staff_member_required
 def modifyAttribute(request,obj_id = None,attr_id = None):
