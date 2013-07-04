@@ -32,16 +32,24 @@ class MongoService:
 				return i
 		return 0
 		
-    def createDocument(self, collection, document):
+    def createDocument(self, awaiting, collection, document):
         db = self.db[collection]
         try:
+            document['status'] = awaiting
             id = db.insert(document)
             logger.debug('MongoDB object id: ' + id + ' created')
             return id
         except BaseException as e:
             logger.error('Error while creating document: ' + e.__str__())
+            
+    def approvalDocument(self,collection, ID):
+		db = self.db[collection]
+		try:
+			return db.update({'_id':ID},{'$set':{'status':OBJECT_STATE_AWAITING_SYNC}})
+		except BaseException as e:
+			logger.error('Error while approvaling document: ' + e.__str__())
 	
-    def modifyDocument(self, collection, ID, values):
+    def modifyDocument(self, awaiting,collection, ID, values):
         db = self.db[collection]
         try:
 			# Get Data values:
@@ -65,7 +73,7 @@ class MongoService:
             else:
 			    type = OBJECT_CHANGE_UPDATE_OBJECT
             # updage Mongo:
-            return db.update({'_id':ID},{'$set':{'changes':{'set':values,'type':type},'updated_at':datetime.datetime.now(utc),'status':OBJECT_STATE_AWAITING_SYNC}})
+            return db.update({'_id':ID},{'$set':{'changes':{'set':values,'type':type},'updated_at':datetime.datetime.now(utc),'status':awaiting}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
 	

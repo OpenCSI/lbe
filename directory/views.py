@@ -85,7 +85,7 @@ def addObjectInstance(request, lbeObject_id = None):
 
 @login_required   
 @ACLHelper.update
-def manageObjectInstance(request, lbeObject_id,uid,type):
+def manageObjectInstance(request, lbeObject_id,objectName,type):
 	lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
 	lbeAttribute = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
 	instanceHelper = LBEObjectInstanceHelper(lbeObject)
@@ -99,16 +99,30 @@ def manageObjectInstance(request, lbeObject_id,uid,type):
 			multivalue.append(attribute.lbeAttribute.name)
 	if request.method == 'POST':
 		# Modify part:
-		form = instanceHelper.form(uid,request.POST)
+		form = instanceHelper.form(objectName,request.POST)
 		if form.is_valid():
-			instanceHelper.updateFromDict(uid,form.clean())
+			instanceHelper.updateFromDict(objectName,form.clean())
 			instanceHelper.modify()
 			messages.add_message(request, messages.SUCCESS, 'Object saved')
 	else:
 		# Set values into form:
-		form = instanceHelper.form(uid)
+		form = instanceHelper.form(objectName)
 	# Show part:
-	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':lbeObject_id,'lbeAttribute':lbeAttribute,'uid':uid,'multivalue':multivalue},context_instance=RequestContext(request))
+	return render_to_response('directory/default/object/manage.html',{'form':form,'lbeObjectId':lbeObject_id,'lbeAttribute':lbeAttribute,'uid':objectName,'multivalue':multivalue},context_instance=RequestContext(request))
+
+@login_required
+@ACLHelper.approval
+def approvalObjectInstance(request, lbeObject_id,objectName):
+    backend = BackendHelper()
+    lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
+    # change status code user:
+    instanceHelper = LBEObjectInstanceHelper(lbeObject)
+    instanceHelper.approval(objectName)
+    # Current page from the object status changed:
+    position = backend.positionObject(lbeObject.name,objectName)
+    lengthMax = 10
+    page = int(math.ceil(position/float(lengthMax)))
+    return index(request,lbeObject_id,page)
 
 @login_required
 @ACLHelper.select

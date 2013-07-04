@@ -22,8 +22,11 @@
 			<td> <a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
 			<td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
 			<td style='text-align: center;'>
-				<a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=lbeObjectId uid=object.name %}" class="icon-edit"></a>
-				<a href="{% url 'directory.views.deleteObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}">
+				{% if object.status == 2 %}
+				<a href="{% url 'directory.views.approvalObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" title="Approval" class="icon-check"></a>
+				{% endif %}
+				<a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" title="Modify" class="icon-edit"></a>
+				<a href="{% url 'directory.views.deleteObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" title="Delete">
 					<span class='label label-important'>x</span>
 				</a>
 			</td>

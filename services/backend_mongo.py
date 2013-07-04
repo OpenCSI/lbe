@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dao.MongoDao import MongoService
 from pymongo import errors
-from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_DELETED
+from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED
 from django.utils.timezone import utc
 import logging, datetime
 
@@ -73,17 +73,31 @@ class BackendMongoImpl:
         return None
 
     def createObject(self, lbeObjectTemplate, lbeObjectInstance):
-        return self.handler.createDocument(lbeObjectTemplate.name, LBEObjectInstanceToDict(lbeObjectInstance) )
+        if lbeObjectTemplate.approval:
+            awaiting = OBJECT_STATE_AWAITING_APPROVAL
+        else:
+            awaiting = OBJECT_STATE_AWAITING_SYNC
+        return self.handler.createDocument(awaiting,lbeObjectTemplate.name, LBEObjectInstanceToDict(lbeObjectInstance) )
         
+    """
+		Used in Reconciliation:
+    """
     def updateObject(self, lbeObjectTemplate, lbeObjectInstance, changes):
         # Changes is already a dict with key = newvalue, no need to transform it
         return self.handler.updateDocument(lbeObjectTemplate.name,lbeObjectInstance, { '_id' : lbeObjectInstance.name.__str__() }, {'$set': changes })
     
     def modifyObject(self, lbeObjectTemplate, ID, values):
-        return self.handler.modifyDocument(lbeObjectTemplate.name,ID,values)
+        if lbeObjectTemplate.approval:
+            awaiting = OBJECT_STATE_AWAITING_APPROVAL
+        else:
+            awaiting = OBJECT_STATE_AWAITING_SYNC
+        return self.handler.modifyDocument(awaiting,lbeObjectTemplate.name,ID,values)
     
     def removeObject(self,lbeObjectTemplate, ID):
 		return self.handler.removeDocument(lbeObjectTemplate.name,ID)
+		
+    def approvalObject(self,lbeObjectTemplate, ID):
+		return self.handler.approvalDocument(lbeObjectTemplate.name,ID)
         
     def lengthObjects(self,lbeObjectTemplate):
 		return self.handler.sizeDocuments(lbeObjectTemplate.name,{ 'status': { '$gt': OBJECT_STATE_INVALID } })

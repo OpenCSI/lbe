@@ -16,6 +16,7 @@ OBJECT_CHANGE_NOTHING_OBJECT = -1
 OBJECT_CHANGE_CREATE_OBJECT = 0
 OBJECT_CHANGE_UPDATE_OBJECT = 1
 OBJECT_CHANGE_DELETE_OBJECT = 2
+
 OBJECT_CHANGE_CREATE_ATTR   = 3
 OBJECT_CHANGE_UPDATE_ATTR   = 4
 OBJECT_CHANGE_DELETE_ATTR   = 5
@@ -24,7 +25,6 @@ ATTRIBUTE_TYPE_FINAL = 0
 ATTRIBUTE_TYPE_VIRTUAL = 1
 ATTRIBUTE_TYPE_REFERENCE = 2
 
-# TODO: Improve (cf.form.py too)
 CHOICE_ATTRIBUT_TYPE = (
 	(0,"Final"),
 	(1,"Virtual"),
@@ -93,7 +93,7 @@ class LBEAttributeInstance(models.Model):
 
 class LBEDirectoryACL(models.Model):
 	object = models.ForeignKey(LBEObjectTemplate)
-	TYPE_CHOICE = (('select','Select'),('create','Create'),('update','Update'),('delete','Delete'))
+	TYPE_CHOICE = (('select','Select'),('create','Create'),('update','Update'),('approval','Approval'),('delete','Delete'))
 	type = models.CharField(max_length=10,choices=TYPE_CHOICE,default="select")
 	attribut = models.ForeignKey(LBEAttributeInstance,default=None,null=True)
 	condition = models.CharField(max_length=100)

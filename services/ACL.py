@@ -309,6 +309,27 @@ class ACLHelper:
 		return wraps
 		
 	@staticmethod
+	def approval(view_func):
+		def wraps(request,*args,**kwargs):
+			# test if the current user is the super admin:
+			if request.user.is_superuser:
+				return view_func(request,*args,**kwargs)
+			# get the current object:
+			obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
+			# get all ACLs:
+			acls = LBEDirectoryACL.objects.filter(object=obj,type="approval")
+			# Then, check for the current user:
+			check = False
+			for acl in acls:
+				check =  ACLHelper(obj,acl.condition).execute(str(request.user))
+				# if ACL is working, go to the view:
+				if check:
+					return view_func(request,*args,**kwargs)
+			# Return other view:
+			return render_to_response('error/denied.html')
+		return wraps
+		
+	@staticmethod
 	def delete(view_func):
 		def wraps(request,*args,**kwargs):
 			# test if the current user is the super admin:

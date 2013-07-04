@@ -99,6 +99,10 @@ class LBEObjectInstanceHelper():
     def remove(self,uid):
         self._backend()
         return self.backend.removeObject(self.template,uid)	
+       
+    def approval(self,uid):
+		self._backend()
+		return self.backend.approvalObject(self.template,uid)
         
     def form(self,uid,data=None):
         if data is None:
