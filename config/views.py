@@ -58,6 +58,10 @@ def modifyObject(request, obj_id = None, instance_id = None):
     return render_to_response('config/object/modify.html', { 'attributeInstances': instances, 'lbeObject': lbeObjectTemplate, 'objectForm': objectForm, 'attributeForm': attForm,'ajaxAttribute':ajaxAttribute,'ajaxFunction':ajaxFunction,'defaultValue':defaultValue},\
         context_instance=RequestContext(request))
 
+"""
+Function enables to show a attributes list 
+for the 'Instancenameattribute' of Object:
+"""
 @staff_member_required
 def showAttributeAJAX(request,attribute = None,value = None):
 	if request.is_ajax():

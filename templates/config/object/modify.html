@@ -32,10 +32,10 @@
                <tr>
                		<td> {{ instance.lbeAttribute.name }} </td>
             		<td> {{ instance.defaultValue }} </td>
-            		<td> {% if instance.attributeType == 0 %} Final {% else %} {% if instance.attributeType == 1 %} Virtual {% else %} Reference {% endif %}{% endif %}</td>
-            		<td> {{ instance.mandatory }}</td>
-            		<td> {{ instance.multivalue }}</td>
-            		<td> {{ instance.secure }}</td>
+            		<td> {% if instance.attributeType == 0 %} Final {% else %} {% if instance.attributeType == 1 %} Virtual {% else %} Reference {% endif %}{% endif %} </td>
+            		<td> {{ instance.mandatory }} </td>
+            		<td> {{ instance.multivalue }} </td>
+            		<td> {{ instance.secure }} </td>
             		<td> {{ instance.reference.name }} </td>
             		<td> <a href="#" onClick="PopupWindow('{% url 'config.views.modifyAttributeToObject' obj_id=lbeObject.id attr_id=instance.id  %}');return false;">Modify </a></td>
                </tr>
@@ -46,5 +46,4 @@
             <div class="addAttribute">
             </div>
       </div>
-      <script type="text/javascript" src="/static/js/common/showModalBox.js"></script>
 {% endblock %}

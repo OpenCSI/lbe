@@ -22,5 +22,17 @@
     </tr>
 </table>
 {% if ajaxAttribute %}
-<script type="text/javascript" src="/static/js/common/crud.js"></script>
+<script type="text/javascript">
+function selectFrom(url,attribute)
+{
+	$.ajax({
+	   type: "GET",
+	   url: url + attribute + '/' + $('#id_'+attribute).val(),
+	   async:false,
+	   success: function(data){
+		    $('.show').html(data);
+		}
+	 });
+}
+</script>
 {% endif %}
