@@ -39,7 +39,7 @@ urlpatterns = patterns('',
     url(r'^/?(?P<lbeObject_id>\d+)?/?(?P<page>\d+)?$', 'directory.views.index'),
     
     (r'^accounts/login/$', 'django.contrib.auth.views.login', { 'template_name': 'auth/login.html' }),
-    (r'^accounts/logout/$', 'django.contrib.auth.views.logout', { 'template_name': 'auth/logged_out.html' }),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout', { 'template_name': 'auth/logout.html' }),
    
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
