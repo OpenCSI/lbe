@@ -6,8 +6,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-	url(r'^$', 'directory.views.index'),
-	url(r'^directory/?$', 'directory.views.index'),
+	url(r'^(directory)?/?(?P<lbeObject_id>\d+)?/?(?P<page>\d+)?$', 'directory.views.index'),
 	url(r'^ajax/directory/search/(?P<lbeObject_id>\d+)/(?P<search>.*)$', 'directory.views.searchAJAX'),
     url(r'^directory/object/add/?$', 'directory.views.addObjectInstance'),
     url(r'^directory/object/add/(?P<lbeObject_id>\d+)$', 'directory.views.addObjectInstance'),
@@ -35,8 +34,6 @@ urlpatterns = patterns('',
 	
 	url(r'^ajax/config/acl/check/(?P<query>.*)$', 'config.views.checkACL_AJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
-
-    url(r'^/?(?P<lbeObject_id>\d+)?/?(?P<page>\d+)?$', 'directory.views.index'),
     
     (r'^accounts/login/$', 'django.contrib.auth.views.login', { 'template_name': 'auth/login.html' }),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', { 'template_name': 'auth/logout.html' }),

@@ -3,10 +3,13 @@
 {{ hidden }}
 {% endfor %}
 {# Include the visible fields #}
-{% if multivalue %}
-<script type="text/javascript" src="/static/js/common/addForm.js"></script>
-{% endif %}
 <script type="text/javascript">
+{% if multivalue %}
+	function addField(attribute,value)
+	{
+		$('.'+attribute).append(value + '<br>');
+	}
+{% endif %}
 	function clone(obj) {
     // Handle the 3 simple types, and null or undefined
     if (null == obj || "object" != typeof obj) return obj;
