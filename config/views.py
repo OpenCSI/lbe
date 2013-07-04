@@ -69,7 +69,7 @@ def showAttributeAJAX(request,attribute = None,value = None):
 			attr = []
 		else:
 			attr = LBEAttribute.objects.filter(name__contains=value)[:5] # LIKE '%attribute%'
-		return render_to_response('ajax/common/list.html',{'attributes': attr,'value':attribute,'attr':attribute}, context_instance=RequestContext(request))
+		return render_to_response('ajax/config/listAttributes.html',{'attributes': attr,'value':attribute,'attr':attribute}, context_instance=RequestContext(request))
 
 @staff_member_required
 def addAttributeToObject(request,obj_id = None):
