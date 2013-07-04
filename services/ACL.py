@@ -245,6 +245,9 @@ class ACLHelper:
 	@staticmethod
 	def select(view_func):
 		def wraps(request,*args,**kwargs):
+			# test if the current user is the super admin:
+			if request.user.is_superuser:
+				return view_func(request,*args,**kwargs)
 			# get the current object:
 			try:
 				obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
@@ -266,6 +269,9 @@ class ACLHelper:
 	@staticmethod
 	def create(view_func):
 		def wraps(request,*args,**kwargs):
+			# test if the current user is the super admin:
+			if request.user.is_superuser:
+				return view_func(request,*args,**kwargs)
 			# get the current object:
 			obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
 			# get all ACLs:
@@ -284,6 +290,9 @@ class ACLHelper:
 	@staticmethod
 	def update(view_func):
 		def wraps(request,*args,**kwargs):
+			# test if the current user is the super admin:
+			if request.user.is_superuser:
+				return view_func(request,*args,**kwargs)
 			# get the current object:
 			obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
 			# get all ACLs:
@@ -302,6 +311,9 @@ class ACLHelper:
 	@staticmethod
 	def delete(view_func):
 		def wraps(request,*args,**kwargs):
+			# test if the current user is the super admin:
+			if request.user.is_superuser:
+				return view_func(request,*args,**kwargs)
 			# get the current object:
 			obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
 			# get all ACLs:

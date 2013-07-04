@@ -124,4 +124,4 @@ def page404(request):
 	return render_to_response('error/request.html',{'title':'404 Not Found','content':'The page you are looking for does not exist...'},context_instance=RequestContext(request))
 
 def page500(request):
-	return render_to_response('error/request.html',{},context_instance=RequestContext(request))
+	return render_to_response('error/request.html',{'title':'505 Error Page','content':'They is an error with the page, please check it later.'},context_instance=RequestContext(request))
