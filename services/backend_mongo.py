@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dao.MongoDao import MongoService
 from pymongo import errors
-from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC
+from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_DELETED
 from django.utils.timezone import utc
 import logging, datetime
 
@@ -54,10 +54,11 @@ class BackendMongoImpl:
             raise BackendConnectionError("Can't connect to the backend server")
 
 	"""
-	Get User values from his UID attribute.
+	Get User values from his UID attribute. §Used for ACLs
+	We do not get deleted values.
 	"""
     def getUserUIDForObject(self, lbeObjectTemplate, UID):
-        searchResult = self.handler.searchDocuments(lbeObjectTemplate.name, { 'attributes.uid': UID })
+        searchResult = self.handler.searchDocuments(lbeObjectTemplate.name, { 'attributes.uid': UID, 'status':{'$nin':[OBJECT_STATE_DELETED]} })
         if searchResult.count() > 0:
             return searchResult[0]
         return None
