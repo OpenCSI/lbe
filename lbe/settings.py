@@ -26,7 +26,6 @@ DATABASES = {
 }
 
 LDAP_SERVER = {
-	# [TODO?]: regroup PROTOCOL + HOST + PORT to URL
 	'PROTOCOL' : 'ldap://',
 	'HOST': 'localhost',
 	'PORT': 1389,

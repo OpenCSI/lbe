@@ -120,3 +120,8 @@ def searchAJAX(request, lbeObject_id, search):
     print objects
     return render_to_response('ajax/directory/search.html', { 'lbeObjectId':lbeObject_id, 'objects': objects}, context_instance=RequestContext(request))
 
+def page404(request):
+	return render_to_response('error/request.html',{'title':'404 Not Found','content':'The page you are looking for does not exist...'},context_instance=RequestContext(request))
+
+def page500(request):
+	return render_to_response('error/request.html',{},context_instance=RequestContext(request))
