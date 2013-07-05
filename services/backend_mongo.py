@@ -94,7 +94,11 @@ class BackendMongoImpl:
         return self.handler.modifyDocument(awaiting,lbeObjectTemplate.name,ID,values)
     
     def removeObject(self,lbeObjectTemplate, ID):
-		return self.handler.removeDocument(lbeObjectTemplate.name,ID)
+        if lbeObjectTemplate.approval:
+            awaiting = OBJECT_STATE_AWAITING_APPROVAL
+        else:
+            awaiting = OBJECT_STATE_AWAITING_SYNC
+        return self.handler.removeDocument(awaiting,lbeObjectTemplate.name,ID)
 		
     def approvalObject(self,lbeObjectTemplate, ID):
 		return self.handler.approvalDocument(lbeObjectTemplate.name,ID)

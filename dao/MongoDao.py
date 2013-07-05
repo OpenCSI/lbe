@@ -91,9 +91,9 @@ class MongoService:
         if not lbeObjectInstance.changes['set'] == {}:
 			collection.update(filter, {'$set':attributes})
         	
-    def removeDocument(self,collection,ID):
+    def removeDocument(self,awaiting,collection,ID):
 		db = self.db[collection]
 		try:
-			return db.update({'_id':ID},{'$set':{'status':OBJECT_STATE_AWAITING_SYNC,'changes':{'set':{},'type':OBJECT_CHANGE_DELETE_OBJECT}}})
+			return db.update({'_id':ID},{'$set':{'status':awaiting,'changes':{'set':{},'type':OBJECT_CHANGE_DELETE_OBJECT}}})
 		except BaseException as e:
 			logger.error('Error while removing document: ' + e.__str__())
