@@ -51,9 +51,9 @@ class ACLHelper:
 				else:
 					res = self.__checkOU()
 			else:
-				self.traceback = "-The second word must be 'from'"
+				self.traceback = "The second word must be 'from'"
 		else:
-			self.traceback = "-The first word must be 'select'"
+			self.traceback = "The first word must be 'select'"
 		return res
 	
 	def __checkObjectName(self):

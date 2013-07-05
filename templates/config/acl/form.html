@@ -38,13 +38,10 @@ function checkACL()
 	   async:false,
 	   success: function(data){
 		    if(data != "")
-		    {
-				$('.error').html(data);
 				$('#id_condition').css('border-color','#ff0000');
-			}
 			else
 				$('#id_condition').css('border-color','#00ff00');
-				$('.error').html(data);
+				$('.error').html('<span class="label label-important">' + data + '</span>');
 		}
 	 });
 }
