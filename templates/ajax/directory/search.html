@@ -1,10 +1,22 @@
 {% load url from future %}
 {% for object in objects %}
 <tr>
-	<td><a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}">{{object.displayName}}</a></td>
+	{% if object.status == 2 %}
+	<td> <a data-original-title={% if object.changes.type == 0 %} "New" {% elif object.changes.type == 1 %} "Update" {% else %} "Delete" {% endif %} class="id_{{object.attributes.uid.0}}" data-toggle="tooltip" data-placement="right" href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
+	<script type="text/javascript">
+		$(function () {
+			$(".id_{{object.attributes.uid.0}}").tooltip();
+		});
+	</script>
+	{% else %}
+	<td> <a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
+	{% endif %}
 	<td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
 	<td style='text-align: center;'>
-		<a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=lbeObjectId uid=object.name %}" class="icon-edit"></a>
+		{% if object.status == 2 %}
+		<a href="{% url 'directory.views.approvalObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" title="Approval" class="icon-check"></a>
+		{% endif %}
+		<a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" class="icon-edit"></a>
 		<a href="{% url 'directory.views.deleteObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}">
 			<span class='label label-important'>x</span>
 		</a>
