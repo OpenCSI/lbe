@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 import re
 from django.db.models import Q
 from services.backend import BackendHelper
-from directory.models import LBEObjectTemplate, LBEDirectoryACL
+from directory.models import LBEObjectTemplate, LBEDirectoryACL, LBEAttributeInstance
 
 class ACLHelper:
 	def __init__(self,LBEObjectTemplate,query=""):
@@ -44,19 +44,19 @@ class ACLHelper:
 				if self.objectName:
 					self.objectName = self.objectName.group()[:-1]
 					# check if the Object exists:
-					if not self.__checkObjectName():
+					if not self._checkObjectName():
 						self.traceback  = "The object '"+ self.objectName + "' does not exist."
 						return -1
-					res = self.__checkPerson()
+					res = self._checkPerson()
 				else:
-					res = self.__checkOU()
+					res = self._checkOU()
 			else:
 				self.traceback = "The second word must be 'from'"
 		else:
 			self.traceback = "The first word must be 'select'"
 		return res
 	
-	def __checkObjectName(self):
+	def _checkObjectName(self):
 		try:
 			obj = LBEObjectTemplate.objects.filter(Q(name=self.objectName) | Q(displayName=self.objectName) )
 			self.object = obj[0]
@@ -66,7 +66,7 @@ class ACLHelper:
 	"""
 		-FROM [LBEObject((,LBEObject)+)], example: select from RH,secretary
 	"""
-	def __checkOU(self): 
+	def _checkOU(self): 
 		if self.word[2] != '' and len(self.word[2].split(',')) > 0:
 			# test the object LBE Name:
 			try:
@@ -80,7 +80,7 @@ class ACLHelper:
 			self.traceback += "You need word(s) after 'from', such as RH,secretary, (Object LBE Name or displayName)..."
 			return -1
 	
-	def __checkPerson(self):
+	def _checkPerson(self):
 		# check (and get) the attribute into the ():
 		attr = re.match(r".+[(]\D+[)].+$",self.word[2])
 		if attr:
@@ -95,23 +95,38 @@ class ACLHelper:
 				if attr:
 					attrValue = attrValue[1].split(attr.group(2))
 				else:
-					self.traceback += 'You need an operator like =, !=, <, <=, >=, > with value(s) after person(...)'
+					self.traceback = 'You need an operator like =, !=, <, <=, >=, > with value(s) after person(...)'
 					return -1
 			# checking for the >,>=,<,<= operators:
-			if self.__checkOperator(attr.group(2),attrValue[1]):
+			if self._checkOperator(attr.group(2),attrValue[1]):
 				self.attribute =  attrValue[0][:-1]
+				# check if attribute exists into the Object:
+				if not self._checkAttribute():
+					self.traceback = 'The attribute "' + self.attribute + '" does not exist for the object "' + self.objectName + '".'
+					return -1
 				# get values:
 				val = self.word[2].split(attr.group(2))
 				self.word.append(val[1])
 				return 3
 			else:
-				self.traceback += "You need to have numeric or specific format after >,>=,<,<=,=,!= operators."
+				self.traceback = "You need to have numeric or specific format after >,>=,<,<=,=,!= operators."
 				return -1
 		else:
-			self.traceback += "You need to specify after 'person' an attribute into () with an operator. Example person(uid)=<values>. (=,<,<=,>,>=,!=)"
+			self.traceback = "You need to specify after 'person' an attribute into () with an operator. Example person(uid)=<values>. (=,<,<=,>,>=,!=)"
 			return -1
-	
-	def __checkOperator(self,op,values):
+			
+	def _checkAttribute(self):
+		try:
+			attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.object)
+			for attribute in attributes:
+				if self.attribute == attribute.lbeAttribute.name:
+					return True
+		except BaseException:
+			pass
+		return False
+			
+		
+	def _checkOperator(self,op,values):
 		if op == '>' or op == '<' or op == '<=' or op == '>=':
 			number = re.match(r'^\d+$',values)
 			if number:
@@ -155,15 +170,15 @@ class ACLHelper:
 		state = self.check()
 		if state == 1: # OU
 			# [split the word[2] from the ',' car and execute it]
-			return self.__executeOU(userID)
+			return self._executeOU(userID)
 		elif state == 2: # objectClass [DEPRECIATE]
 			return True
 		elif state == 3: # Person
 			# [ split the word[3] from the ',' car or depending if the values are numbers and execute it]
-			return self.__executePerson(userID)
+			return self._executePerson(userID)
 		return False # default
 		
-	def __executeOU(self,userID):
+	def _executeOU(self,userID):
 		# backend db:
 		backend = BackendHelper()
 		values = self.word[2].split(',')
@@ -175,7 +190,7 @@ class ACLHelper:
 		return False
 	
 	# user: user class
-	def __executePerson(self,userID):
+	def _executePerson(self,userID):
 		# backend db:
 		backend = BackendHelper()
 		obj = backend.getUserUIDForObject(self.object,userID)

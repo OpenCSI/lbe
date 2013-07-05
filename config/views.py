@@ -250,5 +250,5 @@ def manageACL(request, aclId = None):
 @staff_member_required
 def checkACL_AJAX(request,query = None):
 	acl = ACLHelper(None,query)
-	print acl.check()
+	acl.check()
 	return HttpResponse(acl.traceback)
