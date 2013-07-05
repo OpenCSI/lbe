@@ -19,7 +19,16 @@
     <tbody class="Tdata">
 		{% for object in objects %}
 		<tr>
+			{% if object.status == 2 %}
+			<td> <a data-original-title={% if object.changes.type == 0 %} "New" {% elif object.changes.type == 1 %} "Update" {% else %} "Delete" {% endif %} class="id_{{object.attributes.uid.0}}" data-toggle="tooltip" data-placement="right" href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
+			<script type="text/javascript">
+				$(function () {
+					$(".id_{{object.attributes.uid.0}}").tooltip();
+				});
+			</script>
+			{% else %}
 			<td> <a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
+			{% endif %}
 			<td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
 			<td style='text-align: center;'>
 				{% if object.status == 2 %}
