@@ -234,7 +234,7 @@ def manageACL(request, aclId = None):
 		if aclId == None:
 			form = LBEACLForm(instance=aclList[0])
 			aclId = aclList[0].id
-		elif request.method == 'POST':
+		if request.method == 'POST':
 				form = LBEACLForm(request.POST,instance=LBEDirectoryACL.objects.get(id=aclId))
 				if form.is_valid():
 					if form.save():
