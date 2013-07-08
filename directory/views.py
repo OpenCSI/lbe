@@ -2,6 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from directory.models import *
 from directory.forms import *
 from services.object import LBEObjectInstanceHelper
@@ -50,7 +51,7 @@ def deleteObjectInstance(request,lbeObject_id,objectName):
     position = backend.positionObject(lbeObject.name,objectName)
     lengthMax = 10
     page = int(math.ceil(position/float(lengthMax)))
-    return index(request,lbeObject_id,page)
+    return HttpResponseRedirect('/')#index(request,lbeObject_id,page)
 
 @login_required
 @ACLHelper.select
@@ -122,7 +123,7 @@ def approvalObjectInstance(request, lbeObject_id,objectName):
     position = backend.positionObject(lbeObject.name,objectName)
     lengthMax = 10
     page = int(math.ceil(position/float(lengthMax)))
-    return index(request,lbeObject_id,page)
+    return HttpResponseRedirect('/')#return index(request,lbeObject_id,page)
 
 @login_required
 @ACLHelper.select

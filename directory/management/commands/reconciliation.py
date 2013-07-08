@@ -130,6 +130,7 @@ class Reconciliation():
                         print "Object '" + objectInstance.name + "' is updating."
                         self._modifyObject(objectTemplate, objectInstance)
                     except BaseException as e:
+                        print e
                         print "Object '" + objectInstance.name + "' does not exist, being created."
                         # Create object if not exists:
                         # Firstly, compute attributes values:

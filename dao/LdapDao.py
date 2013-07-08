@@ -11,6 +11,10 @@ class LDAPDAO:
         self.handler.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
         self.handler.simple_bind_s(settings.LDAP_SERVER['BIND_DN'], settings.LDAP_SERVER['BIND_PWD'])
 
+    def changeRDN(self,oldRDN,newRDN):
+        logger.debug('LDAP changing RDN ' + oldRDN +' to '+ newRDN)
+        return self.handler.modrdn_s(oldRDN,newRDN,False)
+		
     # TODO: Implement VLV if supported by the LDAP server
     def search(self, basedn, filter = ('(objectClass=*)'), scope = ldap.SCOPE_SUBTREE, attributes = None, start = 0, page = 0):
         logger.debug('LDAP search with basedn: ' + basedn + ', filter: ' + filter)
