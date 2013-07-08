@@ -62,26 +62,35 @@ def viewObjectInstance(request,lbeObject_id,objectName = None):
 @login_required
 @ACLHelper.create
 def addObjectInstance(request, lbeObject_id = None):
+    lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
     form = None
     helper = LBEObjectInstanceHelper(LBEObjectTemplate.objects.get(id = lbeObject_id))
+    # Get multiValue attributes: ('+' button)
+    multivalue = []
+    # get all attributInstance of ObjectTemplate:
+    attributeInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
+    for attribute in attributeInstance:
+        # check if multivalue is checked (True):
+        if attribute.multivalue:
+            multivalue.append(attribute.lbeAttribute.name)
     if request.method == 'POST':
-        form = helper.form(LBEObjectTemplate.objects.get(id = lbeObject_id), request.POST)
+        form = helper.form(lbeObject, request.POST)
         if form.is_valid():
             helper.createFromDict(request)
             try:
                 helper.save()
             except BackendObjectAlreadyExist as e:
                 messages.add_message(request, messages.ERROR, 'Object already exists')
-                return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
+                return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
             # Redirect to list
             return redirect('/directory/')
-        return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
+        return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
     else:
         if lbeObject_id is None:
             # TODO: Redirect to a form to choose which object to add
             print 'error'
-    form = helper.form(LBEObjectTemplate.objects.get(id = lbeObject_id))
-    return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id }, context_instance=RequestContext(request))
+    form = helper.form(lbeObject)
+    return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
 
 @login_required   
 @ACLHelper.update

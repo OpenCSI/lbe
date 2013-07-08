@@ -211,10 +211,16 @@ class LBEObjectInstanceHelper():
         # attributes:
         attributes = {}
         for attributeInstance in self.template.lbeattributeinstance_set.all():
-            # Only fetch real attributes from the request
+            # Only fetch real attributes from the request (mono and/or multi values)
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 attributeName = attributeInstance.lbeAttribute.name
-                attributes[attributeName] = [ request.POST[attributeName] ]
+                print len(request.POST[attributeName].split('�'))
+                print request.POST[attributeName] + " " + attributeName
+                print request.POST
+                if len(request.POST[attributeName].split('�')) > 1:
+					attributes[attributeName] = request.POST[attributeName].split('�')
+                else:
+                    attributes[attributeName] = [ request.POST[attributeName] ]
         # IMPORTANT: We need to create an instance without the uniqueBecause because it may be a computed attribute, for example uid (compute from firstname/name)
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
         # TODO: Maybe check here if the object need approvals
