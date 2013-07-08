@@ -158,10 +158,10 @@ class TargetLDAPImplementation():
         dn =  rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]  + ',' + objectHelper.callScriptClassMethod('base_dn')
         LDAPValues = self.searchObjects(lbeObjectTemplate,rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0])[0].attributes
         # Need to check if the RDN changed:
-        #if not lbeObjectInstance.attributes[rdnAttributeName][0] == lbeObjectInstance.changes['set'][rdnAttributeName][0]:
-        #    newDN = rdnAttributeName + '=' + lbeObjectInstance.changes['set'][rdnAttributeName][0]
-        #    self.handler.changeRDN(dn,newDN.encode("utf-8"))
-        #    dn = newDN + ',' + objectHelper.callScriptClassMethod('base_dn')
+        if not lbeObjectInstance.attributes[rdnAttributeName][0] == lbeObjectInstance.changes['set'][rdnAttributeName][0]:
+            newDN = rdnAttributeName + '=' + lbeObjectInstance.changes['set'][rdnAttributeName][0]
+            self.handler.changeRDN(dn,newDN.encode("utf-8"))
+            dn = newDN + ',' + objectHelper.callScriptClassMethod('base_dn')
         # Update:
         for key,value in lbeObjectInstance.changes['set'].items():
 			noKey = not LDAPValues.has_key(key)# key exists into the object target?
