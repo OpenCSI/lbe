@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from directory.models import *
 from directory.forms import *
 from services.object import LBEObjectInstanceHelper

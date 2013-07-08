@@ -45,14 +45,8 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 
     def clean_givenName(self):
 		try:
-			# Multi value:
-			tab = []
-			i = 0
-			for value in self.cleaned_data['givenName'].split('\0'):
-				if not value == "":
-					tab.append(value.capitalize())
-				i = i + 1
-			return tab
+			# Mono value:
+			return [ self.cleaned_data['givenName'].capitalize() ]
 		except:
 			raise forms.ValidationError("The field #"+str(i)+" must be a valid attribute.")
 			
