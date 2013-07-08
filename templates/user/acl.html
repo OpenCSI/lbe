@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+{% load url from future %}
+{% block content %}
+<h3>Objects Right:</h3>
+<table class="table">
+	<th>Object</th>
+	<th>Select</th>
+	<th>Create</th>
+	<th>Update</th>
+	<th>Approval</th>
+	<th>Delete</th>
+	{% for acl in acls %}
+	<tr>
+		{% for K,V in acl.items %}
+			<td>{{K}}</td>
+			<td><img src="{% if V.0 == True %}{% static "img/OK.png" %}{% else %}{% static "img/KO.png" %}{%endif %}"/></td>
+			<td><img src="{% if V.1 == True %}{% static "img/OK.png" %}{% else %}{% static "img/KO.png" %}{%endif %}"/></td>
+			<td><img src="{% if V.2 == True %}{% static "img/OK.png" %}{% else %}{% static "img/KO.png" %}{%endif %}"/></td>
+			<td><img src="{% if V.3 == True %}{% static "img/OK.png" %}{% else %}{% static "img/KO.png" %}{%endif %}"/></td>
+			<td><img src="{% if V.4 == True %}{% static "img/OK.png" %}{% else %}{% static "img/KO.png" %}{%endif %}"/></td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

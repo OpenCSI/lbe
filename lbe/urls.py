@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from directory import views
+from account import views
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -39,10 +40,11 @@ urlpatterns = patterns('',
     
     (r'^accounts/login/$', 'django.contrib.auth.views.login', { 'template_name': 'auth/login.html' }),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', { 'template_name': 'auth/logout.html' }),
+    url(r'^accounts/right/?$', 'account.views.right'),
    
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
 
-handler404 = views.page404
-handler500 = views.page500
+#handler404 = views.page404
+#handler500 = views.page500
