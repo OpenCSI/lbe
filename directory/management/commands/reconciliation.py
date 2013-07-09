@@ -156,7 +156,15 @@ class Reconciliation():
 				print "<None>"
 			else:
 				for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
-					print "    " + objectInstance.name + ' : ' + str([{k: 'new Value: ' + str(objectInstance.changes['set'][k]) + ' | old value: ' +  str(objectInstance.attributes[k])} for k in objectInstance.changes['set'] if objectInstance.attributes[k] != objectInstance.changes['set'][k]])
+					type = ""
+					if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
+						type += "\033[34mcreate"
+					elif objectInstance.changes['type'] == OBJECT_CHANGE_UPDATE_OBJECT:
+						type += "\033[36mupdate"
+					elif objectInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
+						type += "\033[33mdelete"
+					type += "\033[0m"
+					print "    " + type + ' \033[35m'  + objectInstance.name + '\033[0m : ' + str([{k: 'new Value: ' + str(objectInstance.changes['set'][k]) + ' | old value: ' +  str(objectInstance.attributes[k])} for k in objectInstance.changes['set'] if objectInstance.attributes[k] != objectInstance.changes['set'][k]])
     """
 	   Show objects do not exist in LBE but LDAP.
 	"""

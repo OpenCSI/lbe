@@ -26,7 +26,7 @@ class ImportTarget():
 						break
 				if not exist:
 					number += 1
-					print 'Adding \033[95m' + ot.name + '\033[0m object into LBE... '
+					print 'Adding \033[95m' + ot.name + '\033[0m object into LBE Backend... '
 					try:
 						self.backend.createObject(objectTemplate,ot,True)
 						print "\033[92mDone.\033[0m"
@@ -38,7 +38,6 @@ class ImportTarget():
 			if number == 0:
 				print '<None>'
 			print '.........................'
-		
 		
 class Command(BaseCommand):
 	def handle(self, *args, **options):
