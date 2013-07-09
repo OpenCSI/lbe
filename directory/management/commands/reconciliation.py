@@ -189,7 +189,7 @@ class Command(BaseCommand):
 	def handle(self, *args, **options):
 		print "Begin:"
 		reconciliation = Reconciliation()
-		if 'd' in args:
+		if 'debug' in args:
 			reconciliation.debug()
 		else:
 			reconciliation.start()
