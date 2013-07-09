@@ -145,8 +145,52 @@ class Reconciliation():
 							pass
                         pass
 
-
+    """
+	  Check which values' objects need to be sync and show them.
+    """
+    def _needModification(self):
+		print 'Objects need change:'
+		for objectTemplate in LBEObjectTemplate.objects.all():
+			# We're looking for all objects with state = OBJECT_STATE_AWAITING_SYNC
+			if not self.backend.searchObjectsToUpdate(objectTemplate):
+				print "<None>"
+			else:
+				for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
+					print "    " + objectInstance.name + ' : ' + str([{k: 'new Value: ' + str(objectInstance.changes['set'][k]) + ' | old value: ' +  str(objectInstance.attributes[k])} for k in objectInstance.changes['set'] if objectInstance.attributes[k] != objectInstance.changes['set'][k]])
+    """
+	   Show objects do not exist in LBE but LDAP.
+	"""
+    def _notExistObjectLBE(self):
+		print 'Check Objects do not exist into LBE but in LDAP Server:'
+		for objectTemplate in LBEObjectTemplate.objects.all():
+			print objectTemplate.name + '...'
+			objTarget = self.target.searchObjects(objectTemplate)
+			objBackend = self.backend.searchObjects(objectTemplate)
+			number = 0
+			for ot in objTarget:
+				exist = False
+				for ob in objBackend:
+					if ot.name == ob.name:
+						exist = True
+						break
+				if not exist:
+					number += 1
+					print ot.name
+			if number == 0:
+				print '<None>'
+			print '.........................'
+	
+    def debug(self):
+		self._needModification()
+		self._notExistObjectLBE()
+		
+		
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        reconciliation = Reconciliation()
-        reconciliation.start()
+	def handle(self, *args, **options):
+		print "Begin:"
+		reconciliation = Reconciliation()
+		if 'd' in args:
+			reconciliation.debug()
+		else:
+			reconciliation.start()
+		print "End."
