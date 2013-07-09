@@ -68,7 +68,10 @@ class Reconciliation():
         self.backend.updateObject(objectTemplate, objectInstance, changes)
         
     def _modifyObject(self,objectTemplate,objectInstance):
+        rdnAttributeName = objectTemplate.instanceNameAttribute.name
         self.target.update(objectTemplate,objectInstance)
+        if not objectInstance.attributes[rdnAttributeName][0] == objectInstance.changes['set'][rdnAttributeName][0]:
+			self.backend.update_id(objectTemplate,objectInstance,objectInstance.changes['set'][rdnAttributeName][0])
         # Update Backend value:
         changes = {}
         changes['status'] = OBJECT_STATE_SYNCED

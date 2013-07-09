@@ -49,6 +49,16 @@ class MongoService:
 		except BaseException as e:
 			logger.error('Error while approvaling document: ' + e.__str__())
 	
+    def update_id(self,collection, document,new_id):
+		db = self.db[collection]
+		try:
+			db.remove({'_id':document.name})
+			document.name = new_id
+			db.insert(document.toDict())		
+		except BaseException as e:
+			logger.error('Error while update _id"s document: ' + e.__str__())
+			print e
+	
     def modifyDocument(self, awaiting,collection, ID, values):
         db = self.db[collection]
         try:

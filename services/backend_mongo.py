@@ -20,18 +20,6 @@ class BackendInvalidCredentials(Exception):
     def __str__(self):
         return repr(self.value)
 
-def LBEObjectInstanceToDict(lbeObjectInstance):
-    # TODO: Probably need optimization
-    return { '_id': lbeObjectInstance.name, 
-        'attributes': lbeObjectInstance.attributes, 
-        'displayName': lbeObjectInstance.displayName,
-        'status': lbeObjectInstance.status,
-        'created_at': lbeObjectInstance.created_at,
-        'updated_at': lbeObjectInstance.updated_at,
-        'synced_at': lbeObjectInstance.synced_at,
-        'changes': { 'type': lbeObjectInstance.changes['type'], 'set' : lbeObjectInstance.changes['set'] },
-    }
-
 def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):
     result_set = []
     for document in documents:
@@ -77,7 +65,7 @@ class BackendMongoImpl:
             awaiting = OBJECT_STATE_AWAITING_APPROVAL
         else:
             awaiting = OBJECT_STATE_AWAITING_SYNC
-        return self.handler.createDocument(awaiting,lbeObjectTemplate.name, LBEObjectInstanceToDict(lbeObjectInstance) )
+        return self.handler.createDocument(awaiting,lbeObjectTemplate.name, lbeObjectInstance.toDict() )
         
     """
 		Used in Reconciliation:
@@ -86,6 +74,9 @@ class BackendMongoImpl:
         # Changes is already a dict with key = newvalue, no need to transform it
         return self.handler.updateDocument(lbeObjectTemplate.name,lbeObjectInstance, { '_id' : lbeObjectInstance.name.__str__() }, {'$set': changes })
     
+    def update_id(self,lbeObjectTemplate, lbeObjectInstance, new_id):
+		return self.handler.update_id(lbeObjectTemplate.name,lbeObjectInstance,new_id)
+		
     def modifyObject(self, lbeObjectTemplate, ID, values):
         if lbeObjectTemplate.approval:
             awaiting = OBJECT_STATE_AWAITING_APPROVAL

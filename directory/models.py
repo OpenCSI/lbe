@@ -130,3 +130,14 @@ class LBEObjectInstance:
     
     def __unicode__(self):
         return 'name: ' + self.name + ', displayName: ' + self.displayName + ', attributes: ' + self.attributes
+
+    def toDict(self):
+		return { '_id': self.name, 
+        'attributes': self.attributes, 
+        'displayName': self.displayName,
+        'status': self.status,
+        'created_at': self.created_at,
+        'updated_at': self.updated_at,
+        'synced_at': self.synced_at,
+        'changes': { 'type': self.changes['type'], 'set' : self.changes['set'] },
+        }
