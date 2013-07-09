@@ -60,12 +60,15 @@ class BackendMongoImpl:
             return searchResult[0]
         return None
 
-    def createObject(self, lbeObjectTemplate, lbeObjectInstance):
-        if lbeObjectTemplate.approval:
-            awaiting = OBJECT_STATE_AWAITING_APPROVAL
-        else:
-            awaiting = OBJECT_STATE_AWAITING_SYNC
-        return self.handler.createDocument(awaiting,lbeObjectTemplate.name, lbeObjectInstance.toDict() )
+    def createObject(self, lbeObjectTemplate, lbeObjectInstance, Import=False):
+		if not Import:
+			if lbeObjectTemplate.approval:
+				awaiting = OBJECT_STATE_AWAITING_APPROVAL
+			else:
+				awaiting = OBJECT_STATE_AWAITING_SYNC
+		else:
+			awaiting = OBJECT_STATE_IMPORTED
+		return self.handler.createDocument(awaiting,lbeObjectTemplate.name, lbeObjectInstance.toDict() )
         
     """
 		Used in Reconciliation:

@@ -161,7 +161,7 @@ class Reconciliation():
 	   Show objects do not exist in LBE but LDAP.
 	"""
     def _notExistObjectLBE(self):
-		print 'Check Objects do not exist into LBE but in LDAP Server:'
+		print 'Checking for Objects which do not exist into LBE but in LDAP Server:'
 		for objectTemplate in LBEObjectTemplate.objects.all():
 			print objectTemplate.name + '...'
 			objTarget = self.target.searchObjects(objectTemplate)
