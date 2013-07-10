@@ -145,7 +145,7 @@ def modifyAttribute(request,attribute_id = 1):
 				form = LBEAttributeModifyForm(instance = attributes[0])
 			except BaseException:
 				pass
-	return render_to_response('config/attribute/modify.html',{'attributes':attributes,'attributeForm':form},context_instance=RequestContext(request))
+	return render_to_response('config/attribute/modify.html',{'attributes':attributes,'attributeForm':form,'attribute_id':attribute_id},context_instance=RequestContext(request))
 	
 @staff_member_required
 def modifyInstanceAttribute(request,obj_id = None,attr_id = None):
