@@ -40,6 +40,10 @@ MONGODB_SERVER = {
 	'DATABASE': 'lbe',
 }
 
+# The PAGINATION Variabme enables to set the number of Objects
+# which are visible for 1 page used as weel for LBE and the Reconciliation.
+PAGINATION=25
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.

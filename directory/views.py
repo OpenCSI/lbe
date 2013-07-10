@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.forms.formsets import formset_factory
 import math
 
+from django.conf import settings
 from django import forms
 
 @login_required
@@ -19,24 +20,40 @@ def index(request,lbeObject_id=1,page=1):
 	# init object:
     if lbeObject_id is None:
 		lbeObject_id = 1
-    lengthMax=10
+    if settings.PAGINATION is None:
+		lengthMax = 25
+    else:
+		lengthMax=settings.PAGINATION
     # init pagination:
     if page is None:
 		page=1
-    if int(page)-lengthMax < 0:
+    else:
+		page = int(page)
+    if page == 1:
 		index = 0
     else:
-        index = int(page)-lengthMax
+        index = int(page)+lengthMax - 2
     backend = BackendHelper()
     objects = backend.searchObjects(LBEObjectTemplate.objects.get(id=lbeObject_id),index,lengthMax)
     lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
     lbeObjects = LBEObjectTemplate.objects.all()
     # Pagination:
     size = int(math.ceil(backend.lengthObjects(LBEObjectTemplate.objects.get(id=lbeObject_id))/ float(lengthMax)))
+    if page < 3:
+		min = 1
+    else:
+		min = page - 2
+    if size - page > 2:
+		max = page + 2
+    else:
+		max = size
     tabSize = []
-    for i in range(0,size):
+    tabSize.append(min)
+    for i in range(min,max):
         tabSize.append(i+1)
-    return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id,'lbeObjects':lbeObjects, 'length': tabSize,'page': int(page) }, context_instance=RequestContext(request))
+    print min
+    print max
+    return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id,'lbeObjects':lbeObjects, 'length': tabSize,'page': int(page), 'minCPage':min,'maxCPage':max, 'maxPage':size }, context_instance=RequestContext(request))
 
 @login_required
 @ACLHelper.delete
@@ -83,7 +100,7 @@ def addObjectInstance(request, lbeObject_id = None):
                 messages.add_message(request, messages.ERROR, 'Object already exists')
                 return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
             # Redirect to list
-            return redirect('/directory/')
+            return redirect('/')
         return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
     else:
         if lbeObject_id is None:

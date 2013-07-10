@@ -47,9 +47,13 @@
 <center>
 <div class="pagination">
     <ul>
-    {% for i in length %}
-    <li {% if i == page %}class="disabled"{% endif %}><a href="{% if i == page %}#{% else %}{% url 'directory.views.index' page=i %}{% endif %}">{{i}}</a></li>
-    {% endfor %}
+		<li {% if page == 1 %}class="disabled"{% endif %}><a href="{% if page == 1 %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=1 %}{% endif %}">First</a></li>
+		<li {% if minCPage == 1 %}class="disabled"{% endif %}><a href="{% if minCPage == 1 %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=minCPage %}{% endif %}"><</a></li>
+		{% for i in length %}
+		<li {% if i == page %}class="disabled"{% endif %}><a href="{% if i == page %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=i %}{% endif %}">{{i}}</a></li>
+		{% endfor %}
+		<li {% if maxCPage == maxPage  %}class="disabled"{% endif %}><a href="{% if maxCPage == maxPage %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=maxCPage %}{% endif %}">></a></li>
+		<li {% if page == maxPage %}class="disabled"{% endif %}><a href="{% if page == maxPage %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=maxPage %}{% endif %}">Last</a></li>
     </ul>
 </div>
 </center>
