@@ -164,7 +164,18 @@ class Reconciliation():
 					elif objectInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
 						type += "\033[33mdelete"
 					type += "\033[0m"
-					print "    " + type + ' \033[35m'  + objectInstance.name + '\033[0m : ' + str([{k: 'new Value: ' + str(objectInstance.changes['set'][k]) + ' | old value: ' +  str(objectInstance.attributes[k])} for k in objectInstance.changes['set'] if objectInstance.attributes[k] != objectInstance.changes['set'][k]])
+					value =  "    " + type + ' \033[35m'  + objectInstance.name + '\033[0m : '
+					valuesChanges = dict()
+					for k in objectInstance.changes['set']:
+						try:
+							if objectInstance.attributes[k] != objectInstance.changes['set'][k]:
+								valuesChanges[k] = 'new Value: ' + str(objectInstance.changes['set'][k]) + ' | old value: ' +  str(objectInstance.attributes[k])
+						except KeyError:
+							valuesChanges[k] = 'new Value: ' + str(objectInstance.changes['set'][k])
+							pass
+					print value + str(valuesChanges)
+							 
+    
     """
 	   Show objects do not exist in LBE but LDAP.
 	"""

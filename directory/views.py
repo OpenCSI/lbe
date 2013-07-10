@@ -51,8 +51,6 @@ def index(request,lbeObject_id=1,page=1):
     tabSize.append(min)
     for i in range(min,max):
         tabSize.append(i+1)
-    print min
-    print max
     return render_to_response('directory/default/index.html', { 'objects': objects,'lbeObjectId': lbeObject.id,'lbeObjects':lbeObjects, 'length': tabSize,'page': int(page), 'minCPage':min,'maxCPage':max, 'maxPage':size }, context_instance=RequestContext(request))
 
 @login_required
