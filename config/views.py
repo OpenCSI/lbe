@@ -175,7 +175,10 @@ def modifyReference(request,ref_id = 1):
 		except BaseException as e:
 			messages.add_message(request, messages.ERROR, 'Error while modifing reference.')
 	else:
-		form = LBEReferenceForm(instance=ref)
+		try:
+			form = LBEReferenceForm(instance=ref)
+		except BaseException:
+			form = []
 	return render_to_response('config/reference/modify.html',{'referenceForm':form,'references':referencesList,'refID':ref_id},context_instance=RequestContext(request))
 
 @staff_member_required	
