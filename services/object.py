@@ -199,10 +199,14 @@ class LBEObjectInstanceHelper():
         attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
         d = dict()
         for attribute in attributes:
-			if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
-				d[attribute.lbeAttribute.name] = valuesUser['changes']['set'][attribute.lbeAttribute.name]
-			else:
-				d[attribute.lbeAttribute.name] = valuesUser['attributes'][attribute.lbeAttribute.name]
+			try:
+				if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
+					d[attribute.lbeAttribute.name] = valuesUser['changes']['set'][attribute.lbeAttribute.name]
+				else:
+					d[attribute.lbeAttribute.name] = valuesUser['attributes'][attribute.lbeAttribute.name]
+			except KeyError:
+				# if no values, just set the default value:
+				d[attribute.lbeAttribute.name] = attribute.defaultValue
         return d
 	
     def createFromDict(self, request):
