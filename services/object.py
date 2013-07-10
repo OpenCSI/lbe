@@ -171,18 +171,21 @@ class LBEObjectInstanceHelper():
 			for attribute in attributes:
 				# Only FINAL Attributes:
 				if attribute.attributeType == 0:
-					if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
-						q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
-						q = q.copy()
-						for value in valuesUser['changes']['set'][attribute.lbeAttribute.name][1:]:
-							q.update({attribute.lbeAttribute.name:value})
-						d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
-					else:
-						q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['attributes'][attribute.lbeAttribute.name][0])
-						q = q.copy()
-						for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
-							q.update({attribute.lbeAttribute.name:value})
-						d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+					try:
+						if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
+							q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['changes']['set'][attribute.lbeAttribute.name][0])
+							q = q.copy()
+							for value in valuesUser['changes']['set'][attribute.lbeAttribute.name][1:]:
+								q.update({attribute.lbeAttribute.name:value})
+							d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+						else:
+							q = QueryDict(attribute.lbeAttribute.name+'='+valuesUser['attributes'][attribute.lbeAttribute.name][0])
+							q = q.copy()
+							for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
+								q.update({attribute.lbeAttribute.name:value})
+							d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
+					except KeyError:
+						d[attribute.lbeAttribute.name] = attribute.defaultValue
 			return d
         except BaseException:
 			# Create part:
