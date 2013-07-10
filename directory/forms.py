@@ -137,6 +137,11 @@ class LBEObjectInstanceAttributeForm(forms.Form):
 class LBEAttributeForm(ModelForm):
 	class Meta:
 		model = LBEAttribute
+
+class LBEAttributeModifyForm(ModelForm):
+	class Meta:
+		model = LBEAttribute
+		exclude = ('name')
 		
 class LBEReferenceForm(ModelForm):
 	class Meta:

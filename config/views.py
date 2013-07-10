@@ -125,7 +125,30 @@ def addAttribute(request):
 	return render_to_response('config/attribute/create.html',{'attributeForm':form},context_instance=RequestContext(request))
 
 @staff_member_required
-def modifyAttribute(request,obj_id = None,attr_id = None):
+def modifyAttribute(request,attribute_id = 1):
+	if attribute_id is None:
+		attribute_id = 1
+	attributes = LBEAttribute.objects.all()
+	form = []
+	if request.method == "POST":
+		form = LBEAttributeModifyForm(request.POST,instance = LBEAttribute.objects.get(id=attribute_id))
+		if form.is_valid():
+			form.save()
+			messages.add_message(request, messages.SUCCESS, 'Attribute Modified.')
+		else:
+			messages.add_message(request, messages.ERROR, 'Attribute not modified.')
+	else:	
+		try:
+			form = LBEAttributeModifyForm(instance = LBEAttribute.objects.get(id=attribute_id))
+		except BaseException:
+			try:
+				form = LBEAttributeModifyForm(instance = attributes[0])
+			except BaseException:
+				pass
+	return render_to_response('config/attribute/modify.html',{'attributes':attributes,'attributeForm':form},context_instance=RequestContext(request))
+	
+@staff_member_required
+def modifyInstanceAttribute(request,obj_id = None,attr_id = None):
 	if request.method == 'POST':
 		if obj_id == None:
 			messages.add_message(request, messages.SUCCESS, 'Cannot modify attribute without object.')

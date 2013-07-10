@@ -20,6 +20,7 @@ urlpatterns = patterns('',
 
 	url(r'^config/?$', 'directory.views.index'),
 	url(r'^config/attribute/add/?$', 'config.views.addAttribute'),
+	url(r'^config/attribute/modify/(?P<attribute_id>\d+)?$', 'config.views.modifyAttribute'),
 	url(r'^config/object/add/?$', 'config.views.addObject'),
 	url(r'^config/object/list/?$', 'config.views.listObjects'),
 	url(r'^config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObject'),
@@ -32,7 +33,7 @@ urlpatterns = patterns('',
 	url(r'^config/acl/add/?$', 'config.views.addACL'),
 	url(r'^config/acl/manage/(?P<aclId>\d+)?$', 'config.views.manageACL'),
 
-	url(r'^config/object/modify/(?P<obj_id>\d+)/(?P<attr_id>\d+)$', 'config.views.modifyAttribute'),
+	url(r'^config/object/modify/(?P<obj_id>\d+)/(?P<attr_id>\d+)$', 'config.views.modifyInstanceAttribute'),
 	url(r'^config/script/add/?$', 'config.views.addScript'),
 	url(r'^config/script/manage/(?P<scriptId>\d+)?$', 'config.views.manageScript'),
 	
