@@ -3,6 +3,7 @@ from pymongo import Connection, errors
 from django.conf import settings
 from directory.models import LBEObjectInstance,OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_DELETED,OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT
 import sys, logging
+#from services.backend import BackendHelper
 
 import datetime
 from django.utils.timezone import utc
@@ -107,3 +108,14 @@ class MongoService:
 			return db.update({'_id':ID},{'$set':{'status':awaiting,'changes':{'set':{},'type':OBJECT_CHANGE_DELETE_OBJECT}}})
 		except BaseException as e:
 			logger.error('Error while removing document: ' + e.__str__())
+
+    def removeAttributeDocument(self,collection,attribute_name):
+		db = self.db[collection]
+		try:
+			# Attribute Field:
+			res = db.update({},{'$unset':{'attributes':{attribute_name:1}}},multi=True)
+			# Changes['set'] Field:
+			res += db.update({},{'$unset':{'changes':{'set':{attribute_name:1}}}},multi=True)
+			return res
+		except BaseException as e:
+			logger.error('Error while removing attribute document: ' + e.__str__())

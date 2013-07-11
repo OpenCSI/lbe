@@ -148,6 +148,18 @@ def modifyAttribute(request,attribute_id = 1):
 	return render_to_response('config/attribute/modify.html',{'attributes':attributes,'attributeForm':form,'attribute_id':attribute_id},context_instance=RequestContext(request))
 	
 @staff_member_required
+def removeAttribute(request,attribute_id = None):
+	try:
+		attribute = LBEAttribute.objects.get(id=attribute_id)
+		LBEAttributeInstance.objects.filter(lbeAttribute=attribute).delete()
+		attribute.delete()
+		messages.add_message(request, messages.SUCCESS, 'Attribute removed.')
+	except BaseException as e:
+		print e
+		messages.add_message(request, messages.ERROR, 'Error while removing attribute.')
+	return HttpResponseRedirect('/config/attribute/modify')
+		
+@staff_member_required
 def modifyInstanceAttribute(request,obj_id = None,attr_id = None):
 	if request.method == 'POST':
 		if obj_id == None:
@@ -161,7 +173,16 @@ def modifyInstanceAttribute(request,obj_id = None,attr_id = None):
 			messages.add_message(request, messages.ERROR, 'Attribute not modified.')
 			print form.errors
 	return redirect('/config/object/modify/' + obj_id)
-	
+
+@staff_member_required
+def removeInstanceAttribute(request,obj_id = None,attr_id = None):
+	try:
+		LBEAttributeInstance.objects.get(id=attr_id).delete()
+		messages.add_message(request,messages.SUCCESS,'Intance Attribute removed.')
+	except BaseException as e:
+		messages.add_message(request,messages.ERROR,'Error to remove the Instance Attribute.')
+	return redirect('/config/object/modify/')
+
 @staff_member_required
 def addReference(request):
 	if request.method == 'POST':
@@ -203,6 +224,19 @@ def modifyReference(request,ref_id = 1):
 		except BaseException:
 			form = []
 	return render_to_response('config/reference/modify.html',{'referenceForm':form,'references':referencesList,'refID':ref_id},context_instance=RequestContext(request))
+
+@staff_member_required	
+def removeReference(request,ref_id = None):
+	try:
+		reference = LBEReference.objects.get(id=ref_id)
+		# Remove all instance attributes which use the reference:
+		LBEAttributeInstance.objects.filter(reference = reference).delete()
+		reference.delete()
+		messages.add_message(request,messages.SUCCESS,'Reference removed.')
+	except BaseException:
+		messages.add_message(request,messages.ERROR,'Error to remove the reference.')
+	return redirect('/config/reference/modify/')
+
 
 @staff_member_required	
 def addScript(request):
@@ -272,6 +306,15 @@ def manageACL(request, aclId = None):
 	except BaseException:
 		form = None
 	return render_to_response('config/acl/manage.html',{'aclList':aclList,'aclForm':form,'aclId':aclId},context_instance=RequestContext(request))
+
+@staff_member_required
+def removeACL(request,aclId = None):
+	try:
+		LBEDirectoryACL.objects.get(id=aclId).delete()
+		messages.add_message(request,messages.SUCCESS,'ACL removed.')
+	except BaseException:
+		messages.add_message(request,messages.ERROR,'Error to remove the ACL.')
+	return redirect('/config/acl/manage/' + aclId)
 
 @staff_member_required
 def checkACL_AJAX(request,query = None):

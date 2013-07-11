@@ -4,7 +4,8 @@
 	<table class="table">
 		<tr><td style="width:20%">Choose the Attribute:</td><td><select onChange="window.location.href=(window.location.pathname.substring(0,window.location.pathname.indexOf('modify/'))+'modify/'+$('select option:selected').val())">
 			{% for attribute in attributes %} <option value="{{attribute.id}}" {% if attribute.id|stringformat:"s" == attribute_id %} selected="selected" {% endif %}>{{attribute.name}} : {{attribute.displayName}}</option> {% endfor %}
-			</select></td></tr>
+			</select> <a href="#" onClick="if($('select option:selected').text() && confirm('Do you want to remove \''+$('select option:selected').text()+'\'?'))window.location.href = '/config/attribute/remove/'+$('select option:selected').val();" title="Remove attribute">
+					<span class='label label-important'>x</span></td></tr>
 	</table>
     <form method="post" action="">{% csrf_token %}
        {% include 'config/attribute/form.html' %}
