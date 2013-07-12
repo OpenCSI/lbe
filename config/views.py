@@ -318,6 +318,8 @@ def removeACL(request,aclId = None):
 
 @staff_member_required
 def checkACL_AJAX(request,query = None):
-	acl = ACLHelper(None,query)
-	acl.check()
-	return HttpResponse(acl.traceback)
+	if request.is_ajax():
+		acl = ACLHelper(None,query)
+		acl.check()
+		return HttpResponse(acl.traceback)
+	return HttpResponse('')
