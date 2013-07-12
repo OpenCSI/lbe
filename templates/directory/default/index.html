@@ -53,7 +53,7 @@
 		<li {% if i == page %}class="disabled"{% endif %}><a href="{% if i == page %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=i %}{% endif %}">{{i}}</a></li>
 		{% endfor %}
 		<li {% if maxCPage == maxPage  %}class="disabled"{% endif %}><a href="{% if maxCPage == maxPage %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=maxCPage %}{% endif %}">></a></li>
-		<li {% if page == maxPage %}class="disabled"{% endif %}><a href="{% if page == maxPage %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=maxPage %}{% endif %}">Last</a></li>
+		<li {% if page >= maxPage %}class="disabled"{% endif %}><a href="{% if page >= maxPage %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=maxPage %}{% endif %}">Last</a></li>
     </ul>
 </div>
 </center>

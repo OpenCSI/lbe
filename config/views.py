@@ -314,7 +314,7 @@ def removeACL(request,aclId = None):
 		messages.add_message(request,messages.SUCCESS,'ACL removed.')
 	except BaseException:
 		messages.add_message(request,messages.ERROR,'Error to remove the ACL.')
-	return redirect('/config/acl/manage/' + aclId)
+	return redirect('/config/acl/manage/')
 
 @staff_member_required
 def checkACL_AJAX(request,query = None):
