@@ -190,3 +190,38 @@ class TargetLDAPImplementation():
 						for val in value:
 							modList = [ (ldap.MOD_ADD,key.encode("utf-8"),val.encode("utf-8") ) ]
 							self.handler.update(dn,modList)
+    
+    def upgrade(self,lbeObjectTemplate,lbeObjectInstance):
+        objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+		# RDN Attribute:
+        rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
+        dn =  rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]  + ',' + objectHelper.callScriptClassMethod('base_dn')
+        LDAPValues = self.searchObjects(lbeObjectTemplate,rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0])[0].attributes
+        # Update:
+        for key,value in lbeObjectInstance.attributes.items():
+			noKey = not LDAPValues.has_key(key)# key exists into the object target?
+			if noKey or not value == LDAPValues[key]:
+				# 1 value: Replace
+				if len(value) == 1:
+					if noKey:
+						# ADD:
+						modList = [ (ldap.MOD_ADD,key.encode("utf-8"),value[0].encode("utf-8") ) ]
+					else:
+						# REPLACE:
+						modList = [ (ldap.MOD_REPLACE,key.encode("utf-8"),value[0].encode("utf-8") ) ]
+					self.handler.update(dn,modList)
+				else: # MultiValue:
+					if noKey:
+						# ADD:
+						for val in value:
+							modList = [ (ldap.MOD_ADD,key.encode("utf-8"),val.encode("utf-8") ) ]
+							self.handler.update(dn,modList)
+					else:
+						# REMOVE:
+						for val in LDAPValues[key]:
+							modList = [ (ldap.MOD_DELETE,key.encode("utf-8"),val.encode("utf-8") ) ]
+							self.handler.update(dn,modList)
+						# ADD:
+						for val in value:
+							modList = [ (ldap.MOD_ADD,key.encode("utf-8"),val.encode("utf-8") ) ]
+							self.handler.update(dn,modList)
