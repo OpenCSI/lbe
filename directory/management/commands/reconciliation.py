@@ -123,6 +123,9 @@ class Reconciliation():
 							print e
 							pass
                         pass
+			# Synced object:
+			objectTemplate.synced_at = datetime.datetime.now()
+			objectTemplate.save()
         print "   End."
 
 
@@ -196,6 +199,9 @@ class Reconciliation():
 						break
 				if not exist:
 					self._deleteORCreate(objectTemplate,ot)
+			# Synced object:
+			objectTemplate.synced_at = datetime.datetime.now()
+			objectTemplate.save()
 		print "   End."
 		
 		
