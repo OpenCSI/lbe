@@ -37,6 +37,9 @@ class ImportTarget():
 						print "''''''''"
 			if number == 0:
 				print '<None>'
+			# Synced object:
+			objectTemplate.synced_at = datetime.datetime.now()
+			objectTemplate.save()
 			print '.........................'
 		
 class Command(BaseCommand):
