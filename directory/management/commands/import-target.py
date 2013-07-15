@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from services.backend import BackendHelper
 from services.target import TargetHelper
-import datetime
+import django
 
 from directory.models import LBEObjectTemplate
 
@@ -9,7 +9,7 @@ class ImportTarget():
 	def __init__(self):
 		self.backend = BackendHelper()
 		self.target = TargetHelper()
-		self.start_date = datetime.datetime.now()
+		self.start_date = django.utils.timezone.now()
         
 	def save(self):
 		print 'Checking for Objects which do not exist into LBE but in LDAP Server:'
@@ -38,7 +38,7 @@ class ImportTarget():
 			if number == 0:
 				print '<None>'
 			# Synced object:
-			objectTemplate.synced_at = datetime.datetime.now()
+			objectTemplate.synced_at = django.utils.timezone.now()
 			objectTemplate.save()
 			print '.........................'
 		

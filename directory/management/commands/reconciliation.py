@@ -6,6 +6,7 @@ from services.object import LBEObjectInstanceHelper
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 import ldap
+import django
 import logging
 import ldap.modlist as modlist
 from django.conf import settings
@@ -16,7 +17,7 @@ class Reconciliation():
     def __init__(self):
         self.backend = BackendHelper()
         self.target = TargetHelper()
-        self.start_date = datetime.datetime.now()
+        self.start_date = django.utils.timezone.now()
 
     def _createParent(self, lbeObjectTemplate, objService):
 		base_dn = objService.callScriptMethod("base_dn")
@@ -43,7 +44,7 @@ class Reconciliation():
         changes['changes'] = {}
         changes['changes']['set'] = {}
         changes['changes']['type'] = -1
-        changes['synced_at'] = datetime.datetime.now()
+        changes['synced_at'] =  django.utils.timezone.now()
         self.backend.updateObject(objectTemplate, objectInstance, changes)
         
     def _modifyObject(self,objectTemplate,objectInstance):
@@ -57,7 +58,7 @@ class Reconciliation():
         changes['changes'] = {}
         changes['changes']['set'] = {}
         changes['changes']['type'] = -1
-        changes['synced_at'] = datetime.datetime.now()
+        changes['synced_at'] =  django.utils.timezone.now()
         self.backend.updateObject(objectTemplate, objectInstance, changes)
        
     def _deleteObject(self,objectTemplate,objectInstance):
@@ -68,7 +69,7 @@ class Reconciliation():
 		changes['changes'] = {}
 		changes['changes']['set'] = {}
 		changes['changes']['type'] = -1
-		changes['synced_at'] = datetime.datetime.now()
+		changes['synced_at'] = django.utils.timezone.now()
 		self.backend.updateObject(objectTemplate, objectInstance, changes)
      		
     def start(self):
@@ -104,7 +105,7 @@ class Reconciliation():
                         changes['changes'] = {}
                         changes['changes']['set'] = {}
                         changes['changes']['type'] = -1
-                        changes['synced_at'] = datetime.datetime.now()
+                        changes['synced_at'] = django.utils.timezone.now()
                         self.backend.updateObject(objectTemplate, objectInstance, changes)
                         pass
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_UPDATE_OBJECT:
@@ -124,7 +125,7 @@ class Reconciliation():
 							pass
                         pass
 			# Synced object:
-			objectTemplate.synced_at = datetime.datetime.now()
+			objectTemplate.synced_at = django.utils.timezone.now()
 			objectTemplate.save()
         print "   End."
 
@@ -139,7 +140,7 @@ class Reconciliation():
 				changes['changes'] = {}
 				changes['changes']['set'] = {}
 				changes['changes']['type'] = -1
-				changes['synced_at'] = datetime.datetime.now()
+				changes['synced_at'] = django.utils.timezone.now()
 				self.backend.updateObject(objectTemplate, ot, changes)
 			except BaseException as e:
 				print "''''''''"
@@ -173,7 +174,7 @@ class Reconciliation():
 				changes['changes'] = {}
 				changes['changes']['set'] = {}
 				changes['changes']['type'] = -1
-				changes['synced_at'] = datetime.datetime.now()
+				changes['synced_at'] = django.utils.timezone.now()
 				self.backend.updateObject(objectTemplate, ob, changes)
 			elif settings.RECONCILIATION_OBJECT_DIFFERENT_POLICY == settings.BACKEND:
 				print "       |-> Upgrade Object '" + ob.name + "\033[0m' into Backend..."
@@ -200,7 +201,7 @@ class Reconciliation():
 				if not exist:
 					self._deleteORCreate(objectTemplate,ot)
 			# Synced object:
-			objectTemplate.synced_at = datetime.datetime.now()
+			objectTemplate.synced_at = django.utils.timezone.now()
 			objectTemplate.save()
 		print "   End."
 		
