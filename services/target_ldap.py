@@ -27,7 +27,13 @@ class TargetObjectInstance():
 
 def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
     # Append objectClasses
-    attributes = lbeObjectInstance.changes['set']
+    try:
+		if not lbeObjectInstance.changes['set']:
+			attributes = lbeObjectInstance.attributes
+		else:
+			attributes = lbeObjectInstance.changes['set']
+    except KeyError:
+		attributes = lbeObjectInstance.attributes
     # For each mono valued, drop the list
     encodedAttributes = {}
     for key, values in attributes.items():

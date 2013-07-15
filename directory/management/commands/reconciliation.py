@@ -154,15 +154,26 @@ class Reconciliation():
     def _upgradeObject(self,objectTemplate,ot,ob):
 		if not ot.attributes == ob.attributes:
 			if settings.RECONCILIATION_OBJECT_DIFFERENT_POLICY == settings.TARGET:
-				print "       |-> Ugrade Object '\033[35m" + ob.name + "\033[0m' into Target..."
+				print "       |-> Upgrade Object '\033[35m" + ob.name + "\033[0m' into Target..."
 				print "       |-> -------------------------------------------- "
 				print "       ||-> Old Values: " + str(ot.attributes)
 				print "       ||-> New Values: " + str(ob.attributes)
 				print "       |-> -------------------------------------------- "
-				self.target.upgrade(objectTemplate,ob)
-				self._modifyObject(objectTemplate,ob) # synced_at
+				# Remove & Add in order to add new attributes:
+				# Remove:
+				self.target.delete(objectTemplate,ob)
+				# Add
+				self.target.create(objectTemplate,ob)
+				# Synced:
+				changes = {}
+				changes['status'] = OBJECT_STATE_SYNCED
+				changes['changes'] = {}
+				changes['changes']['set'] = {}
+				changes['changes']['type'] = -1
+				changes['synced_at'] = datetime.datetime.now()
+				self.backend.updateObject(objectTemplate, ob, changes)
 			elif settings.RECONCILIATION_OBJECT_DIFFERENT_POLICY == settings.BACKEND:
-				print "       |-> Ugrade Object '" + ob.name + "\033[0m' into Backend..."
+				print "       |-> Upgrade Object '" + ob.name + "\033[0m' into Backend..."
 				print "       |-> -------------------------------------------- "
 				print "       ||-> Old Values: " + str(ob.attributes)
 				print "       ||-> New Values: " + str(ot.attributes)
