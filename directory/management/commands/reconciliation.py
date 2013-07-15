@@ -160,6 +160,7 @@ class Reconciliation():
 				print "       ||-> New Values: " + str(ob.attributes)
 				print "       |-> -------------------------------------------- "
 				self.target.upgrade(objectTemplate,ob)
+				self._modifyObject(objectTemplate,ob) # synced_at
 			elif settings.RECONCILIATION_OBJECT_DIFFERENT_POLICY == settings.BACKEND:
 				print "       |-> Ugrade Object '" + ob.name + "\033[0m' into Backend..."
 				print "       |-> -------------------------------------------- "
