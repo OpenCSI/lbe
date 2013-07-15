@@ -91,7 +91,11 @@ def addObjectInstance(request, lbeObject_id = None):
     if request.method == 'POST':
         form = helper.form(lbeObject, request.POST)
         if form.is_valid():
-            helper.createFromDict(request)
+            try:
+				helper.createFromDict(request) 
+            except BaseException:
+				messages.add_message(request, messages.ERROR, 'Error when creating object.')
+				return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
             try:
                 helper.save()
             except BackendObjectAlreadyExist as e:

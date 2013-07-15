@@ -35,7 +35,7 @@ def modifyObject(request, obj_id = None, instance_id = None):
     objectForm = None
     lbeObjectTemplate = LBEObjectTemplate.objects.get(id = obj_id)
     if request.method == 'POST':
-        objectForm = LBEObjectTemplateForm(request.POST, instance = LBEObjectTemplate.objects.get(id = obj_id))
+        objectForm = LBEObjectTemplateForm(request.POST, instance = lbeObjectTemplate)
         if objectForm.is_valid():
             objectForm.save()
             messages.add_message(request, messages.SUCCESS, 'Object saved')
