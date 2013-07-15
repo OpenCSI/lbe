@@ -151,9 +151,11 @@ def modifyAttribute(request,attribute_id = 1):
 def removeAttribute(request,attribute_id = None):
 	try:
 		attribute = LBEAttribute.objects.get(id=attribute_id)
-		LBEAttributeInstance.objects.filter(lbeAttribute=attribute).delete()
-		attribute.delete()
-		messages.add_message(request, messages.SUCCESS, 'Attribute removed.')
+		if LBEAttributeInstance.objects.filter(lbeAttribute=attribute):
+			messages.add_message(request, messages.ERROR, 'Cannot remove attributes used. Check the different instance object.')
+		else:
+			attribute.delete()
+			messages.add_message(request, messages.SUCCESS, 'Attribute removed.')
 	except BaseException as e:
 		print e
 		messages.add_message(request, messages.ERROR, 'Error while removing attribute.')
