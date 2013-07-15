@@ -105,7 +105,7 @@ class TargetLDAPImplementation():
         filter += ')'
 
         return self.searchObjects(lbeObjectTemplate, filter, start, page)
-
+		
     # TODO: add a parameter to get all ldap attributes, used for reconciliation task
     def searchObjects(self, lbeObjectTemplate, filter = None, start = 0, page = 0):
         result_set = []
@@ -157,6 +157,17 @@ class TargetLDAPImplementation():
         
         return self.handler.delete(dn)
         
+        
+    def changeRDN(self,lbeObjectTemplate, lbeObjectInstance,oldRDNAttribute,oldRDNValue):
+        objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+        # Old RDN:
+        dn =  oldRDNAttribute + '=' + oldRDNValue  + ',' + objectHelper.callScriptClassMethod('base_dn')
+        # New RDN:
+        rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
+        newDN = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]
+        self.handler.changeRDN(dn,newDN.encode("utf-8"))
+		
+		   
     def update(self, lbeObjectTemplate,lbeObjectInstance):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
 		# RDN Attribute:

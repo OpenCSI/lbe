@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 
 from services.ACL import ACLHelper
 from services.backend import BackendHelper
+from services.target import TargetHelper
 
 @staff_member_required
 def addObject(request):
@@ -53,10 +54,13 @@ def modifyObject(request, obj_id = None, instance_id = None):
             if changeID or DN:
 				backend = BackendHelper()
 				ob = backend.searchObjects(lbeObjectTemplate)
+				target = TargetHelper()
 				try:
 					for o in ob:
 						if changeID:
 							backend.update_id(lbeObjectTemplate,o,o.attributes[request.POST['instanceNameAttribute']][0])
+							# need to change the RDN attribute too from the target server:
+							target.changeRDN(lbeObjectTemplate,o,oldNAttribute,o.attributes[oldNAttribute][0])
 						if DN:
 							attribute = LBEAttribute.objects.get(id = request.POST['instanceDisplayNameAttribute'])
 							backend.modifyDisplayName(lbeObjectTemplate,o.name,o.attributes[attribute.name][0])
