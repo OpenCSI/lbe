@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
 
 from services.ACL import ACLHelper
+from services.backend import BackendHelper
 
 @staff_member_required
 def addObject(request):
@@ -36,7 +37,32 @@ def modifyObject(request, obj_id = None, instance_id = None):
     lbeObjectTemplate = LBEObjectTemplate.objects.get(id = obj_id)
     if request.method == 'POST':
         objectForm = LBEObjectTemplateForm(request.POST, instance = lbeObjectTemplate)
+        oldNAttribute = lbeObjectTemplate.instanceNameAttribute.name
+        oldDNAttribute = lbeObjectTemplate.instanceDisplayNameAttribute.id
         if objectForm.is_valid():
+			# change the _id value if changed:
+            if not oldNAttribute == request.POST['instanceNameAttribute']:
+				changeID = True
+            else:
+				changeID = False
+            # change the displayName value if changed:
+            if not oldDNAttribute == int(request.POST['instanceDisplayNameAttribute']):
+				DN = True
+            else:
+				DN = False
+            if changeID or DN:
+				backend = BackendHelper()
+				ob = backend.searchObjects(lbeObjectTemplate)
+				try:
+					for o in ob:
+						if changeID:
+							backend.update_id(lbeObjectTemplate,o,o.attributes[request.POST['instanceNameAttribute']][0])
+						if DN:
+							attribute = LBEAttribute.objects.get(id = request.POST['instanceDisplayNameAttribute'])
+							backend.modifyDisplayName(lbeObjectTemplate,o.name,o.attributes[attribute.name][0])
+				except KeyError:
+					messages.add_message(request, messages.ERROR, 'Error while saving object, "' + request.POST['instanceNameAttribute'] + '" does not exist for the Object.')
+					return redirect('/config/object/modify/' + obj_id)
             objectForm.save()
             messages.add_message(request, messages.SUCCESS, 'Object saved')
             return redirect('/config/object/modify/' + obj_id)

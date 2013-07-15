@@ -27,7 +27,7 @@
 				});
 			</script>
 			{% else %}
-			<td> <a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" >{{ object.name }} </a></td>
+			<td> <a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}" >{{ object.displayName }} </a></td>
 			{% endif %}
 			<td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
 			<td style='text-align: center;'>

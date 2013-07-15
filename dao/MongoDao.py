@@ -60,6 +60,13 @@ class MongoService:
 			logger.error('Error while update _id"s document: ' + e.__str__())
 			print e
 	
+    def modifyDNDocument(self, collection,ID,DN):
+        db = self.db[collection]
+        try:
+            db.update({'_id':ID},{'$set':{'displayName':DN}})
+        except BaseException as e:
+		    logger.error('Error while modifying DisplayName document: ' + e.__str__())
+    
     def modifyDocument(self, awaiting,collection, ID, values):
         db = self.db[collection]
         try:

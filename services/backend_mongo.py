@@ -79,6 +79,9 @@ class BackendMongoImpl:
     
     def update_id(self,lbeObjectTemplate, lbeObjectInstance, new_id):
 		return self.handler.update_id(lbeObjectTemplate.name,lbeObjectInstance,new_id)
+
+    def modifyDisplayName(self,lbeObjectTemplate, ID, DN):
+		return self.handler.modifyDNDocument(lbeObjectTemplate.name,ID,DN)
 		
     def modifyObject(self, lbeObjectTemplate, ID, values):
         if lbeObjectTemplate.approval:
