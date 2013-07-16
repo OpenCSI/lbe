@@ -177,7 +177,7 @@ class Reconciliation():
 				changes['synced_at'] = django.utils.timezone.now()
 				self.backend.updateObject(objectTemplate, ob, changes)
 			elif settings.RECONCILIATION_OBJECT_DIFFERENT_POLICY == settings.BACKEND:
-				print "       |-> Upgrade Object '" + ob.name + "\033[0m' into Backend..."
+				print "       |-> Upgrade Object '\033[35m" + ob.name + "\033[0m' into Backend..."
 				print "       |-> -------------------------------------------- "
 				print "       ||-> Old Values: " + str(ob.attributes)
 				print "       ||-> New Values: " + str(ot.attributes)

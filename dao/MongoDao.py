@@ -115,7 +115,14 @@ class MongoService:
 			return db.update({'_id':ID},{'$set':{'status':awaiting,'changes':{'set':{},'type':OBJECT_CHANGE_DELETE_OBJECT}}})
 		except BaseException as e:
 			logger.error('Error while removing document: ' + e.__str__())
-
+    
+    def deleteDocument(self,collection,ID):
+		db = self.db[collection]
+		try:
+			return db.remove({'_id':ID})
+		except BaseException as e:
+			logger.error('Error while removing document: ' + e.__str__())
+		
     def removeAttributeDocument(self,collection,attribute_name):
 		db = self.db[collection]
 		try:
