@@ -184,7 +184,7 @@ class LBEObjectInstanceHelper():
 							for value in valuesUser['attributes'][attribute.lbeAttribute.name][1:]:
 								q.update({attribute.lbeAttribute.name:value})
 							d[attribute.lbeAttribute.name] = self._compress_data(q)[attribute.lbeAttribute.name]
-					except KeyError:
+					except BaseException:
 						d[attribute.lbeAttribute.name] = attribute.defaultValue
 			return d
         except BaseException:
