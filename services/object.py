@@ -90,11 +90,13 @@ class LBEObjectInstanceHelper():
 
     def update(self):
         self._backend()
-        self.backend.createObject(self.template, self.instance)
+        if self._checkUnique():
+			self.backend.createObject(self.template, self.instance)
         
     def modify(self):
 		self._backend()
-		self.backend.modifyObject(self.template,self.ID,self.instance)
+		if self._checkUnique():
+			self.backend.modifyObject(self.template,self.ID,self.instance)
 		
     def remove(self,uid):
         self._backend()
@@ -156,8 +158,24 @@ class LBEObjectInstanceHelper():
     """
 		END CALL Script
     """	
-    def _checkUnique(self,attributeName,value):
-		return False
+    def _checkUnique(self):
+		try:
+			attributesInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template, unique = True)
+			objectInstances = self.backend.searchObjects(self.template)
+			for attribute in attributesInstance:
+				for obj in objectInstances:
+					if not obj.changes['set'] == {}:
+						if obj.changes['set'].has_key(attribute.lbeAttribute.name) and self.instance.has_key(attribute.lbeAttribute.name) \
+						and obj.changes['set'][attribute.lbeAttribute.name][0] == self.instance[attribute.lbeAttribute.name]:
+							return False
+					else:
+						if obj.attributes.has_key(attribute.lbeAttribute.name) and self.instance.has_key(attribute.lbeAttribute.name) \
+						and obj.attributes[attribute.lbeAttribute.name][0] == self.instance[attribute.lbeAttribute.name]:
+							return False
+		except BaseException as e:
+			print e
+			pass
+		return True
 		
     def getValues(self,UID):
         """
