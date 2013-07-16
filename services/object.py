@@ -78,7 +78,7 @@ class LBEObjectInstanceHelper():
 			
     """
 		MANAGE Object/Values:
-	"""			
+	"""			   
     def save(self, ):
         self._backend()
         # Search for an existing object
@@ -156,7 +156,9 @@ class LBEObjectInstanceHelper():
     """
 		END CALL Script
     """	
-    
+    def _checkUnique(self,attributeName,value):
+		return False
+		
     def getValues(self,UID):
         """
 		Fonction enables to get values from attributes fields and
@@ -221,9 +223,6 @@ class LBEObjectInstanceHelper():
             # Only fetch real attributes from the request (mono and/or multi values)
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 attributeName = attributeInstance.lbeAttribute.name
-                print len(request.POST[attributeName].split('�'))
-                print request.POST[attributeName] + " " + attributeName
-                print request.POST
                 if len(request.POST[attributeName].split('�')) > 1:
 					attributes[attributeName] = request.POST[attributeName].split('�')
                 else:
