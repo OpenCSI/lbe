@@ -162,8 +162,11 @@ class Reconciliation():
 				# Then, skip it.
 				numberEmpty = 0
 				for values in set(ot.attributes) ^ set(ob.attributes):
-					if ob.attributes[values] == []:
-						numberEmpty += 1
+					try:
+						if ob.attributes[values] == []:
+							numberEmpty += 1
+					except BaseException:
+						pass
 				if numberEmpty == len(set(ot.attributes) ^ set(ob.attributes)):
 					return
 				print "       |-> Upgrade Object '\033[35m" + ob.name + "\033[0m' into Target..."
