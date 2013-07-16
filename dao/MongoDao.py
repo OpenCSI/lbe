@@ -82,6 +82,15 @@ class MongoService:
             for kvalues in values:
 				if isinstance(values[kvalues],unicode) or isinstance(values[kvalues],str):
 					values[kvalues] = [ values[kvalues] ]
+            # check if values change:
+            save = False
+            for key in collection['attributes']:
+				if values.has_key(key) and not values[key] == collection['attributes'][key]:
+					save = True
+					break
+			# Then, not change = not save:
+            if not save:
+				return
             # set status for changes:
             if collection.has_key('status'):
                 if collection['status'] == 4 or change['type'] == 0: # OBJECT_STATE_DELETED or OBJECT_CHANGE_CREATE_OBJECT
