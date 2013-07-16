@@ -213,7 +213,7 @@ def removeInstanceAttribute(request,obj_id = None,attr_id = None):
 		messages.add_message(request,messages.SUCCESS,'Intance Attribute removed.')
 	except BaseException as e:
 		messages.add_message(request,messages.ERROR,'Error to remove the Instance Attribute.')
-	return redirect('/config/object/modify/')
+	return redirect('/config/object/modify/' + obj_id)
 
 @staff_member_required
 def addReference(request):
