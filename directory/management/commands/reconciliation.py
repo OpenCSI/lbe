@@ -163,7 +163,8 @@ class Reconciliation():
 				numberEmpty = 0
 				for values in set(ot.attributes) ^ set(ob.attributes):
 					try:
-						if ob.attributes[values] == []:
+						# either empty or empty string:
+						if ob.attributes[values] == [] or ob.attributes[values] == ['']:
 							numberEmpty += 1
 					except BaseException:
 						pass
