@@ -136,8 +136,11 @@ def manageObjectInstance(request, lbeObject_id,objectName,type):
 		form = instanceHelper.form(objectName,request.POST)
 		if form.is_valid():
 			instanceHelper.updateFromDict(objectName,form.clean())
-			instanceHelper.modify()
-			messages.add_message(request, messages.SUCCESS, 'Object saved')
+			try:
+				instanceHelper.modify()
+				messages.add_message(request, messages.SUCCESS, 'Object saved')
+			except KeyError as e:
+				messages.add_message(request, messages.INFO, e)
 	else:
 		# Set values into form:
 		form = instanceHelper.form(objectName)

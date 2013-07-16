@@ -90,7 +90,7 @@ class MongoService:
 					break
 			# Then, not change = not save:
             if not save:
-				return
+				raise Exception("The Object does not need to be saved (same values).")
             # set status for changes:
             if collection.has_key('status'):
                 if collection['status'] == 4 or change['type'] == 0: # OBJECT_STATE_DELETED or OBJECT_CHANGE_CREATE_OBJECT
@@ -103,6 +103,8 @@ class MongoService:
             return db.update({'_id':ID},{'$set':{'changes':{'set':values,'type':type},'updated_at':datetime.datetime.now(utc),'status':awaiting}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
+            if e.__str__() == "The Object does not need to be saved (same values).":
+				raise KeyError("The Object does not need to be saved (same values).")
 	
     def updateDocument(self, collectionName, lbeObjectInstance, filter, changes):
         collection = self.db[collectionName]
