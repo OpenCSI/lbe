@@ -158,6 +158,14 @@ class Reconciliation():
     def _upgradeObject(self,objectTemplate,ot,ob):
 		if not ot.attributes == ob.attributes:
 			if settings.RECONCILIATION_OBJECT_DIFFERENT_POLICY == settings.TARGET:
+				# check if values are empty []:
+				# Then, skip it.
+				numberEmpty = 0
+				for values in set(ot.attributes) ^ set(ob.attributes):
+					if ob.attributes[values] == []:
+						numberEmpty += 1
+				if numberEmpty == len(set(ot.attributes) ^ set(ob.attributes)):
+					return
 				print "       |-> Upgrade Object '\033[35m" + ob.name + "\033[0m' into Target..."
 				print "       |-> -------------------------------------------- "
 				print "       ||-> Old Values: " + str(ot.attributes)
