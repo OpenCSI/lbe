@@ -11,7 +11,7 @@ from services.backend import BackendObjectAlreadyExist
 class LBEObjectInstanceHelper():
     def __init__(self, lbeObjectTemplate,lbeObjectInstance=None):
         self.template = lbeObjectTemplate
-        self.ID = None
+        self.template = lbeObjectTemplate
         self.instance = lbeObjectInstance
         self.scriptInstance = None
         self.backend = None
@@ -80,7 +80,7 @@ class LBEObjectInstanceHelper():
 		MANAGE Object/Values:
 	"""			   
     def save(self, ):
-        self._backend()
+        self._checkUnique()
         # Search for an existing object
         searchResult = self.backend.getUserForObject(self.template, self.instance.name)
         if searchResult is None:
@@ -89,14 +89,12 @@ class LBEObjectInstanceHelper():
             raise BackendObjectAlreadyExist('Already exists')
 
     def update(self):
-        self._backend()
-        if self._checkUnique():
-			self.backend.createObject(self.template, self.instance)
+        self._checkUnique()
+        self.backend.createObject(self.template, self.instance.changes['set'])
         
     def modify(self):
-		self._backend()
-		if self._checkUnique():
-			self.backend.modifyObject(self.template,self.ID,self.instance)
+        self._checkUnique()
+        self.backend.modifyObject(self.template,self.instance.name, self.instance.changes['set'])
 		
     def remove(self,uid):
         self._backend()
@@ -141,7 +139,7 @@ class LBEObjectInstanceHelper():
                     self.instance[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
                 except AttributeError as e:
                     logger.info('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
-                    #print ('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
+                    print ('LBEObjectInstanceHelper: Method ' + methodPrefix + attributeName + ' not found or AttributeError exception. ' + e.__str__())
 			
     def applyCustomScript(self):
 		# Clean attributes before manage virtuals attributes
@@ -159,23 +157,27 @@ class LBEObjectInstanceHelper():
 		END CALL Script
     """	
     def _checkUnique(self):
-		try:
-			attributesInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template, unique = True)
-			objectInstances = self.backend.searchObjects(self.template)
-			for attribute in attributesInstance:
-				for obj in objectInstances:
-					if not obj.changes['set'] == {}:
-						if obj.changes['set'].has_key(attribute.lbeAttribute.name) and self.instance.has_key(attribute.lbeAttribute.name) \
-						and obj.changes['set'][attribute.lbeAttribute.name][0] == self.instance[attribute.lbeAttribute.name]:
-							return False
-					else:
-						if obj.attributes.has_key(attribute.lbeAttribute.name) and self.instance.has_key(attribute.lbeAttribute.name) \
-						and obj.attributes[attribute.lbeAttribute.name][0] == self.instance[attribute.lbeAttribute.name]:
-							return False
-		except BaseException as e:
-			print e
-			pass
-		return True
+		self._backend()
+		attributesInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template, unique = True)
+		objectInstances = self.backend.searchObjects(self.template)
+		for attribute in attributesInstance:
+			for obj in objectInstances:
+				if not obj.changes['set'] == {}:
+					if obj.changes['set'].has_key(attribute.lbeAttribute.name) and self.instance.changes['set'].has_key(attribute.lbeAttribute.name) \
+					and not self.instance.name == obj.name:
+						# MultiValue:
+						for objAttribute in obj.changes['set'][attribute.lbeAttribute.name]:
+							for instanceAttribute in self.instance.changes['set'][attribute.lbeAttribute.name]:
+								if objAttribute == instanceAttribute:
+									raise ValueError("The value '" + str(self.instance.changes['set'][attribute.lbeAttribute.name][0]) + "' from the '" + attribute.lbeAttribute.name + "' attribute must be unique.\nPlease change its value or their computed values.")
+				else:
+					if obj.attributes.has_key(attribute.lbeAttribute.name) and self.instance.changes['set'].has_key(attribute.lbeAttribute.name) \
+					and not self.instance.name == obj.name:
+						# MultiValue:
+						for objAttribute in obj.attributes[attribute.lbeAttribute.name]:
+							for instanceAttribute in self.instance.changes['set'][attribute.lbeAttribute.name]:
+								if objAttribute == instanceAttribute:
+									raise ValueError("The value '" + str(self.instance.changes['set'][attribute.lbeAttribute.name][0]) + "' from the '" + attribute.lbeAttribute.name + "' attribute must be unique.\nPlease change its value or their computed values.")
 		
     def getValues(self,UID):
         """
@@ -247,7 +249,6 @@ class LBEObjectInstanceHelper():
                     attributes[attributeName] = [ request.POST[attributeName] ]
         # IMPORTANT: We need to create an instance without the uniqueBecause because it may be a computed attribute, for example uid (compute from firstname/name)
         self.instance = LBEObjectInstance(self.template, attributes = attributes)
-        # TODO: Maybe check here if the object need approvals
         self.instance.status = OBJECT_STATE_AWAITING_SYNC
         self.applyCustomScript()
         # Set uniqueName and displayName
@@ -261,10 +262,25 @@ class LBEObjectInstanceHelper():
             print e.__str__()
             # TODO: Remove technical message, use another handler to send message to administrator
             messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')
+        # Check for unique values:
+        
 
     def updateFromDict(self,ID,values):
-        self.instance = values
-        self.ID = ID
+        self.scriptInstance = None
+        self.instance = LBEObjectInstance(self.template,attributes = None)
+        self.instance.changes['set'] = values
+        self.instance.attributes = values
+        # compute attributes:
+        self._create_script_instance()
+        self.applyCustomScript()
+        # set them (if not been yet) to array:
+        for key in self.instance.attributes:
+			if isinstance(self.instance.attributes[key],str) or isinstance(self.instance.attributes[key],unicode):
+				self.instance.attributes[key] = [ self.instance.attributes[key] ]
+        # put the computed values:
+        self.instance.changes['set'] = self.instance.attributes
+        # ID object:
+        self.instance.name = ID
         
     def compute(self,lbeObjectInstance):
 		self.instance = lbeObjectInstance

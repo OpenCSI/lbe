@@ -74,14 +74,6 @@ class MongoService:
             collection = self.searchDocuments(collection,{'_id':ID})[0]
             change = collection['changes']
             changeSet = change['set']
-            # if values exist into Changes.set but not in values, add them:
-            for kset in changeSet:
-				if not values.has_key(kset):
-					values[kset] = changeSet[kset] # get other values
-			# replace String values to array values:
-            for kvalues in values:
-				if isinstance(values[kvalues],unicode) or isinstance(values[kvalues],str):
-					values[kvalues] = [ values[kvalues] ]
             # set status for changes:
             if collection.has_key('status'):
                 if collection['status'] == 4 or change['type'] == 0: # OBJECT_STATE_DELETED or OBJECT_CHANGE_CREATE_OBJECT
@@ -94,6 +86,7 @@ class MongoService:
             return db.update({'_id':ID},{'$set':{'changes':{'set':values,'type':type},'updated_at':datetime.datetime.now(utc),'status':awaiting}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
+            print('Error while modifying document: ' + e.__str__())
 	
     def updateDocument(self, collectionName, lbeObjectInstance, filter, changes):
         collection = self.db[collectionName]

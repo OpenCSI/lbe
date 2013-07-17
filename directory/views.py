@@ -107,6 +107,9 @@ def addObjectInstance(request, lbeObject_id = None):
             except BackendObjectAlreadyExist as e:
                 messages.add_message(request, messages.ERROR, 'Object already exists')
                 return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
+            except ValueError as e:
+				messages.add_message(request, messages.ERROR, e)
+				return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
             # Redirect to list
             return redirect('/')
         return render_to_response('directory/default/object/add.html', { 'form': form, 'lbeObjectId': lbeObject_id,'multivalue':multivalue }, context_instance=RequestContext(request))
@@ -135,9 +138,12 @@ def manageObjectInstance(request, lbeObject_id,objectName,type):
 		# Modify part:
 		form = instanceHelper.form(objectName,request.POST)
 		if form.is_valid():
-			instanceHelper.updateFromDict(objectName,form.clean())
-			instanceHelper.modify()
-			messages.add_message(request, messages.SUCCESS, 'Object saved')
+			try:
+				instanceHelper.updateFromDict(objectName,form.clean())
+				instanceHelper.modify()
+				messages.add_message(request, messages.SUCCESS, 'Object saved')
+			except ValueError as e:
+				messages.add_message(request, messages.ERROR, e)
 	else:
 		# Set values into form:
 		form = instanceHelper.form(objectName)
