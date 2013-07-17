@@ -19,6 +19,23 @@ class Reconciliation():
         self.target = TargetHelper()
         self.start_date = django.utils.timezone.now()
 
+    def _changeRDN(self,objectTemplate):
+        if objectTemplate.needReconciliationRDN:
+            print "    |-> Upgrade the RDN Target server for \033[35m" + objectTemplate.name + "\033[0m..."
+            # Change the RDN Attribute to the Target Server
+            ob = self.backend.searchObjects(objectTemplate)
+            for o in ob:
+                try:
+                    self.target.changeRDN(objectTemplate,o,objectTemplate.instanceNameBeforeAttribute.name,o.attributes[objectTemplate.instanceNameBeforeAttribute.name][0])
+                except BaseException:
+					# if object does not exists into the Target Server
+					pass
+            # Update values for changing RDN attribute
+            objectTemplate.instanceNameBeforeAttribute = None
+            objectTemplate.needReconciliationRDN = False
+            objectTemplate.save()
+            print "    |-> Done."
+
     def _createParent(self, lbeObjectTemplate, objService):
 		base_dn = objService.callScriptMethod("base_dn")
 		objectToCreate = base_dn.replace(settings.LDAP_SERVER['BASE_DN'],'')[:-1].split(',')
@@ -75,6 +92,8 @@ class Reconciliation():
     def start(self):
         print "   Upgrade the Target server with the Backend server..."
         for objectTemplate in LBEObjectTemplate.objects.all():
+            # need to check if we need to change before making reconciliation the RDN attribute
+            self._changeRDN(objectTemplate)
             # We're looking for all objects with state = OBJECT_STATE_AWAITING_SYNC
             for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
 				# First of all, applies all changes stored in backend [ such Virtual attributes ]  

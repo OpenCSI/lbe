@@ -17,7 +17,7 @@ class LBEObjectTemplateForm(ModelForm):
     instanceNameAttribute =  forms.CharField(max_length=100)
     class Meta:
         model = LBEObjectTemplate
-        exclude = ( 'attributes', 'imported_at', 'synced_at' 'version' )
+        exclude = ( 'attributes', 'imported_at', 'synced_at' 'version', 'instanceNameBeforeAttribute' , 'needReconciliationRDN' )
     # Implements validator for approval field (must >= 0)
     def clean_approval(self):
         approval = self.cleaned_data['approval']

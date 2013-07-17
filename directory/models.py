@@ -49,6 +49,8 @@ class LBEScript(models.Model):
 class LBEObjectTemplate(models.Model):
     name               = models.CharField(unique = True, max_length=32)
     displayName        = models.CharField(unique = True, max_length=32)
+    # when change the RDN:
+    instanceNameBeforeAttribute   = models.ForeignKey(LBEAttribute, related_name = 'instance_name_before_attribute',null=True,blank = True, default=None)
     # Used as name for an objectInstance
     instanceNameAttribute   = models.ForeignKey(LBEAttribute, related_name = 'instance_name_attribute')
     # Used as displayName for an objectInstance
@@ -63,6 +65,8 @@ class LBEObjectTemplate(models.Model):
     imported_at     = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
     # Date of last sync
     synced_at       = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
+    # Check if need to use Reconciliation for new RDN:
+    needReconciliationRDN = models.BooleanField(default = False)
     def __unicode__(self):
         return str(self.displayName)
 

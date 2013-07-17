@@ -52,15 +52,16 @@ def modifyObject(request, obj_id = None, instance_id = None):
             else:
 				DN = False
             if changeID or DN:
+				if not lbeObjectTemplate.needReconciliationRDN:
+					objectForm.instance.instanceNameBeforeAttribute = LBEAttribute.objects.get(name__iexact=oldNAttribute)
+					objectForm.instance.needReconciliationRDN = True
 				backend = BackendHelper()
 				ob = backend.searchObjects(lbeObjectTemplate)
-				target = TargetHelper()
 				try:
 					for o in ob:
 						if changeID:
 							backend.update_id(lbeObjectTemplate,o,o.attributes[request.POST['instanceNameAttribute']][0])
-							# need to change the RDN attribute too from the target server:
-							target.changeRDN(lbeObjectTemplate,o,oldNAttribute,o.attributes[oldNAttribute][0])
+							# the RDN Attribute from Target Server is replace into the Reconciliation
 						if DN:
 							attribute = LBEAttribute.objects.get(id = request.POST['instanceDisplayNameAttribute'])
 							backend.modifyDisplayName(lbeObjectTemplate,o.name,o.attributes[attribute.name][0])
