@@ -3,13 +3,25 @@
 {{ hidden }}
 {% endfor %}
 {# Include the visible fields #}
-<script type="text/javascript">
 {% if multivalue %}
+<script type="text/javascript">
+	i=0;
 	function addField(attribute,value)
 	{
-		$('.'+attribute).append(value + '<br>');
+		value = value.replace('id="id_'+attribute+'"','id='+attribute+'_'+i)
+		value = value.replace(/value=".*"/,'value=""')
+		$('.'+attribute).append('<span style="display:block;" class="span_'+attribute+'_'+i+'">' + value+' <a href="#" class="btn btn-inverse" id="btn_'+attribute+'_'+i+'" onClick="remove(\''+attribute+'_'+i+'\');return false">-</a></span>')
+		i++
 	}
-{% endif %}
+	
+	function remove(key)
+	{
+		$('#'+key).val('')
+		$('#'+key).hide()
+		$('#btn_'+key).hide()
+		$('.span_'+key).hide()
+	}
+
 	function clone(obj) {
     // Handle the 3 simple types, and null or undefined
     if (null == obj || "object" != typeof obj) return obj;
@@ -29,7 +41,6 @@
 function multivalue(field,key,values)
 {
 	tab = values.split("�");// [FIXME]: check for better value coded.
-	i=0;
 	fields = '';
 	for (num in tab)
 	{
@@ -39,7 +50,11 @@ function multivalue(field,key,values)
 		{
 			if (tab[num] != '')
 			{
-				$('.'+key).append($('#id_'+key).clone().val(tab[num]))
+				$add = $('#id_'+key).clone()
+				$add.attr("id",key + '_' + i)
+				$add.val(tab[num])
+				$('.'+key).append($add)
+				$('.'+key).append(' <a href="#" class="btn btn-inverse" id="btn_'+key+'_'+i+'" onClick="remove(\''+key+'_'+i+'\');return false">-</a>')
 				$('.'+key).append('<br>')
 			}
 		}
@@ -47,6 +62,7 @@ function multivalue(field,key,values)
 	}
 }
 </script>
+{% endif %}
 <table class='table table-condensed'>
 {% for field in form.visible_fields %}
     <tr>
