@@ -78,10 +78,6 @@ class MongoService:
             for kset in changeSet:
 				if not values.has_key(kset):
 					values[kset] = changeSet[kset] # get other values
-			# replace String values to array values:
-            for kvalues in values:
-				if isinstance(values[kvalues],unicode) or isinstance(values[kvalues],str):
-					values[kvalues] = [ values[kvalues] ]
             # check if values change:
             save = False
             for key in collection['attributes']:
