@@ -37,7 +37,11 @@ def modifyObject(request, obj_id = None, instance_id = None):
     objectForm = None
     lbeObjectTemplate = LBEObjectTemplate.objects.get(id = obj_id)
     if request.method == 'POST':
-        objectForm = LBEObjectTemplateForm(request.POST, instance = lbeObjectTemplate)
+		# we can't modify the Synced_at value
+        POST = request.POST.copy()
+        POST['synced_at'] = lbeObjectTemplate.synced_at
+        # POST modification
+        objectForm = LBEObjectTemplateForm(POST, instance = lbeObjectTemplate)
         oldNAttribute = lbeObjectTemplate.instanceNameAttribute.name
         oldDNAttribute = lbeObjectTemplate.instanceDisplayNameAttribute.id
         if objectForm.is_valid():

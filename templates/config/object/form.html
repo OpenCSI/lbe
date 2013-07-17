@@ -10,6 +10,8 @@
         <td> {% if ajaxAttribute == field.name %}
 				<input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="{{defaultValue}}" onKeyUp='{{ajaxFunction}}'/>
 				<div class="show"></div>
+			{% elif field.name == 'synced_at' %}
+				<input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="{{field.value}}" disabled/>
 			{% else %}
 				{{ field }}
 			{% endif %}
