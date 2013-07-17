@@ -3,12 +3,13 @@
 {{ hidden }}
 {% endfor %}
 {# Include the visible fields #}
+
 <table class='table table-condensed'>
 {% for field in objectForm.visible_fields %}
     <tr>
         <th> {{ field.label }} </th>
         <td> {% if ajaxAttribute == field.name %}
-				<input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="{{defaultValue}}" onKeyUp='{{ajaxFunction}}'/>
+				<input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="{{defaultValue}}" onKeyUp='{{ajaxFunction}};' data-placement="right" data-content="By setting a new value, you need to launch the Reconciliation to replace the new DN.This operation could take a long time." title="Warning" onFocus="$(this).popover('show')" onBlur="$(this).popover('hide')"/>
 				<div class="show"></div>
 			{% elif field.name == 'synced_at' %}
 				<input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="{{field.value}}" disabled/>
