@@ -74,11 +74,16 @@ def viewObjectInstance(request,lbeObject_id,objectName = None):
 		objectTemplate = LBEObjectTemplate.objects.get(id=lbeObject_id)
 		instanceHelper = LBEObjectInstanceHelper(objectTemplate)
 		obj = instanceHelper.getValuesDecompressed(objectName)
-		obj['name'] = obj[objectTemplate.instanceNameAttribute.name][0]
-		obj['displayName'] = obj[objectTemplate.instanceDisplayNameAttribute.name][0]
-	except BaseException:
-		obj = []
-	return render_to_response('directory/default/object/view.html', {'object':obj,'obj_id':lbeObject_id}, context_instance=RequestContext(request))
+		# Replace attributes name by displayName:
+		objectInstance = dict()
+		for key in obj:
+			objectInstance[LBEAttribute.objects.get(name__iexact=key).displayName] = obj[key]
+		objectInstance['name'] = obj[objectTemplate.instanceNameAttribute.name][0]
+		objectInstance['displayName'] = obj[objectTemplate.instanceDisplayNameAttribute.name][0]
+	except BaseException as e:
+		print e
+		objectInstance = []
+	return render_to_response('directory/default/object/view.html', {'object':objectInstance,'obj_id':lbeObject_id}, context_instance=RequestContext(request))
 	
 @login_required
 @ACLHelper.create
