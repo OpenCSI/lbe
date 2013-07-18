@@ -20,6 +20,11 @@ class ReinitTarget():
 	def _create(self,objectTemplate,objectInstance):
 		# replace attributes by changes set if exist
 		if not objectInstance.changes['set'] == {}:
+			# replace the _id value if needed:
+			rdnAttributeName = objectTemplate.instanceNameAttribute.name
+			if not objectInstance.attributes[rdnAttributeName][0] == objectInstance.changes['set'][rdnAttributeName][0]:
+				self.backend.update_id(objectTemplate,objectInstance,objectInstance.changes['set'][rdnAttributeName][0])
+			# Replace changes['set'] to attributes
 			objectInstance.attributes = objectInstance.changes['set']
 		self.target.create(objectTemplate,objectInstance)
 		changes = {}
@@ -29,6 +34,7 @@ class ReinitTarget():
 		changes['changes']['type'] = -1
 		changes['synced_at'] =  django.utils.timezone.now()
 		self.backend.updateObject(objectTemplate, objectInstance, changes)
+		
 	
 	def start(self):
 		for objectTemplate in LBEObjectTemplate.objects.all():
