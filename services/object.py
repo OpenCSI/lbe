@@ -94,7 +94,7 @@ class LBEObjectInstanceHelper():
         
     def modify(self):
         self._checkUnique()
-        self.backend.modifyObject(self.template,self.instance.name, self.instance.changes['set'])
+        self.backend.modifyObject(self.template,self.instance.name, self.instance.changes['set'],self.instance.displayName)
 		
     def remove(self,uid):
         self._backend()
@@ -132,8 +132,10 @@ class LBEObjectInstanceHelper():
         for attributeInstance in self.template.lbeattributeinstance_set.filter(attributeType= attributeType):
             attributeName = attributeInstance.lbeAttribute.name
             try:
-                self.instance.changes['set'][attributeName] = self.callScriptMethod(methodPrefix + attributeName)
-                self.instance.attributes[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
+                if not self.instance.changes['set'] == {}:
+                    self.instance.changes['set'][attributeName] = self.callScriptMethod(methodPrefix + attributeName)
+                else:
+                    self.instance.attributes[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
             except AttributeError as e:
                 try:
                     self.instance[attributeName] = self.callScriptMethod(methodPrefix + attributeName)
@@ -262,7 +264,6 @@ class LBEObjectInstanceHelper():
             print e.__str__()
             # TODO: Remove technical message, use another handler to send message to administrator
             messages.add_message(request, messages.ERROR, 'nameAttribute or displayNameAttribute does not exist in object attributes')
-        # Check for unique values:
         
 
     def updateFromDict(self,ID,values):
@@ -277,8 +278,8 @@ class LBEObjectInstanceHelper():
         for key in self.instance.attributes:
 			if isinstance(self.instance.attributes[key],str) or isinstance(self.instance.attributes[key],unicode):
 				self.instance.attributes[key] = [ self.instance.attributes[key] ]
-        # put the computed values:
-        self.instance.changes['set'] = self.instance.attributes
+        # change the displayName value:
+        self.instance.displayName = self.instance.changes['set'][self.template.instanceDisplayNameAttribute.name][0]
         # ID object:
         self.instance.name = ID
         

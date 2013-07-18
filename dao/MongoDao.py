@@ -67,25 +67,16 @@ class MongoService:
         except BaseException as e:
 		    logger.error('Error while modifying DisplayName document: ' + e.__str__())
     
-    def modifyDocument(self, awaiting,collection, ID, values):
+    def modifyDocument(self, awaiting,collection, ID, values, displayName):
         db = self.db[collection]
         try:
 			# Get Data values:
             collection = self.searchDocuments(collection,{'_id':ID})[0]
             change = collection['changes']
             changeSet = change['set']
-            # if values exist into Changes.set but not in values, add them:
-            for kset in changeSet:
-				if not values.has_key(kset):
-					values[kset] = changeSet[kset] # get other values
-            # check if values change:
-            save = False
-            for key in collection['attributes']:
-				if values.has_key(key) and not values[key] == collection['attributes'][key]:
-					save = True
-					break
-			# Then, not change = not save:
-            if not save:
+            # check if values changed:
+            if (not collection['changes']['set'] == {} and values == collection['changes']['set']) \
+            or (collection['changes']['set'] == {} and values == collection['attributes']):
 				raise Exception("The Object does not need to be saved (same values).")
             # set status for changes:
             if collection.has_key('status'):
@@ -96,7 +87,7 @@ class MongoService:
             else:
 			    type = OBJECT_CHANGE_UPDATE_OBJECT
             # updage Mongo:
-            return db.update({'_id':ID},{'$set':{'changes':{'set':values,'type':type},'updated_at':datetime.datetime.now(utc),'status':awaiting}})
+            return db.update({'_id':ID},{'$set':{'changes':{'set':values,'type':type},'displayName':displayName,'updated_at':datetime.datetime.now(utc),'status':awaiting}})
         except BaseException as e:
             logger.error('Error while modifying document: ' + e.__str__())
             if e.__str__() == "The Object does not need to be saved (same values).":
