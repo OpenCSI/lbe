@@ -78,8 +78,9 @@ def viewObjectInstance(request,lbeObject_id,objectName = None):
 		objectInstance = dict()
 		for key in obj:
 			objectInstance[LBEAttribute.objects.get(name__iexact=key).displayName] = obj[key]
-		objectInstance['name'] = obj[objectTemplate.instanceNameAttribute.name][0]
+		objectInstance['name'] = objectName
 		objectInstance['displayName'] = obj[objectTemplate.instanceDisplayNameAttribute.name][0]
+		print objectInstance
 	except BaseException as e:
 		print e
 		objectInstance = []
