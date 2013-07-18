@@ -31,6 +31,27 @@ CHOICE_ATTRIBUT_TYPE = (
 	(2,"Reference")
 )
 
+# Reconciliation:
+# Variable used for setting if the Object is deleted into the Target or
+# if we need to add it to the Backend:
+OBJECT_ADD_BACKEND = 0
+OBJECT_DELETE_TARGET = 1
+CHOICE_RECONCILIATION_OBJECT_MISSING_POLICY = (
+	(OBJECT_ADD_BACKEND, "ADD TO BACKEND"),
+	(OBJECT_DELETE_TARGET,"DELETE FROM TARGET")
+)
+
+# Variable enables to set which server, we need to upgrade values:
+# If the value is TARGET, then the Backend object will replace the
+# Target object
+# else, the opposite.
+TARGET = 0
+BACKEND = 1
+CHOICE_RECONCILIATION_OBJECT_DIFFERENT_POLICY = (
+	(TARGET, "TARGET"),
+	(BACKEND, "BACKEND")
+)
+
 class LBEAttribute(models.Model):
     displayName       = models.CharField(unique = True, max_length=64)
     name               = models.CharField(unique = True, max_length=64)
@@ -110,6 +131,10 @@ class log(models.Model):
 	date			   = models.DateTimeField(auto_now=True)
 	def __unicode__(self):
 		return str(level + ': ' + message)
+
+class LBEReconciliation(models.Model):
+	reconciliation_object_missing_policy = models.IntegerField(default=0,choices=CHOICE_RECONCILIATION_OBJECT_MISSING_POLICY)
+	reconciliation_object_different_policy = models.IntegerField(default=0,choices=CHOICE_RECONCILIATION_OBJECT_DIFFERENT_POLICY)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance: 

@@ -2,12 +2,6 @@
 import os, sys
 from django.contrib import messages
 
-# Used for RECONCILIATION, do not EDIT and/or REMOVE!
-OBJECT_ADD_BACKEND = 0
-OBJECT_DELETE_TARGET = 1
-TARGET = 0
-BACKEND = 1
-
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 DEBUG = True
@@ -49,17 +43,6 @@ MONGODB_SERVER = {
 # The PAGINATION Variabme enables to set the number of Objects
 # which are visible for 1 page used as weel for LBE and the Reconciliation.
 PAGINATION=25
-
-# RECONCILIATION:
-# Variable used for setting if the Object is deleted into the Target or
-# if we need to add it to the Backend:
-RECONCILIATION_OBJECT_MISSING_POLICY = OBJECT_ADD_BACKEND # or  OBJECT_DELETE_TARGET
-
-# Variable enables to set which Server, we need to upgrade values:
-# If the value is TARGET, then the Backend object will replace the
-# Target object
-# else, the opposite.
-RECONCILIATION_OBJECT_DIFFERENT_POLICY = TARGET # or BACKEND
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -214,12 +197,3 @@ MESSAGE_TAGS = {
 	messages.WARNING: 'label label-warning',
 	messages.ERROR: 'label label-important',
 }
-
-# Import local_settings.py, thanks to Graphite
-"""
-try:
-    from lbe.local_settings import *
-except ImportError:
-    print >> sys.stderr, "Could not import local_settings.py, please create it"
-    sys.exit(1)
-"""

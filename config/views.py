@@ -360,3 +360,23 @@ def checkACL_AJAX(request,query = None):
 		acl.check()
 		return HttpResponse(acl.traceback)
 	return HttpResponse('')
+
+@staff_member_required
+def reconciliation(request):
+	try:
+		# get the policy setting:
+		policy = LBEReconciliation.objects.get(id=1)
+	except BaseException as e:
+		# does not exist, so create it:
+		policy = LBEReconciliation(reconciliation_object_missing_policy=0,reconciliation_object_different_policy=0)
+		policy.save()
+		messages.add_message(request, messages.INFO, 'The Policy Reconciliation does not exist, I create it just for you.')
+	if request.method == "POST":
+		form = LBEReconciliationForm(request.POST,instance=policy)
+		if form.is_valid():
+			form.save()
+			messages.add_message(request, messages.SUCCESS, 'Policy Reconciliation saved.')
+	form = LBEReconciliationForm(instance=policy)	
+	info_missing_policy = "Variable used for setting if the Object is deleted into the Target or <br> if we need to add it to the Backend"	
+	info_different_policy = "Variable enables to set which Server, we need to upgrade values:<br> If the value is TARGET, then the Backend object will replace the Target object <br>else, the opposite."
+	return render_to_response('config/reconciliation/policy.html',{'reconciliationForm':form,'info_missing_policy':info_missing_policy, 'info_different_policy':info_different_policy},context_instance=RequestContext(request))

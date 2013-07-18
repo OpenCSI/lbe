@@ -118,3 +118,9 @@
     instanceDisplayNameAttribute: 1
     approval: 0
     script: 2
+
+- model: directory.LBEReconciliation
+  pk: 1
+  fields:
+    reconciliation_object_missing_policy: 0
+    reconciliation_object_different_policy: 0

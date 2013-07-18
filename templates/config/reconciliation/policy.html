@@ -1,0 +1,29 @@
+{% extends 'index.html' %}
+{% block content %}
+<h4>Reconciliation Policy</h4>
+{% for hidden in reconciliationForm.hidden_fields %}
+{{ hidden }}
+{% endfor %}
+<form method="post">
+	{% csrf_token %}
+	<table class='table table-condensed'>
+		<tr>
+			<th> RECONCILIATION OBJECT MISSING POLICY  </th>
+			<td> {{ reconciliationForm.reconciliation_object_missing_policy }}
+				{% for error in reconciliationForm.reconciliation_object_missing_policy.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+			</td>
+			<td><a class="btn" href="#" data-placement="left" data-content="{{info_missing_policy}}" data-html="true" title="Info" onMouseOver="$(this).popover('show')" onMouseOut="$(this).popover('hide')">?</a></td>
+		</tr>
+		<tr>
+			<th> RECONCILIATION OBJECT DIFFERENT POLICY  </th>
+			<td> {{ reconciliationForm.reconciliation_object_different_policy }}
+				{% for error in reconciliationForm.reconciliation_object_different_policy.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+			</td>
+			<td><a class="btn" href="#" data-placement="left" data-content="{{info_different_policy}}" data-html="true" title="Info" onMouseOver="$(this).popover('show')" onMouseOut="$(this).popover('hide')">?</a></td>
+		</tr>
+		<tr>
+			<td colspan=3 style='text-align: center;'><input type='submit' name='Submit' class='btn'></td>
+		</tr>
+	</table>
+</form>
+{% endblock %}

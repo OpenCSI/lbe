@@ -41,6 +41,8 @@ urlpatterns = patterns('',
 	url(r'^config/script/add/?$', 'config.views.addScript'),
 	url(r'^config/script/manage/(?P<scriptId>\d+)?$', 'config.views.manageScript'),
 	
+	url(r'^config/reconciliation/policy/$', 'config.views.reconciliation'),
+	
 	url(r'^ajax/config/acl/check/(?P<query>.*)$', 'config.views.checkACL_AJAX'),
 	url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$', 'config.views.showAttributeAJAX'),
     
