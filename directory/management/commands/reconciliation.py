@@ -1,6 +1,6 @@
 import datetime
 from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT,OBJECT_CHANGE_DELETE_OBJECT, \
-OBJECT_CHANGE_UPDATE_OBJECT, LBEObjectInstance, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED, LBEReconciliation, \
+OBJECT_CHANGE_UPDATE_OBJECT, LBEObjectInstance, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED,  \
  OBJECT_ADD_BACKEND,OBJECT_DELETE_TARGET, TARGET, BACKEND
 from services.backend import BackendHelper
 from services.target import TargetHelper
@@ -20,7 +20,6 @@ class Reconciliation():
         self.backend = BackendHelper()
         self.target = TargetHelper()
         self.start_date = django.utils.timezone.now()
-        self.reconciliation_policy = LBEReconciliation.objects.get(id=1)
 
     def _changeRDN(self,objectTemplate):
         if objectTemplate.needReconciliationRDN:
@@ -153,7 +152,7 @@ class Reconciliation():
 
 
     def _deleteORCreate(self,objectTemplate,ot):
-		if self.reconciliation_policy.reconciliation_object_missing_policy == OBJECT_ADD_BACKEND:
+		if objectTemplate.reconciliation_object_missing_policy == OBJECT_ADD_BACKEND:
 			print "    |-> Adding \033[95m'" + ot.name + "'\033[0m object into Backend... "
 			try:
 				self.backend.createObject(objectTemplate,ot,True)
@@ -168,7 +167,7 @@ class Reconciliation():
 				print "''''''''"
 				print e
 				print "''''''''"
-		elif self.reconciliation_policy.reconciliation_object_missing_policy == OBJECT_DELETE_TARGET:
+		elif objectTemplate.reconciliation_object_missing_policy == OBJECT_DELETE_TARGET:
 			print "    |-> Removing \033[95m'" + ot.name + "'\033[0m object from Target... "
 			try:
 				self.target.delete(objectTemplate,ot)
@@ -179,7 +178,7 @@ class Reconciliation():
 		
     def _upgradeObject(self,objectTemplate,ot,ob):
 		if not ot.attributes == ob.attributes:
-			if self.reconciliation_policy.reconciliation_object_different_policy == TARGET:
+			if objectTemplate.reconciliation_object_different_policy == TARGET:
 				# check if values are empty []:
 				# Then, skip it.
 				numberEmpty = 0
@@ -210,7 +209,7 @@ class Reconciliation():
 				changes['changes']['type'] = -1
 				changes['synced_at'] = django.utils.timezone.now()
 				self.backend.updateObject(objectTemplate, ob, changes)
-			elif self.reconciliation_policy.reconciliation_object_different_policy == BACKEND:
+			elif objectTemplate.reconciliation_object_different_policy == BACKEND:
 				print "       |-> Upgrade Object '\033[35m" + ob.name + "\033[0m' into Backend..."
 				print "       |-> -------------------------------------------- "
 				print "       ||-> Old Values: " + str(ob.attributes)

@@ -164,7 +164,3 @@ class LBEACLForm(ModelForm):
 		if acl.check() == -1:
 			raise forms.ValidationError(acl.traceback)
 		return self.cleaned_data['condition']
-
-class LBEReconciliationForm(ModelForm):
-	class Meta:
-		model = LBEReconciliation

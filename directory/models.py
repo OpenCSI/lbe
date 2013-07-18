@@ -88,6 +88,10 @@ class LBEObjectTemplate(models.Model):
     synced_at       = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
     # Check if need to use Reconciliation for new RDN:
     needReconciliationRDN = models.BooleanField(default = False)
+    # Reconciliation Policy:
+    reconciliation_object_missing_policy = models.IntegerField(default=0,choices=CHOICE_RECONCILIATION_OBJECT_MISSING_POLICY)
+    reconciliation_object_different_policy = models.IntegerField(default=0,choices=CHOICE_RECONCILIATION_OBJECT_DIFFERENT_POLICY)
+	
     def __unicode__(self):
         return str(self.displayName)
 
@@ -131,10 +135,6 @@ class log(models.Model):
 	date			   = models.DateTimeField(auto_now=True)
 	def __unicode__(self):
 		return str(level + ': ' + message)
-
-class LBEReconciliation(models.Model):
-	reconciliation_object_missing_policy = models.IntegerField(default=0,choices=CHOICE_RECONCILIATION_OBJECT_MISSING_POLICY)
-	reconciliation_object_different_policy = models.IntegerField(default=0,choices=CHOICE_RECONCILIATION_OBJECT_DIFFERENT_POLICY)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance: 
