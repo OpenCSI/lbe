@@ -190,7 +190,7 @@ class Reconciliation():
 							numberEmpty += 1
 					except BaseException:
 						pass
-				if numberEmpty == len(set(ot.attributes) ^ set(ob.attributes)):
+				if not numberEmpty==0 and numberEmpty == len(set(ot.attributes) ^ set(ob.attributes)):
 					return
 				print "       |-> Upgrade Object '\033[35m" + ob.name + "\033[0m' into Target..."
 				print "       |-> -------------------------------------------- "
