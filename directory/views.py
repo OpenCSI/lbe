@@ -18,7 +18,7 @@ from django import forms
 @login_required
 @ACLHelper.select
 def index(request,lbeObject_id=1,page=1):
-	# init object:
+    # init object:
     if lbeObject_id is None:
 		lbeObject_id = 1
     if settings.PAGINATION is None:

@@ -31,6 +31,13 @@ CHOICE_ATTRIBUT_TYPE = (
 	(2,"Reference")
 )
 
+CHOICE_ATTRIBUT_WIDGET = (
+	('forms.CharField','Text Field'),
+	('forms.IntegerField','Integer Field'),
+	('forms.DateField','Date Field'),
+	('forms.ChoiceField','Choice Field'),
+)
+
 # Reconciliation:
 # Variable used for setting if the Object is deleted into the Target or
 # if we need to add it to the Backend:
@@ -116,7 +123,7 @@ class LBEAttributeInstance(models.Model):
     unique            = models.BooleanField(default = False)
     attributeType     = models.SmallIntegerField(choices=CHOICE_ATTRIBUT_TYPE,default = ATTRIBUTE_TYPE_FINAL)
     # The HTML widget used to display/edit attribute. We'll inject classname
-    widget            = models.CharField(max_length=64, default = 'forms.CharField')
+    widget            = models.CharField(max_length=64, default = 'forms.CharField', choices=CHOICE_ATTRIBUT_WIDGET)
     widgetArgs        = models.CharField(max_length=255, default = 'None')
     
     def __unicode__(self):

@@ -38,7 +38,7 @@ class LBEAttributeInstanceForm(ModelForm):
 	lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
 	class Meta:
 		model = LBEAttributeInstance
-		exclude = ('widget','widgetArgs', 'position')
+		exclude = ('position')
 		
 	def clean_attributeType(self):
 		if self.cleaned_data['attributeType'] < 0:
@@ -49,6 +49,21 @@ class LBEAttributeInstanceForm(ModelForm):
 		if self.cleaned_data['reference'] != None and self.cleaned_data['attributeType'] != 2:
 			raise forms.ValidationError("You need to select reference attribute type.")
 		return self.cleaned_data['attributeType']
+		
+	def clean_widgetArgs(self):
+		if self.cleaned_data['widget'] == 'forms.ChoiceField':
+			# unicode to class value
+			widgetArgs = eval(self.cleaned_data['widgetArgs'])
+			# check if the value is tuple
+			if isinstance(widgetArgs,tuple):
+				for arg in widgetArgs:
+					if not len(arg) == 2:
+						raise forms.ValidationError('The child"s tuple must have a length of 2<br> such as ("Key","Value").')
+				return widgetArgs
+			else:
+				raise forms.ValidationError('The field must be a tuple (("Key","Value"),).')
+		else:
+			return 'None'
 
 class LBEScriptForm(ModelForm):
 	class Meta:
