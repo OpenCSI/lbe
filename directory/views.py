@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
+from django.utils.datastructures import SortedDict
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from directory.models import *
@@ -75,9 +76,10 @@ def viewObjectInstance(request,lbeObject_id,objectName = None):
 		instanceHelper = LBEObjectInstanceHelper(objectTemplate)
 		obj = instanceHelper.getValuesDecompressed(objectName)
 		# Replace attributes name by displayName:
-		objectInstance = dict()
-		for key in obj:
-			objectInstance[LBEAttribute.objects.get(name__iexact=key).displayName] = obj[key]
+		objectInstance = SortedDict()
+		attributesInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate = objectTemplate).order_by("position")
+		for attribute in attributesInstance:
+			objectInstance[attribute.lbeAttribute.displayName] = obj[attribute.lbeAttribute.name]
 		objectInstance['name'] = objectName
 		objectInstance['displayName'] = obj[objectTemplate.instanceDisplayNameAttribute.name][0]
 	except BaseException as e:
