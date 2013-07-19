@@ -3,7 +3,7 @@
 {% block content %}
 	<script type="text/javascript">
       function PopupWindow(strWindowToOpen){
-		window.open (strWindowToOpen, 'Attribute', config='height=420, width=550, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
+		window.open (strWindowToOpen, 'Attribute', config='height=470, width=550, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
 	  }
       </script>
     <div class='row-fluid'>
@@ -46,7 +46,10 @@
                {% endfor %}
             </table>
 		   
-		   <center><a href="#" onClick="PopupWindow('{% url 'config.views.addAttributeToObject' obj_id=lbeObject.id  %}');return false;"><button class="btn">Add</button></a></center>
+		   <center>
+			   <a href="#" onClick="PopupWindow('{% url 'config.views.addAttributeToObject' obj_id=lbeObject.id  %}');return false;"><button class="btn">Add</button></a>
+		       <a href="#" onClick="PopupWindow('{% url 'config.views.setAttributesOrderToObject' obj_id=lbeObject.id  %}');return false;"><button class="btn">Set Attributes Order</button></a>
+		   </center>
             <div class="addAttribute">
             </div>
       </div>

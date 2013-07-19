@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<title>LBE - Attribute</title>
+		<link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="/static/drag/style.css" />
+		<script type="text/javascript" src="/static/jquery/jquery.js"></script>
+		<script type="text/javascript" src="/static/drag/redips-drag-min.js"></script>
+		<script type="text/javascript">
+			// redips initialization
+			redipsInit = function () {
+				// reference to the REDIPS.drag lib
+				var rd = REDIPS.drag;
+				// initialization
+				rd.init();
+				// set shift drop option
+				rd.dropMode = 'shift';
+				// enable shift animation
+				rd.shift.animation = false;
+				rd.event.dropped = function () {
+					// Upgrade attribute's position
+					var table = document.getElementById('table-drag')
+					for(var i=table.rows.length-1;i>=0;i--){
+						value = table.rows[i].cells[0].innerHTML
+						value = value.replace('<div style="border-style: solid; cursor: move;" class="drag">','')
+						value = value.replace('<span class="web-developer-id-class-details">.drag</span>','')
+						value = value.replace('</div>','')
+						$('#pos_'+(i+1)).val(value)
+					}
+				}
+			};
+			// add onload event listener
+			if (window.addEventListener) {
+				window.addEventListener('load', redipsInit, false);
+			}
+			else if (window.attachEvent) {
+				window.attachEvent('onload', redipsInit);
+			}
+		</script>
+	</head>
+	<body>
+		{{reloadParent|safe}}
+		<h3>Order attributes</h3>
+		<form action="" method='post'>
+			{% csrf_token %}
+			<div id="drag">
+			<table id="table-drag" class="table table-condensed">
+				{% for attribute in attributes %}
+					<input type="hidden" name="{{attribute.position}}" id="pos_{{attribute.position}}" value="{{attribute.lbeAttribute.displayName}}"/><tr><td><div class="drag">{{attribute.lbeAttribute.displayName}}</div></td></tr>
+				{% endfor %}
+			</table>
+			<center><input type='submit' name='Submit' class='btn'></center>
+			</div>
+		</form>
+	</body>
+</html>

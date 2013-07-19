@@ -223,9 +223,10 @@ class LBEObjectInstanceHelper():
         self._backend()
         valuesUser = self.backend.getUserForObject(self.template, UID)
         # Get all attributes from objects:
-        attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template)
+        attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = self.template).order_by('position')
         d = dict()
         for attribute in attributes:
+			print attribute.lbeAttribute.name
 			try:
 				if valuesUser['changes']['set'].has_key(attribute.lbeAttribute.name):
 					d[attribute.lbeAttribute.name] = valuesUser['changes']['set'][attribute.lbeAttribute.name]

@@ -26,6 +26,7 @@ urlpatterns = patterns('',
 	url(r'^config/object/list/?$', 'config.views.listObjects'),
 	url(r'^config/object/modify/(?P<obj_id>\d+)$', 'config.views.modifyObject'),
 	url(r'^config/object/addAttribute/(?P<obj_id>\d+)$', 'config.views.addAttributeToObject'),
+	url(r'^config/object/setAttributeOrder/(?P<obj_id>\d+)$', 'config.views.setAttributesOrderToObject'),
 	url(r'^config/object/modifyAttribute/modify/(?P<obj_id>\d+)/(?P<attr_id>\d+)$', 'config.views.modifyAttributeToObject'),
 	
 	url(r'^config/reference/add/?$', 'config.views.addReference'),

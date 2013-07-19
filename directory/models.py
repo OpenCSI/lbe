@@ -109,6 +109,7 @@ class LBEAttributeInstance(models.Model):
     defaultValue      = models.CharField(max_length=64, default='', blank = True, null = True)
     mandatory         = models.BooleanField(default = False)
     multivalue        = models.BooleanField(default = True)
+    position		  = models.IntegerField(default = 1)
     reference         = models.ForeignKey(LBEReference, null = True, blank = True, default = None)
     # If true, this attribute will be stored enciphered (by a symmetric key defined in LBE/settings.py) TODO: implement
     secure            = models.BooleanField(default = False)

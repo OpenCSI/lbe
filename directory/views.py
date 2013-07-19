@@ -80,7 +80,6 @@ def viewObjectInstance(request,lbeObject_id,objectName = None):
 			objectInstance[LBEAttribute.objects.get(name__iexact=key).displayName] = obj[key]
 		objectInstance['name'] = objectName
 		objectInstance['displayName'] = obj[objectTemplate.instanceDisplayNameAttribute.name][0]
-		print objectInstance
 	except BaseException as e:
 		print e
 		objectInstance = []
@@ -95,7 +94,7 @@ def addObjectInstance(request, lbeObject_id = None):
     # Get multiValue attributes: ('+' button)
     multivalue = []
     # get all attributInstance of ObjectTemplate:
-    attributeInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject)
+    attributeInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate=lbeObject).order_by('position')
     for attribute in attributeInstance:
         # check if multivalue is checked (True):
         if attribute.multivalue:

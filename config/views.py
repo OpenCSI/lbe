@@ -91,7 +91,7 @@ def modifyObject(request, obj_id = None, instance_id = None):
         else:
             objectForm = LBEObjectTemplateForm(instance= lbeObjectTemplate)
     attForm = LBEAttributeInstanceForm()
-    instances = LBEAttributeInstance.objects.filter(lbeObjectTemplate = lbeObjectTemplate)
+    instances = LBEAttributeInstance.objects.filter(lbeObjectTemplate = lbeObjectTemplate).order_by('position')
     # which attribute have ajax request:
     ajaxAttribute = 'instanceNameAttribute'
     defaultValue = lbeObjectTemplate.instanceNameAttribute.name
@@ -122,7 +122,12 @@ def addAttributeToObject(request,obj_id = None):
     if request.method == 'POST':
         form = LBEAttributeInstanceForm(request.POST)
         if form.is_valid():
-            form.save()
+            attribute = form.save()
+            # Save the new position by default
+            size = len(LBEAttributeInstance.objects.filter(lbeObjectTemplate = lbeObjectTemplate))
+            print size
+            attribute.position = size
+            attribute.save()
             messages.add_message(request, messages.SUCCESS, 'Attribute added.')
             reloadParent = '<script>window.opener.location.reload();window.close();</script>'
         else:
@@ -135,6 +140,23 @@ def addAttributeToObject(request,obj_id = None):
 	    reloadParent = ''
     return render_to_response('config/object/attributes/addAttribute.html',{'objID': obj_id, 'attributeForm': form,'reloadParent':reloadParent}, context_instance=RequestContext(request))
 
+@staff_member_required
+def setAttributesOrderToObject(request,obj_id = None):
+    lbeObjectTemplate = LBEObjectTemplate.objects.get(id = obj_id)
+    attributes = LBEAttributeInstance.objects.filter(lbeObjectTemplate = lbeObjectTemplate).order_by('position')
+    if request.method == "POST":
+		for i in range(1,len(attributes)+1):
+			for attribute in attributes:
+				if request.POST[str(i)] == attribute.lbeAttribute.displayName:
+					attribute.position = i
+					attribute.save()
+					break
+		reloadParent = '<script>window.opener.location.reload();window.close();</script>'
+    else:
+		reloadParent = ''
+    return render_to_response('config/object/attributes/orderAttributes.html',{'attributes':attributes,'reloadParent':reloadParent}, \
+    context_instance=RequestContext(request))
+    
 @staff_member_required
 def modifyAttributeToObject(request,obj_id,attr_id = None):
 	attribute = LBEAttributeInstance.objects.get(id = attr_id)

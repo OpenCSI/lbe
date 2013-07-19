@@ -38,7 +38,7 @@ class LBEAttributeInstanceForm(ModelForm):
 	lbeAttribute = LBEModelChoiceField(queryset = LBEAttribute.objects.all())
 	class Meta:
 		model = LBEAttributeInstance
-		exclude = ('widget','widgetArgs')
+		exclude = ('widget','widgetArgs', 'position')
 		
 	def clean_attributeType(self):
 		if self.cleaned_data['attributeType'] < 0:
@@ -100,7 +100,7 @@ class LBEScriptManageForm(forms.Form):
 class LBEObjectInstanceForm(forms.Form):
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)
-        for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
+        for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all().order_by('position'):
             # Display finals attributes
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
                 # TODO: Find a better way than exec
