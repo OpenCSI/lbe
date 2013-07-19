@@ -42,6 +42,7 @@
     multivalue: False
     mandatory: True
     attributeType: 1
+    position: 1
 - model: directory.LBEAttributeInstance
   pk: 2
   fields:
@@ -50,6 +51,7 @@
     multivalue: False
     mandatory: True
     attributeType: 0
+    position: 2
 - model: directory.LBEAttributeInstance
   pk: 3
   fields:
@@ -58,6 +60,7 @@
     multivalue: False
     mandatory: True
     attributeType: 0
+    position: 3
 - model: directory.LBEAttributeInstance
   pk: 4
   fields:
@@ -65,6 +68,7 @@
     lbeObjectTemplate: 1
     multivalue: False
     attributeType: 1
+    position: 4
 - model: directory.LBEAttributeInstance
   pk: 5
   fields:
@@ -72,6 +76,7 @@
     lbeObjectTemplate: 1
     multivalue: False
     attributeType: 1
+    position: 5
 - model: directory.LBEAttributeInstance
   pk: 6
   fields:
@@ -81,6 +86,7 @@
     widgetArgs: "(('M', 'Male'), ('F', 'Female'))"
     multivalue: False
     attributeType: 0
+    position: 6
 - model: directory.LBEAttributeInstance
   pk: 7
   fields:
@@ -88,6 +94,7 @@
     lbeObjectTemplate: 1
     multivalue: True
     attributeType: 0
+    position: 7
 
 - model: directory.LBEScript
   pk: 2
