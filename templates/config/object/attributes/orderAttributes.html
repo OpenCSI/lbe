@@ -46,7 +46,7 @@
 			<div id="drag">
 			<table id="table-drag" class="table table-condensed">
 				{% for attribute in attributes %}
-					<input type="hidden" name="{{attribute.position}}" id="pos_{{attribute.position}}" value="{{attribute.lbeAttribute.displayName}}"/><tr><td><div class="drag">{{attribute.lbeAttribute.displayName}}</div></td></tr>
+					<input type="hidden" name="N{{attribute.position}}" id="pos_{{attribute.position}}" value="{{attribute.lbeAttribute.displayName}}"/><tr><td><div class="drag">{{attribute.lbeAttribute.displayName}}</div></td></tr>
 				{% endfor %}
 			</table>
 			<center><input type='submit' name='Submit' class='btn'></center>

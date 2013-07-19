@@ -147,7 +147,7 @@ def setAttributesOrderToObject(request,obj_id = None):
     if request.method == "POST":
 		for i in range(1,len(attributes)+1):
 			for attribute in attributes:
-				if request.POST[str(i)] == attribute.lbeAttribute.displayName:
+				if request.POST['N'+str(i)] == attribute.lbeAttribute.displayName:
 					attribute.position = i
 					attribute.save()
 					break
