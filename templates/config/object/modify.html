@@ -21,6 +21,7 @@
             <table class="table">
                <tr>
                	<th>Name</th>
+               	<th>Display Name</th>
             	<th>Default value</th>
             	<th>Type</th>
             	<th>Mandatory</th>
@@ -32,6 +33,7 @@
                {% for instance in attributeInstances %}
                <tr>
                		<td> {{ instance.lbeAttribute.name }} </td>
+               		<td> {{ instance.lbeAttribute.displayName }} </td>
             		<td> {{ instance.defaultValue }} </td>
             		<td> {% if instance.attributeType == 0 %} Final {% else %} {% if instance.attributeType == 1 %} Virtual {% else %} Reference {% endif %}{% endif %} </td>
             		<td> {{ instance.mandatory }} </td>

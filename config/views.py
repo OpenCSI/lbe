@@ -185,8 +185,6 @@ def addAttribute(request):
 			form.save()
 			messages.add_message(request, messages.SUCCESS, 'Attribute created.')
 			return redirect('/config/attribute/add')
-		else:
-			messages.add_message(request, messages.ERROR, 'Error while creating attribute.')
 	else:
 		form = LBEAttributeForm()
 	return render_to_response('config/attribute/create.html',{'attributeForm':form},context_instance=RequestContext(request))
