@@ -1,18 +1,22 @@
 {% extends 'index.html' %}
 {% load url from future %}
 {% block content %}
-<h4>{{object.displayName}}</h4>
-<table class='table'>
-   {% for key,value in object.items %}
-   {% if key != 'name' and key != 'displayName' %}
-	<tr><th>{{key}}</th><td>{% for val in value %}{{val}} {% endfor %}</td></tr>
-   {% endif %}
-   {% endfor %}
-</table>
-{% if object %}
-<center><a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=obj_id objectName=object.name %}" class="btn btn-primary">Modify</a></center>
-{% else %}
-Oups, Object not found !<br>
-<a href="/">Go home</a>
-{% endif %}
+    <h4>{{ object.displayName }}</h4>
+    <table class='table'>
+        {% for key,value in object.items %}
+            {% if key != 'name' and key != 'displayName' %}
+                <tr>
+                    <th>{{ key }}</th>
+                    <td>{% for val in value %}{{ val }} {% endfor %}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+    {% if object %}
+        <center><a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=obj_id objectName=object.name %}"
+                   class="btn btn-primary">Modify</a></center>
+    {% else %}
+        Oups, Object not found !<br>
+        <a href="/">Go home</a>
+    {% endif %}
 {% endblock %}

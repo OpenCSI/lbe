@@ -1,11 +1,19 @@
 {% extends "index.html" %}
 {% load url from future %}
 {% block content %}
-	<h4>Manage script file:</h4>
-	<table class="table">
-		<tr><td style="width:20%">Choose the Script File:</td><td><select onChange="window.location.href=(window.location.pathname.substring(0,window.location.pathname.indexOf('manage/'))+'manage/'+$('select option:selected').val())">{% for script in scriptList %} <option value="{{script.id}}" {% if script.id == scriptId %}selected="selected"{% endif %}>{{script.name}}</option> {% endfor %}</select></td></tr>
-	</table>
-    <form method="post"  action="">{% csrf_token %}
-       {% include 'config/script/form.html' %}
+    <h4>Manage script file:</h4>
+    <table class="table">
+        <tr>
+            <td style="width:20%">Choose the Script File:</td>
+            <td><select
+                    onChange="window.location.href=(window.location.pathname.substring(0,window.location.pathname.indexOf('manage/'))+'manage/'+$('select option:selected').val())">
+                {% for script in scriptList %}
+                    <option value="{{ script.id }}"
+                            {% if script.id == scriptId %}selected="selected"{% endif %}>{{ script.name }}</option> {% endfor %}
+            </select></td>
+        </tr>
+    </table>
+    <form method="post" action="">{% csrf_token %}
+        {% include 'config/script/form.html' %}
     </form>
 {% endblock %}

@@ -1,18 +1,19 @@
 <html>
-	<head>
-		<title>LBE - Attribute</title>
-		<link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css" />
-		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
-	</head>
-	<body>
-		{{reloadParent|safe}}
-		{% load url from future %}
-		<h3><span id="AttrTitle">Manage an attribute</span></h3>
-		<form action="{% url 'config.views.modifyAttributeToObject' obj_id=objID attr_id=attrID %}" method='post'>
-			{% csrf_token %}
-			<table class="table table-condensed">
-				{% include 'config/object/attributes/form.html' %}
-			</table>
-		</form>
-	</body>
+<head>
+    <title>LBE - Attribute</title>
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+</head>
+<body>
+{{ reloadParent|safe }}
+{% load url from future %}
+<h3><span id="AttrTitle">Manage an attribute</span></h3>
+
+<form action="{% url 'config.views.modifyAttributeToObject' obj_id=objID attr_id=attrID %}" method='post'>
+    {% csrf_token %}
+    <table class="table table-condensed">
+        {% include 'config/object/attributes/form.html' %}
+    </table>
+</form>
+</body>
 </html>

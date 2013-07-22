@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 {% block content %}
-<h4>Create Reference:</h4>
+    <h4>Create Reference:</h4>
     <form method="post" action="">{% csrf_token %}
-       {% include 'config/reference/form.html' %}
+        {% include 'config/reference/form.html' %}
     </form>
 {% endblock %}

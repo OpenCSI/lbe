@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>LBE</title>
-		<link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css" />
-		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
-		
-		<script type="text/javascript" src="/static/jquery/jquery.js"></script>
-		<script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
-		<script type="text/javascript" src="/static/bootstrap/js/bootstrap-dropdown.js"></script>
-		<script type="text/javascript" src="/static/bootstrap/js/bootstrap-modal.js"></script>
-		<script type="text/javascript" src="/static/bootstrap/js/bootstrap-alert.js"></script>
-	</head>
-	<body>
-	  {% include "header.html" %}
-      <div class="container-fluid">
-          <div class='row-fluid'>
-              <div class='span2'>
-            	  {% include "menu.html" %}
-              </div>
-      <div class="span10">
-	  {% if messages %}
-        {% for message in messages %}
-        <span {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
-        {% endfor %}
-	  {% endif %}
-      </div>
-      <div class='span10'>
-          {% block content %}{% endblock %}
-      </div>
-	</body>
+<head>
+    <title>LBE</title>
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+
+    <script type="text/javascript" src="/static/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap-alert.js"></script>
+</head>
+<body>
+{% include "header.html" %}
+<div class="container-fluid">
+    <div class='row-fluid'>
+        <div class='span2'>
+            {% include "menu.html" %}
+        </div>
+        <div class="span10">
+            {% if messages %}
+                {% for message in messages %}
+                    <span {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class='span10'>
+            {% block content %}{% endblock %}
+        </div>
+</body>
 </html>
 

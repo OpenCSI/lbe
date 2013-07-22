@@ -6,27 +6,27 @@ Jan, 2010.
 
 */
 body {
-	font-family: arial;
+    font-family: arial;
 }
 
 /* drag objects (DIV inside table cells) */
 .drag {
-	position: relative;
-	cursor: move;
-	margin: 2px auto;
-	z-index: 10;
-	padding: 5px;
-	font-size: 12px;
-	text-align: center; 
-	width: 190px;
-	/* round corners for FF, Chrome, Safari (except IE) */
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
-	/* shadow for FF, Chrome, Safari (except IE)*/
-	/*
-	-moz-box-shadow: 4px 4px 8px #444;
-	-webkit-box-shadow: 4px 4px 8px #444;
-	box-shadow: 4px 4px 8px #444;
-	*/
+    position: relative;
+    cursor: move;
+    margin: 2px auto;
+    z-index: 10;
+    padding: 5px;
+    font-size: 12px;
+    text-align: center;
+    width: 190px;
+    /* round corners for FF, Chrome, Safari (except IE) */
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    /* shadow for FF, Chrome, Safari (except IE)*/
+    /*
+    -moz-box-shadow: 4px 4px 8px #444;
+    -webkit-box-shadow: 4px 4px 8px #444;
+    box-shadow: 4px 4px 8px #444;
+    */
 }

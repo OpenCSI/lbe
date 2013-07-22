@@ -1,78 +1,77 @@
 {# Include the hidden fields #}
 {% for hidden in form.hidden_fields %}
-{{ hidden }}
+    {{ hidden }}
 {% endfor %}
 {# Include the visible fields #}
 {% if multivalue %}
-<script type="text/javascript">
-	i=0;
-	function addField(attribute,value)
-	{
-		value = value.replace('id="id_'+attribute+'"','id='+attribute+'_'+i)
-		value = value.replace(/value=".*"/,'value=""')
-		$('.'+attribute).append('<span style="display:block;" class="span_'+attribute+'_'+i+'">' + value+' <a href="#" class="btn btn-inverse" id="btn_'+attribute+'_'+i+'" onClick="remove(\''+attribute+'_'+i+'\');return false">-</a></span>')
-		i++
-	}
-	
-	function remove(key)
-	{
-		$('#'+key).val('')
-		$('#'+key).hide()
-		$('#btn_'+key).hide()
-		$('.span_'+key).hide()
-	}
-
-	function clone(obj) {
-    // Handle the 3 simple types, and null or undefined
-    if (null == obj || "object" != typeof obj) return obj;
-
-    // Handle Object
-    if (obj instanceof Object) {
-        var copy = {};
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+    <script type="text/javascript">
+        i = 0;
+        function addField(attribute, value) {
+            value = value.replace('id="id_' + attribute + '"', 'id=' + attribute + '_' + i)
+            value = value.replace(/value=".*"/, 'value=""')
+            $('.' + attribute).append('<span style="display:block;" class="span_' + attribute + '_' + i + '">' + value + ' <a href="#" class="btn btn-inverse" id="btn_' + attribute + '_' + i + '" onClick="remove(\'' + attribute + '_' + i + '\');return false">-</a></span>')
+            i++
         }
-        return copy;
-    }
 
-    throw new Error("Unable to copy obj! Its type isn't supported.");
-	}
+        function remove(key) {
+            $('#' + key).val('')
+            $('#' + key).hide()
+            $('#btn_' + key).hide()
+            $('.span_' + key).hide()
+        }
 
-function multivalue(field,key,values)
-{
-	tab = values.split("�");// [FIXME]: check for better value coded.
-	fields = '';
-	for (num in tab)
-	{
-		if (i==0)
-			$('#id_'+key).val(tab[num])
-		else
-		{
-			if (tab[num] != '')
-			{
-				$add = $('#id_'+key).clone()
-				$add.attr("id",key + '_' + i)
-				$add.val(tab[num])
-				$('.'+key).append($add)
-				$('.'+key).append(' <a href="#" class="btn btn-inverse" id="btn_'+key+'_'+i+'" onClick="remove(\''+key+'_'+i+'\');return false">-</a>')
-				$('.'+key).append('<br>')
-			}
-		}
-		i++;
-	}
-}
-</script>
+        function clone(obj) {
+            // Handle the 3 simple types, and null or undefined
+            if (null == obj || "object" != typeof obj) return obj;
+
+            // Handle Object
+            if (obj instanceof Object) {
+                var copy = {};
+                for (var attr in obj) {
+                    if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+                }
+                return copy;
+            }
+
+            throw new Error("Unable to copy obj! Its type isn't supported.");
+        }
+
+        function multivalue(field, key, values) {
+            tab = values.split("�");// [FIXME]: check for better value coded.
+            fields = '';
+            for (num in tab) {
+                if (i == 0)
+                    $('#id_' + key).val(tab[num])
+                else {
+                    if (tab[num] != '') {
+                        $add = $('#id_' + key).clone()
+                        $add.attr("id", key + '_' + i)
+                        $add.val(tab[num])
+                        $('.' + key).append($add)
+                        $('.' + key).append(' <a href="#" class="btn btn-inverse" id="btn_' + key + '_' + i + '" onClick="remove(\'' + key + '_' + i + '\');return false">-</a>')
+                        $('.' + key).append('<br>')
+                    }
+                }
+                i++;
+            }
+        }
+    </script>
 {% endif %}
 <table class='table table-condensed'>
-{% for field in form.visible_fields %}
-    <tr>
-        <th> {{ field.label }} </th>
-        <td> {{ field }}{% for mv in multivalue %}{% if mv == field.name %} <a class="btn btn-primary" onClick="addField('{{mv}}','{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}');">+</a>
-			<div class="{{mv}}"></div> <script>multivalue("{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}","{{mv}}","{{field.data|default_if_none:""}}");</script> {% endif %} {% endfor %}
-            {% for error in field.errors %} <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
-        </td>
-    </tr>
-{% endfor %}
+    {% for field in form.visible_fields %}
+        <tr>
+            <th> {{ field.label }} </th>
+            <td>{{ field }}{% for mv in multivalue %}{% if mv == field.name %}<a class="btn btn-primary"
+                                                                                 onClick="addField('{{ mv }}','
+                                                                                         {% filter force_escape %}{% spaceless %}{{ field }}{% endspaceless %}{% endfilter %}');">+</a>
+                <div class="{{ mv }}"></div>
+                <script>multivalue("{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}", "{{mv}}", "{{field.data|default_if_none:""}}");</script>
+            {% endif %} {% endfor %}
+                {% for error in field.errors %}
+                    <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+            </td>
+        </tr>
+    {% endfor %}
     <tr>
         <td colspan=2 style='text-align: center;'><input type='submit' name='Submit' class='btn'></td>
     </tr>

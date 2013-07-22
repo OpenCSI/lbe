@@ -1,11 +1,11 @@
 {% extends "index.html" %}
 {% load url from future %}
 {% block content %}
-	<script type="text/javascript">
-      function PopupWindow(strWindowToOpen){
-		window.open (strWindowToOpen, 'Attribute', config='height=520, width=550, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
-	  }
-      </script>
+    <script type="text/javascript">
+        function PopupWindow(strWindowToOpen) {
+            window.open(strWindowToOpen, 'Attribute', config = 'height=520, width=550, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
+        }
+    </script>
     <div class='row-fluid'>
         <div class='span6'>
             <form action="{% url 'config.views.modifyObject' obj_id=lbeObject.id %}" method='POST'>{% csrf_token %}
@@ -15,44 +15,55 @@
         <div class='span6'>
             PUT EXTRA INFO HERE (like number of object, etc.)
         </div>
-     </div>
-     <div class='row-fluid'>
-            Objects attributes:
-            <table class="table">
-               <tr>
-               	<th>Name</th>
-               	<th>Display Name</th>
-            	<th>Default value</th>
-            	<th>Type</th>
-            	<th>Mandatory</th>
-            	<th>Multi Value</th>
-            	<th>Ciphered</th>
-            	<th>Unique</th>
-            	<th>Reference</th><th>Action</th>
-               </tr>
-               {% for instance in attributeInstances %}
-               <tr>
-               		<td> {{ instance.lbeAttribute.name }} </td>
-               		<td> {{ instance.lbeAttribute.displayName }} </td>
-            		<td> {{ instance.defaultValue }} </td>
-            		<td> {% if instance.attributeType == 0 %} Final {% else %} {% if instance.attributeType == 1 %} Virtual {% else %} Reference {% endif %}{% endif %} </td>
-            		<td> {{ instance.mandatory }} </td>
-            		<td> {{ instance.multivalue }} </td>
-            		<td> {{ instance.secure }} </td>
-            		<td> {{ instance.unique }} </td>
-            		<td> {{ instance.reference.name }} </td>
-            		<td> <a href="#" onClick="PopupWindow('{% url 'config.views.modifyAttributeToObject' obj_id=lbeObject.id attr_id=instance.id  %}');return false;">Modify </a>
-            		<a href="#" onClick="if(confirm('Do you want to remove \'{{instance.lbeAttribute.name}}\' instance?'))window.location.href = '{% url 'config.views.removeInstanceAttribute' obj_id=lbeObject.id attr_id=instance.id  %}';" title="Remove from object">
-					<span class='label label-important'>x</span></td>
-               </tr>
-               {% endfor %}
-            </table>
-		   
-		   <center>
-			   <a href="#" onClick="PopupWindow('{% url 'config.views.addAttributeToObject' obj_id=lbeObject.id  %}');return false;"><button class="btn">Add</button></a>
-		       <a href="#" onClick="PopupWindow('{% url 'config.views.setAttributesOrderToObject' obj_id=lbeObject.id  %}');return false;"><button class="btn">Set Attributes Order</button></a>
-		   </center>
-            <div class="addAttribute">
-            </div>
-      </div>
+    </div>
+    <div class='row-fluid'>
+        Objects attributes:
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Display Name</th>
+                <th>Default value</th>
+                <th>Type</th>
+                <th>Mandatory</th>
+                <th>Multi Value</th>
+                <th>Ciphered</th>
+                <th>Unique</th>
+                <th>Reference</th>
+                <th>Action</th>
+            </tr>
+            {% for instance in attributeInstances %}
+                <tr>
+                    <td> {{ instance.lbeAttribute.name }} </td>
+                    <td> {{ instance.lbeAttribute.displayName }} </td>
+                    <td> {{ instance.defaultValue }} </td>
+                    <td> {% if instance.attributeType == 0 %} Final {% else %} {% if instance.attributeType == 1 %}
+                        Virtual {% else %} Reference {% endif %}{% endif %} </td>
+                    <td> {{ instance.mandatory }} </td>
+                    <td> {{ instance.multivalue }} </td>
+                    <td> {{ instance.secure }} </td>
+                    <td> {{ instance.unique }} </td>
+                    <td> {{ instance.reference.name }} </td>
+                    <td><a href="#"
+                           onClick="PopupWindow('{% url 'config.views.modifyAttributeToObject' obj_id=lbeObject.id attr_id=instance.id %}');return false;">Modify </a>
+                        <a href="#"
+                           onClick="if(confirm('Do you want to remove \'{{ instance.lbeAttribute.name }}\' instance?'))window.location.href = '{% url 'config.views.removeInstanceAttribute' obj_id=lbeObject.id attr_id=instance.id %}';"
+                           title="Remove from object">
+                            <span class='label label-important'>x</span></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <center>
+            <a href="#"
+               onClick="PopupWindow('{% url 'config.views.addAttributeToObject' obj_id=lbeObject.id %}');return false;">
+                <button class="btn">Add</button>
+            </a>
+            <a href="#"
+               onClick="PopupWindow('{% url 'config.views.setAttributesOrderToObject' obj_id=lbeObject.id %}');return false;">
+                <button class="btn">Set Attributes Order</button>
+            </a>
+        </center>
+        <div class="addAttribute">
+        </div>
+    </div>
 {% endblock %}

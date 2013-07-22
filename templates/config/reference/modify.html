@@ -1,13 +1,21 @@
 {% extends "index.html" %}
 {% block content %}
-	<h4>Modify Reference:</h4>
-	<table class="table">
-		<tr><td style="width:20%">Choose the Reference:</td><td><select onChange="window.location.href=(window.location.pathname.substring(0,window.location.pathname.indexOf('modify/'))+'modify/'+$('select option:selected').val())">
-			{% for reference in references %} <option value="{{reference.id}}" {% if reference.id|stringformat:"s" == refID %} selected="selected" {% endif %}>{{reference.name}}</option> {% endfor %}
-			</select><a href="#" onClick="if($('select option:selected').text() && confirm('Do you want to remove \''+$('select option:selected').text()+'\'?\nWARNING. All attributes instances will be removed too.'))window.location.href = '/config/reference/remove/'+$('select option:selected').val();" title="Remove reference">
-					<span class='label label-important'>x</span></td></tr>
-	</table>
-	<form method="post" action="">{% csrf_token %}
-		   {% include 'config/reference/form.html' %}
-	</form>
+    <h4>Modify Reference:</h4>
+    <table class="table">
+        <tr>
+            <td style="width:20%">Choose the Reference:</td>
+            <td><select
+                    onChange="window.location.href=(window.location.pathname.substring(0,window.location.pathname.indexOf('modify/'))+'modify/'+$('select option:selected').val())">
+                {% for reference in references %}
+                    <option value="{{ reference.id }}" {% if reference.id|stringformat:"s" == refID %}
+                            selected="selected" {% endif %}>{{ reference.name }}</option> {% endfor %}
+            </select><a href="#"
+                        onClick="if($('select option:selected').text() && confirm('Do you want to remove \''+$('select option:selected').text()+'\'?\nWARNING. All attributes instances will be removed too.'))window.location.href = '/config/reference/remove/'+$('select option:selected').val();"
+                        title="Remove reference">
+                <span class='label label-important'>x</span></td>
+        </tr>
+    </table>
+    <form method="post" action="">{% csrf_token %}
+        {% include 'config/reference/form.html' %}
+    </form>
 {% endblock %}

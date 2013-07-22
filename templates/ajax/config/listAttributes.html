@@ -1,11 +1,12 @@
 <div class="showValues">
-	<li class="list">
-	{% for attributeValue in attributes %}
-		<ul class="list" onClick="$('#id_{{attr}}').val('{{attributeValue.name}}');$('.showValues').hide();">{{attributeValue.name}}</ul>
-	{% empty %}
-		{% if value %}
-		<ul class="list"><i>No Value</i></ul>
-		{% endif %}
-	</li>
-	{% endfor %}
+    <li class="list">
+        {% for attributeValue in attributes %}
+            <ul class="list"
+                onClick="$('#id_{{ attr }}').val('{{ attributeValue.name }}');$('.showValues').hide();">{{ attributeValue.name }}</ul>
+        {% empty %}
+            {% if value %}
+                <ul class="list"><i>No Value</i></ul>
+            {% endif %}
+            </li>
+        {% endfor %}
 </div>
