@@ -122,8 +122,6 @@ def modifyObject(request, obj_id=None, instance_id=None):
 Function enables to show a attributes list 
 for the 'Instancenameattribute' of Object:
 """
-
-
 @staff_member_required
 def showAttributeAJAX(request, attribute=None, value=None):
     if request.is_ajax():

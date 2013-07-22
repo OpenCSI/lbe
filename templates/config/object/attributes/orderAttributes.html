@@ -21,13 +21,7 @@
                 // Upgrade attribute's position
                 var table = document.getElementById('table-drag')
                 for (var i = table.rows.length - 1; i >= 0; i--) {
-                    value = table.rows[i].cells[0].innerHTML
-                    // [FIXME]: check for better replace value...
-                    value = value.replace('<div style="border-style: solid; cursor: move;" class="drag">', '')// Firefox
-                    value = value.replace('<span class="web-developer-id-class-details">.drag</span>', '')// Firefox
-                    value = value.replace('<div class="drag" style="border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; cursor: move;">', '')// Opera
-                    value = value.replace('<div class="drag" style="border-style: solid; cursor: move;">', '') // Chrome
-                    value = value.replace('</div>', '')
+                    $('.N' + (i+1)).val($(table.rows[i].cells[0]).children('.drag').html())
                 }
             }
         };
@@ -49,7 +43,7 @@
     <div id="drag">
         <table id="table-drag" class="table table-condensed">
             {% for attribute in attributes %}
-                <input type="hidden" name="N{{ attribute.position }}" id="pos_{{ attribute.position }}"
+                <input type="hidden" name="N{{ attribute.position }}" class="N{{ attribute.position }}"
                        value="{{ attribute.lbeAttribute.displayName }}"/>
                 <tr>
                     <td>
