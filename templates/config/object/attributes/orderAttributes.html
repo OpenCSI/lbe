@@ -22,10 +22,12 @@
 					var table = document.getElementById('table-drag')
 					for(var i=table.rows.length-1;i>=0;i--){
 						value = table.rows[i].cells[0].innerHTML
-						value = value.replace('<div style="border-style: solid; cursor: move;" class="drag">','')
-						value = value.replace('<span class="web-developer-id-class-details">.drag</span>','')
+						// [FIXME]: check for better replace value...
+						value = value.replace('<div style="border-style: solid; cursor: move;" class="drag">','')// Firefox
+						value = value.replace('<span class="web-developer-id-class-details">.drag</span>','')// Firefox
+						value = value.replace('<div class="drag" style="border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; cursor: move;">','')// Opera
+						value = value.replace('<div class="drag" style="border-style: solid; cursor: move;">','') // Chrome
 						value = value.replace('</div>','')
-						$('#pos_'+(i+1)).val(value)
 					}
 				}
 			};
