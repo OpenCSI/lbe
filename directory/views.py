@@ -90,7 +90,6 @@ def viewObjectInstance(request, lbeObject_id, objectName=None):
         objectInstance['name'] = objectName
         objectInstance['displayName'] = obj[objectTemplate.instanceDisplayNameAttribute.name][0]
     except BaseException as e:
-        print e
         objectInstance = []
     return render_to_response('directory/default/object/view.html', {'object': objectInstance, 'obj_id': lbeObject_id},
                               context_instance=RequestContext(request))

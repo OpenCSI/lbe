@@ -38,6 +38,8 @@ MONGODB_SERVER = {
 'HOST': 'localhost',
 'PORT': 27017,
 'DATABASE': 'lbe',
+'USER': '', # In order to not use the auth service, just put the USER value to blank.
+'PASSWORD': 'password',
 }
 
 # The PAGINATION Variabme enables to set the number of Objects
