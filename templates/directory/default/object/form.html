@@ -62,8 +62,8 @@
         <tr>
             <th> {{ field.label }} </th>
             <td>{{ field }}{% for mv in multivalue %}{% if mv == field.name %}<a class="btn btn-primary"
-                                                                                 onClick="addField('{{ mv }}','
-                                                                                         {% filter force_escape %}{% spaceless %}{{ field }}{% endspaceless %}{% endfilter %}');">+</a>
+                                                                                 onClick="addField('{{ mv }}',
+                                                                                         '{% filter force_escape %}{% spaceless %}{{ field }}{% endspaceless %}{% endfilter %}');">+</a>
                 <div class="{{ mv }}"></div>
                 <script>multivalue("{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}", "{{mv}}", "{{field.data|default_if_none:""}}");</script>
             {% endif %} {% endfor %}

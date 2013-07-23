@@ -7,7 +7,7 @@
             {% if key != 'name' and key != 'displayName' %}
                 <tr>
                     <th>{{ key }}</th>
-                    <td>{% for val in value %}{{ val }} {% endfor %}</td>
+                    <td>{% if value|length > 1 %}[ {% endif %} {% for val in value %}{{ val }} {% if value|length > 1 and not forloop.last %} , {% endif %}  {% endfor %} {% if value|length > 1 %} ]{% endif %} </td>
                 </tr>
             {% endif %}
         {% endfor %}

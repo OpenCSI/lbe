@@ -156,7 +156,7 @@ class log(models.Model):
     date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return str(level + ': ' + message)
+        return str(self.level + ': ' + self.message)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance:
