@@ -222,6 +222,7 @@ def viewGroup(request, group_name):
     return HttpResponse(group_name)
 
 
+@login_required
 def manageGroup(request, group_name):
     try:
         lbeGroup = LBEGroup.objects.get(name__iexact=group_name)
@@ -231,7 +232,7 @@ def manageGroup(request, group_name):
             if form.is_valid():
                 groupInstance.save()
             else:
-                print form.errors
+                messages.add_message(request,messages.ERROR, "Error to save the group '" + group_name + "'")
         else:
             form = groupInstance.form()
     except BaseException as e:

@@ -15,7 +15,10 @@ class GroupInstanceHelper():
         self.backend = None
 
     def _compress(self, data):
-        return {'uniqueMember': '\0'.join(str(val) for val in data)}
+        if len(data) == 1:
+            return {u'uniqueMember': data[0] }
+        else:
+            return {u'uniqueMember': '\0'.join(str(val) for val in data)}
 
     def _decompress(self, data):
         return data.split('\0')
@@ -49,13 +52,14 @@ class GroupInstanceHelper():
         # get values
         if values is not None:
             self.instance.changes['set']['uniqueMember'] = values.getlist('uniqueMember')
-            data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember'][0]
+            data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
         else:
             self._getValues()
             if not self.instance.changes['set'] == {}:
                 data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
             else:
                 data[u'uniqueMember'] = self.instance.attributes['uniqueMember']
+        data = self._compress(data[u'uniqueMember'])
         return LBEGroupInstanceForm(self.template.objectTemplate, data)
 
     def save(self):

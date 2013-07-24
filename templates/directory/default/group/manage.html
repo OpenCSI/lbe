@@ -10,7 +10,7 @@
         }
 
         function remove(key) {
-            $('#' + key).html('')
+            $('#' + key).val('')
             $('#' + key).hide()
             $('#btn_' + key).hide()
             $('.span_' + key).hide()
@@ -70,6 +70,8 @@
                onClick="addField('{{ field.name }}','{% filter force_escape %}{% spaceless %}{{ field }}{% endspaceless %}{% endfilter %}');">+</a>
             <div class="uniqueMember"></div>
             <script>multivalue("{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}", "uniqueMember", "{{field.data|default_if_none:""}}");</script>
+            {% for error in field.errors %}
+                <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
         </td>
     </tr>
         {% endfor %}

@@ -196,17 +196,20 @@ class LBEGroupForm(ModelForm):
 class LBEGroupInstanceForm(forms.Form):
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         super(LBEGroupInstanceForm, self).__init__(*args, **kwargs)
-        backend = BackendHelper()
-        values = backend.searchObjects(lbeObjectTemplate)
-        list = {}
-        for value in values:
-            list[value.name] = value.displayName
-        self.fields["uniqueMember"] = forms.ChoiceField(list.items())
+        self.template = lbeObjectTemplate
+        self.fields["uniqueMember"] = forms.CharField()
 
     def clean_uniqueMember(self):
         tab = []
+        backend = BackendHelper()
+        values = backend.searchObjects(self.template)
+        list = []
+        for value in values:
+            list.append(value.displayName)
         for value in self.cleaned_data['uniqueMember'].split('\0'):
             if not value == "":
+                if not value in list:
+                    raise forms.ValidationError("'" + value + "' is not into " + self.template.displayName)
                 tab.append(value)
         return tab
 

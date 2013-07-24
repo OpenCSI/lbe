@@ -68,7 +68,7 @@ class LBEObjectInstanceHelper():
         for key in data:
             if len(data.getlist(key)) == 1:
                 query[key] = data[key]
-            else: # compress MultiValue:
+            else:  # compress MultiValue:
                 query[key] = '\0'.join(str(val) for val in data.getlist(key))
         return query
 
