@@ -149,6 +149,12 @@ class LBEDirectoryACL(models.Model):
     condition = models.CharField(max_length=100)
 
 
+class LBEGroup(models.Model):
+    name = models.CharField(max_length=25,blank=False,unique=True)
+    baseDN = models.CharField(max_length=55,blank=False)
+    objectTemplate = models.ForeignKey(LBEObjectTemplate)
+
+
 class log(models.Model):
     type = models.CharField(max_length=32)
     level = models.CharField(max_length=24)
@@ -193,3 +199,36 @@ class LBEObjectInstance:
                 'synced_at': self.synced_at,
                 'changes': {'type': self.changes['type'], 'set': self.changes['set']},
         }
+
+
+# Fake class too
+class LBEGroupInstance:
+    def __init__(self, lbeGroupTemplate, *args, **kwargs):
+        self.template = lbeGroupTemplate
+        self.name = self.template.name
+        self.attributes = {'uniqueMember':{}}
+        self.status = OBJECT_STATE_AWAITING_SYNC
+        now = datetime.datetime.now(utc)
+        self.created_at = now
+        self.updated_at = now
+        self.synced_at = datetime.datetime.fromtimestamp(0, utc)
+        # TODO: document usage  of changes
+        self.changes = {
+            'type': -1,
+            'set': {},
+            }
+
+        def __unicode__(self):
+            return 'name: ' + self.template.name + ',' + self.template.base_dn
+
+    def toDict(self):
+        return {'_id': self.template.name,
+                'name':self.template.name,
+                'base_dn': self.template.baseDN,
+                'attributes': self.attributes,
+                'status': self.status,
+                'created_at': self.created_at,
+                'updated_at': self.updated_at,
+                'synced_at': self.synced_at,
+                'changes': {'type': self.changes['type'], 'set': self.changes['set']},
+                }

@@ -187,6 +187,10 @@ class LBEReferenceForm(ModelForm):
         return objectAttribute
 
 
+class LBEGroupForm(ModelForm):
+    class Meta:
+        model = LBEGroup
+
 class LBEACLForm(ModelForm):
     class Meta:
         model = LBEDirectoryACL

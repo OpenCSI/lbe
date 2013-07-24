@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% block content %}
+    <h4>Modify a group:</h4>
+    <table class="table">
+        <tr>
+            <td style="width:20%">Choose the Group:</td>
+            <td><select
+                    onChange="window.location.href=(window.location.pathname.substring(0,window.location.pathname.indexOf('manage/'))+'manage/'+$('select option:selected').val())">
+                {% for group in groups %}
+                    <option value="{{ group.id }}" {% if group.id|stringformat:"s" == group_id %}
+                            selected="selected" {% endif %}>{{ group.name }}</option> {% endfor %}
+            </select></td>
+        </tr>
+    </table>
+    <form method="POST">
+        {% csrf_token %}
+        {% include 'config/group/form.html' %}
+    </form>
+{%  endblock %}

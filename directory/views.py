@@ -7,13 +7,12 @@ from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib import messages
-from django.forms.formsets import formset_factory
 from django.conf import settings
-from django import forms
 
 from directory.models import *
 from directory.forms import *
 from services.object import LBEObjectInstanceHelper
+from services.group import GroupInstanceHelper
 from services.backend import BackendHelper, BackendObjectAlreadyExist
 
 
@@ -203,9 +202,24 @@ def searchAJAX(request, lbeObject_id, search):
         return HttpResponse('/')
     backend = BackendHelper()
     objects = backend.searchObjectsByPattern(LBEObjectTemplate.objects.get(id=lbeObject_id), search)
-    print objects
     return render_to_response('ajax/directory/search.html', {'lbeObjectId': lbeObject_id, 'objects': objects},
                               context_instance=RequestContext(request))
+
+
+@login_required
+def viewAllGroup(request):
+    groups = LBEGroup.objects.all()
+    groupsInstance = []
+    for group in groups:
+        groupInstance = GroupInstanceHelper(group)
+        groupsInstance.append(groupInstance.get())
+    return render_to_response('directory/default/group/index.html', {'groups': groupsInstance},
+                              context_instance=RequestContext(request))
+
+
+@login_required
+def viewGroup(request, group_name):
+    return HttpResponse(group_name)
 
 
 def page404(request):

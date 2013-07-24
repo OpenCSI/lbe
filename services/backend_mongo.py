@@ -71,6 +71,13 @@ class BackendMongoImpl:
             return searchResult[0]
         return None
 
+
+    def getGroup(self, lbeGroupTemplate):
+        searchResult = self.handler.searchDocuments("groups", {'_id': lbeGroupTemplate.name})
+        if searchResult.count() > 0:
+            return searchResult[0]
+        return None
+
     def createObject(self, lbeObjectTemplate, lbeObjectInstance, Import=False):
         if not Import:
             if lbeObjectTemplate.approval:
@@ -80,6 +87,11 @@ class BackendMongoImpl:
         else:
             awaiting = OBJECT_STATE_IMPORTED
         return self.handler.createDocument(awaiting, lbeObjectTemplate.name, lbeObjectInstance.toDict())
+
+
+    def createGroup(self,lbeGroupTemplate):
+        return self.handler.createGroup(lbeGroupTemplate)
+
 
     """
 		Used in Reconciliation:

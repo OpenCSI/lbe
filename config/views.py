@@ -11,6 +11,7 @@ from directory.models import *
 from directory.forms import *
 from services.ACL import ACLHelper
 from services.backend import BackendHelper
+from services.group import GroupInstanceHelper
 
 
 @staff_member_required
@@ -438,3 +439,47 @@ def checkACL_AJAX(request, query=None):
         acl.check()
         return HttpResponse(acl.traceback)
     return HttpResponse('')
+
+@staff_member_required
+def addGroup(request):
+    if request.method == "POST":
+        form = LBEGroupForm(request.POST)
+        if form.is_valid():
+            # Create it to the Backend
+            groupHelper = GroupInstanceHelper(LBEGroupInstance(form.instance))
+            groupHelper.saveTemplate()
+            # Save it to LBE
+            form.save()
+            messages.add_message(request,messages.SUCCESS, "Group saved")
+        else:
+            messages.add_message(request,messages.ERROR, "Error to save the Group.")
+    else:
+        form = LBEGroupForm()
+    return render_to_response('config/group/create.html',{'groupForm':form},
+                              context_instance=RequestContext(request))
+
+
+def manageGroup(request, group_id=None):
+    try:
+        form = []
+        groups = LBEGroup.objects.all()
+        group = LBEGroup.objects.get(id=group_id)
+        if request.method == "POST":
+            form = LBEGroupForm(request.POST, instance=group)
+            if form.is_valid():
+                form.save()
+                # Manage it to the Backend
+                #groupHelper = GroupInstanceHelper(LBEGroupInstance(form.instance))
+                #groupHelper.modifyTemplate()
+                messages.add_message(request,messages.SUCCESS, "Group saved")
+            else:
+                messages.add_message(request,messages.ERROR, "Error to save the Group.")
+        else:
+            form = LBEGroupForm(instance=group)
+    except BaseException:
+        try:
+            form = LBEGroupForm(instance=groups[0])
+        except BaseException:
+            pass
+    return render_to_response('config/group/modify.html',{'groupForm':form,'groups':groups,'group_id':group_id},
+                              context_instance=RequestContext(request))

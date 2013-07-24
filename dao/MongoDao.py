@@ -19,7 +19,6 @@ class MongoService:
     def __init__(self):
         self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
         self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
-        # [TODO]: Check for login & password to connect mongoDB Server.
         if not settings.MONGODB_SERVER['USER'] == '':
             try:
                 self.db.authenticate(settings.MONGODB_SERVER['USER'],settings.MONGODB_SERVER['PASSWORD'])
@@ -52,6 +51,13 @@ class MongoService:
             return id
         except BaseException as e:
             logger.error('Error while creating document: ' + e.__str__())
+
+    def createGroup(self, lbeGroupTemplate):
+        db = self.db["groups"]
+        try:
+            return db.insert(lbeGroupTemplate.toDict())
+        except BaseException as e:
+            print "Error to save the group: " + str(e)
 
     def approvalDocument(self, collection, ID):
         db = self.db[collection]

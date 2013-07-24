@@ -22,6 +22,8 @@ urlpatterns = patterns('',
                            'directory.views.viewObjectInstance'),
                        url(r'^directory/object/approval/(?P<lbeObject_id>\d+)/(?P<objectName>.+)$',
                            'directory.views.approvalObjectInstance'),
+                       url(r'^directory/group/?$','directory.views.viewAllGroup'),
+                       url(r'^directory/group/view/(?P<group_name>.*)$','directory.views.viewGroup'),
 
                        url(r'^config/?$', 'directory.views.index'),
                        url(r'^config/attribute/add/?$', 'config.views.addAttribute'),
@@ -50,6 +52,9 @@ urlpatterns = patterns('',
                            'config.views.removeInstanceAttribute'),
                        url(r'^config/script/add/?$', 'config.views.addScript'),
                        url(r'^config/script/manage/(?P<scriptId>\d+)?$', 'config.views.manageScript'),
+
+                       url(r'^config/group/add/?$', 'config.views.addGroup'),
+                       url(r'^config/group/manage/(?P<group_id>\d+)?$', 'config.views.manageGroup'),
 
                        url(r'^ajax/config/acl/check/(?P<query>.*)$', 'config.views.checkACL_AJAX'),
                        url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$',
