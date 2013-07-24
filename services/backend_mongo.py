@@ -71,7 +71,6 @@ class BackendMongoImpl:
             return searchResult[0]
         return None
 
-
     def getGroup(self, lbeGroupTemplate):
         searchResult = self.handler.searchDocuments("groups", {'_id': lbeGroupTemplate.name})
         if searchResult.count() > 0:
@@ -88,10 +87,11 @@ class BackendMongoImpl:
             awaiting = OBJECT_STATE_IMPORTED
         return self.handler.createDocument(awaiting, lbeObjectTemplate.name, lbeObjectInstance.toDict())
 
-
     def createGroup(self,lbeGroupTemplate):
         return self.handler.createGroup(lbeGroupTemplate)
 
+    def saveGroup(self, lbeGroupTemplate, lbeGroupInstance):
+        return self.handler.saveGroup(lbeGroupTemplate, lbeGroupInstance)
 
     """
 		Used in Reconciliation:

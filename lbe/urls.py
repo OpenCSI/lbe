@@ -24,6 +24,7 @@ urlpatterns = patterns('',
                            'directory.views.approvalObjectInstance'),
                        url(r'^directory/group/?$','directory.views.viewAllGroup'),
                        url(r'^directory/group/view/(?P<group_name>.*)$','directory.views.viewGroup'),
+                       url(r'^directory/group/manage/(?P<group_name>.*)$','directory.views.manageGroup'),
 
                        url(r'^config/?$', 'directory.views.index'),
                        url(r'^config/attribute/add/?$', 'config.views.addAttribute'),

@@ -111,6 +111,7 @@ class LBEScriptForm(ModelForm):
 class LBEScriptManageForm(forms.Form):
     script = LBEModelChoiceField(queryset=LBEScript.objects.all())
     test = forms.CharField(max_length=64)
+
     # script selected exists:
     def clean_script(self):
         value = self.cleaned_data['script']
@@ -190,6 +191,24 @@ class LBEReferenceForm(ModelForm):
 class LBEGroupForm(ModelForm):
     class Meta:
         model = LBEGroup
+
+
+class LBEGroupInstanceForm(forms.Form):
+    def __init__(self, lbeObjectTemplate, *args, **kwargs):
+        super(LBEGroupInstanceForm, self).__init__(*args, **kwargs)
+        backend = BackendHelper()
+        values = backend.searchObjects(lbeObjectTemplate)
+        list = {}
+        for value in values:
+            list[value.name] = value.displayName
+        self.fields["uniqueMember"] = forms.ChoiceField(list.items())
+
+    def clean_uniqueMember(self):
+        tab = []
+        for value in self.cleaned_data['uniqueMember'].split('\0'):
+            if not value == "":
+                tab.append(value)
+        return tab
 
 class LBEACLForm(ModelForm):
     class Meta:

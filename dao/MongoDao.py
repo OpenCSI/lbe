@@ -59,12 +59,23 @@ class MongoService:
         except BaseException as e:
             print "Error to save the group: " + str(e)
 
+    def saveGroup(self, lbeGroupTemplate, lbeGroupInstance):
+        db = self.db["groups"]
+        try:
+            if lbeGroupInstance.changes['set'] == {} and lbeGroupInstance.changes['set'] == lbeGroupInstance.attributes:
+                raise Exception("The Group does not need to be saved (not modified)")
+            return db.update({'_id': lbeGroupTemplate.name}, {'$set': {'changes': {'set':
+                             lbeGroupInstance.changes['set'], 'type': OBJECT_CHANGE_UPDATE_OBJECT},
+                             'updated_at': datetime.datetime.now(utc), 'status': OBJECT_STATE_AWAITING_SYNC}})
+        except BaseException as e:
+            print e
+
     def approvalDocument(self, collection, ID):
         db = self.db[collection]
         try:
             return db.update({'_id': ID}, {'$set': {'status': OBJECT_STATE_AWAITING_SYNC}})
         except BaseException as e:
-            logger.error('Error while approvaling document: ' + e.__str__())
+            logger.error('Error while approval document: ' + e.__str__())
 
     def update_id(self, collection, document, new_id):
         db = self.db[collection]

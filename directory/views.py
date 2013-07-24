@@ -222,6 +222,25 @@ def viewGroup(request, group_name):
     return HttpResponse(group_name)
 
 
+def manageGroup(request, group_name):
+    try:
+        lbeGroup = LBEGroup.objects.get(name__iexact=group_name)
+        groupInstance = GroupInstanceHelper(lbeGroup)
+        if request.method == "POST":
+            form = groupInstance.form(request.POST)
+            if form.is_valid():
+                groupInstance.save()
+            else:
+                print form.errors
+        else:
+            form = groupInstance.form()
+    except BaseException as e:
+        print e
+    return render_to_response('directory/default/group/manage.html',{'form': form, 'groupName': group_name},
+                              context_instance=RequestContext(request))
+
+
+
 def page404(request):
     return render_to_response('error/request.html',
                               {'title': '404 Not Found', 'content': 'The page you are looking for does not exist...'},

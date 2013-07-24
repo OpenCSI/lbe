@@ -150,8 +150,8 @@ class LBEDirectoryACL(models.Model):
 
 
 class LBEGroup(models.Model):
-    name = models.CharField(max_length=25,blank=False,unique=True)
-    baseDN = models.CharField(max_length=55,blank=False)
+    name = models.CharField(max_length=25, blank=False,unique=True)
+    baseDN = models.CharField(max_length=55, blank=False)
     objectTemplate = models.ForeignKey(LBEObjectTemplate)
 
 
@@ -206,7 +206,7 @@ class LBEGroupInstance:
     def __init__(self, lbeGroupTemplate, *args, **kwargs):
         self.template = lbeGroupTemplate
         self.name = self.template.name
-        self.attributes = {'uniqueMember':{}}
+        self.attributes = {'uniqueMember': {}}
         self.status = OBJECT_STATE_AWAITING_SYNC
         now = datetime.datetime.now(utc)
         self.created_at = now
@@ -218,8 +218,8 @@ class LBEGroupInstance:
             'set': {},
             }
 
-        def __unicode__(self):
-            return 'name: ' + self.template.name + ',' + self.template.base_dn
+    def __unicode__(self):
+        return 'name: ' + self.template.name
 
     def toDict(self):
         return {'_id': self.template.name,
