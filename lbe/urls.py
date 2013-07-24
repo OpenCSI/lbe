@@ -60,6 +60,8 @@ urlpatterns = patterns('',
                        url(r'^ajax/config/acl/check/(?P<query>.*)$', 'config.views.checkACL_AJAX'),
                        url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$',
                            'config.views.showAttributeAJAX'),
+                       url(r'^ajax/directory/group/manage/user/(?P<group_name>.*)/(?P<name>.*)$',
+                           'directory.views.viewUserObjectAJAX'),
 
                        (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'}),
                        (r'^accounts/logout/$', 'django.contrib.auth.views.logout',

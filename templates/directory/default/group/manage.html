@@ -1,11 +1,15 @@
 {% extends "index.html" %}
 {% load url from future %}
 {% block content %}
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
         i = 0;
         function addField(attribute, value) {
             value = value.replace('id="id_' + attribute + '"', 'id=' + attribute + '_' + i)
+            value = value.replace(/value=".*" /, 'value=""')
             $('.' + attribute).append('<span style="display:block;" class="span_' + attribute + '_' + i + '">' + value + ' <a href="#" class="btn btn-inverse" id="btn_' + attribute + '_' + i + '" onClick="remove(\'' + attribute + '_' + i + '\');return false">-</a></span>')
+            addEvent_onKeyUp(attribute + '_' + i)
             i++
         }
 
@@ -14,6 +18,29 @@
             $('#' + key).hide()
             $('#btn_' + key).hide()
             $('.span_' + key).hide()
+        }
+
+        function addEvent_onKeyUp(attribute){
+            $('#' + attribute).attr("onKeyUp","auto_complete('"+attribute+"')")
+        }
+
+        function auto_complete(attribute){
+            $('#' + attribute).autocomplete({
+                source: function(request,response){
+                    $.ajax({
+                        url: '/ajax/directory/group/manage/user/{{ groupName }}/' + $('#'+attribute).val(),
+                        dataType: "json",
+                        success: function( data ) {
+                            response( $.map( data, function( item ) {
+                                return {
+                                    label: item,
+                                    value: item
+                                }
+                            }));
+                        }
+                    });
+                }
+            });
         }
 
         function clone(obj) {
@@ -64,8 +91,7 @@
         {% for field in form.visible_fields %}
     <tr>
         <th>Employee</th>
-        <td>{{ field }}
-
+        <td>{{ field }}<script type="text/javascript">addEvent_onKeyUp('id_{{ field.name }}')</script>
             <a class="btn btn-primary"
                onClick="addField('{{ field.name }}','{% filter force_escape %}{% spaceless %}{{ field }}{% endspaceless %}{% endfilter %}');">+</a>
             <div class="uniqueMember"></div>

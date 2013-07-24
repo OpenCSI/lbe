@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import math
+import json
 
 from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import SortedDict
@@ -231,8 +232,9 @@ def manageGroup(request, group_name):
             form = groupInstance.form(request.POST)
             if form.is_valid():
                 groupInstance.save()
+                messages.add_message(request, messages.SUCCESS, "The Group is successfully saved.")
             else:
-                messages.add_message(request,messages.ERROR, "Error to save the group '" + group_name + "'")
+                messages.add_message(request, messages.ERROR, "Error to save the group '" + group_name + "'")
         else:
             form = groupInstance.form()
     except BaseException as e:
@@ -240,7 +242,16 @@ def manageGroup(request, group_name):
     return render_to_response('directory/default/group/manage.html',{'form': form, 'groupName': group_name},
                               context_instance=RequestContext(request))
 
-
+@login_required
+def viewUserObjectAJAX(request, group_name, name):
+    if request.is_ajax():
+        group = LBEGroup.objects.get(name__iexact=group_name)
+        backend = BackendHelper()
+        objects = backend.searchObjectsByPattern(group.objectTemplate, name)
+        list = []
+        for o in objects:
+            list.append(o.name)
+        return HttpResponse(json.dumps(list), mimetype="application/json")
 
 def page404(request):
     return render_to_response('error/request.html',
