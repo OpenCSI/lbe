@@ -82,6 +82,7 @@
     </script>
 
 <h3>{{ groupName }}</h3>
+    <div class="alert"><b>Attention:</b> In order to add <i>Employee</i> to the Group, you need to enter his <b>{{ attributeName }}</b>.</div>
     {% for hidden in form.hidden_fields %}
         {{ hidden }}
     {% endfor %}

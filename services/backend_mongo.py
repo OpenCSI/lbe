@@ -159,6 +159,16 @@ class BackendMongoImpl:
         return DocumentsToLBEObjectInstance(lbeObjectTemplate,
                                             self.handler.searchDocuments(lbeObjectTemplate.name, value, 0, 0))
 
+    def searchObjectsBy(self, lbeObjectTemplate, attributeName, pattern):
+        value = {}
+        _valid = {'status': {'$gt': OBJECT_STATE_INVALID}}
+        _search = {'attributes.' + attributeName: {'$regex': pattern}}
+        value['$and'] = []
+        value['$and'].insert(0, _search)
+        value['$and'].insert(1, _valid)
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate,
+                                            self.handler.searchDocuments(lbeObjectTemplate.name, value, 0, 0))
+
     # Search objects with synced_at <= lbeObjectTemplate.synced_at
     def searchObjectsToUpdate(self, lbeObjectTemplate, index=0, size=0):
         return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, {

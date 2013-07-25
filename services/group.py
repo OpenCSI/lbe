@@ -48,17 +48,21 @@ class GroupInstanceHelper():
         return self.backend.modifyGroup(self.template)
 
     def form(self, values=None):
-        data = {}
+        data = dict()
+        data[u'uniqueMember'] = ''
         # get values
         if values is not None:
             self.instance.changes['set']['uniqueMember'] = values.getlist('uniqueMember')
             data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
         else:
             self._getValues()
-            if not self.instance.changes['set'] == {}:
-                data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
-            else:
-                data[u'uniqueMember'] = self.instance.attributes['uniqueMember']
+            try:
+                if not self.instance.changes['set'] == {}:
+                    data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
+                else:
+                    data[u'uniqueMember'] = self.instance.attributes['uniqueMember']
+            except BaseException:
+                pass
         # remove empty value
         try:
             data[u'uniqueMember'].remove('')
@@ -76,3 +80,19 @@ class GroupInstanceHelper():
     def remove(self):
         self._backend()
         return self.backend.removeGroup(self.template)
+
+    def changeIDObjects(self):
+        values = self.get()
+        listOldObjects = values['changes']['set']['uniqueMember'] or values['attributes']['uniqueMember']
+        listObjects = []
+        for object in listOldObjects:
+            try:
+                object = self.backend.searchObjectsBy(self.template.objectTemplate, self.template.objectTemplate.instanceNameAttribute.name,
+                                            object)[0]
+                if object.attributes[self.template.objectTemplate.instanceNameAttribute.name][0] in listOldObjects:
+                    listObjects.append(object.name)
+            except BaseException:
+                pass
+        if listObjects:
+            self.instance.changes['set']['uniqueMember'] = listObjects
+            self.save()

@@ -151,8 +151,16 @@ class LBEDirectoryACL(models.Model):
 
 class LBEGroup(models.Model):
     name = models.CharField(max_length=25, blank=False,unique=True)
-    baseDN = models.CharField(max_length=55, blank=False)
     objectTemplate = models.ForeignKey(LBEObjectTemplate)
+    version = models.SmallIntegerField(default=0)
+    script = models.ForeignKey(LBEScript, default=1)
+    imported_at = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
+    synced_at = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
+    # Reconciliation Policy:
+    reconciliation_object_missing_policy = models.IntegerField(default=0,
+                                                               choices=CHOICE_RECONCILIATION_OBJECT_MISSING_POLICY)
+    reconciliation_object_different_policy = models.IntegerField(default=0,
+                                                                 choices=CHOICE_RECONCILIATION_OBJECT_DIFFERENT_POLICY)
 
 
 class log(models.Model):
@@ -165,7 +173,7 @@ class log(models.Model):
         return str(self.level + ': ' + self.message)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
-class LBEObjectInstance:
+class LBEObjectInstance(object):
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         # List of fields (useful for completion too)
         self.template = lbeObjectTemplate
@@ -202,33 +210,10 @@ class LBEObjectInstance:
 
 
 # Fake class too
-class LBEGroupInstance:
+class LBEGroupInstance(LBEObjectInstance):
     def __init__(self, lbeGroupTemplate, *args, **kwargs):
-        self.template = lbeGroupTemplate
-        self.name = self.template.name
-        self.attributes = {'uniqueMember': {}}
-        self.status = OBJECT_STATE_AWAITING_SYNC
-        now = datetime.datetime.now(utc)
-        self.created_at = now
-        self.updated_at = now
-        self.synced_at = datetime.datetime.fromtimestamp(0, utc)
-        # TODO: document usage  of changes
-        self.changes = {
-            'type': -1,
-            'set': {},
-            }
+        super(LBEGroupInstance, self).__init__(lbeGroupTemplate, args, kwargs)
+        self.name = self.displayName = self.template.name
 
     def __unicode__(self):
         return 'name: ' + self.template.name
-
-    def toDict(self):
-        return {'_id': self.template.name,
-                'name':self.template.name,
-                'base_dn': self.template.baseDN,
-                'attributes': self.attributes,
-                'status': self.status,
-                'created_at': self.created_at,
-                'updated_at': self.updated_at,
-                'synced_at': self.synced_at,
-                'changes': {'type': self.changes['type'], 'set': self.changes['set']},
-                }

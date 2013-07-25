@@ -235,7 +235,8 @@ def viewGroup(request, group_name):
             groupList = groupValues['changes']['set']['uniqueMember']
     except BaseException as e:
         groupValues = []
-    return render_to_response('directory/default/group/view.html', {'groupName': groupName,'groupList': groupList, 'object_id': object_id },
+    return render_to_response('directory/default/group/view.html', {'groupName': groupName, 'groupList': groupList,
+                               'object_id': object_id },
                                context_instance=RequestContext(request))
 
 
@@ -255,7 +256,8 @@ def manageGroup(request, group_name):
             form = groupInstance.form()
     except BaseException as e:
         print e
-    return render_to_response('directory/default/group/manage.html',{'form': form, 'groupName': group_name},
+    return render_to_response('directory/default/group/manage.html', {'form': form, 'groupName': group_name,
+                              'attributeName': lbeGroup.objectTemplate.instanceDisplayNameAttribute.displayName},
                               context_instance=RequestContext(request))
 
 
@@ -264,7 +266,7 @@ def deleteGroup(request, group_name):
     try:
         instanceHelper = GroupInstanceHelper(LBEGroup.objects.get(name__iexact=group_name))
         instanceHelper.remove()
-        messages.add_message(request,messages.SUCCESS,"group '" + group_name + "' removed.")
+        messages.add_message(request,messages.SUCCESS, "group '" + group_name + "' removed.")
     except BaseException as e:
         print e
         pass

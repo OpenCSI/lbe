@@ -12,8 +12,13 @@ class Migration(SchemaMigration):
         db.create_table(u'directory_lbegroup', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=25)),
-            ('baseDN', self.gf('django.db.models.fields.CharField')(max_length=55)),
             ('objectTemplate', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['directory.LBEObjectTemplate'])),
+            ('version', self.gf('django.db.models.fields.SmallIntegerField')(default=0)),
+            ('script', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['directory.LBEScript'])),
+            ('imported_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0))),
+            ('synced_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0))),
+            ('reconciliation_object_missing_policy', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('reconciliation_object_different_policy', self.gf('django.db.models.fields.IntegerField')(default=0)),
         ))
         db.send_create_signal(u'directory', ['LBEGroup'])
 
@@ -56,10 +61,15 @@ class Migration(SchemaMigration):
         },
         u'directory.lbegroup': {
             'Meta': {'object_name': 'LBEGroup'},
-            'baseDN': ('django.db.models.fields.CharField', [], {'max_length': '55'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'imported_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(1970, 1, 1, 0, 0)'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '25'}),
-            'objectTemplate': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['directory.LBEObjectTemplate']"})
+            'objectTemplate': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['directory.LBEObjectTemplate']"}),
+            'reconciliation_object_different_policy': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'reconciliation_object_missing_policy': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'script': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': u"orm['directory.LBEScript']"}),
+            'synced_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(1970, 1, 1, 0, 0)'}),
+            'version': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'})
         },
         u'directory.lbeobjecttemplate': {
             'Meta': {'object_name': 'LBEObjectTemplate'},

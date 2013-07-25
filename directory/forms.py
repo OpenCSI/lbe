@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from pygame.tests.scrap_tags import exclude
 import sys
 
 from django import forms
@@ -23,7 +24,7 @@ class LBEObjectTemplateForm(ModelForm):
 
     class Meta:
         model = LBEObjectTemplate
-        exclude = ( 'attributes', 'imported_at', 'version', 'instanceNameBeforeAttribute', 'needReconciliationRDN' )
+        exclude = ( 'attributes', 'imported_at', 'version', 'instanceNameBeforeAttribute', 'needReconciliationRDN')
 
         # Implements validator for approval field (must >= 0)
     def clean_approval(self):
@@ -191,6 +192,7 @@ class LBEReferenceForm(ModelForm):
 class LBEGroupForm(ModelForm):
     class Meta:
         model = LBEGroup
+        exclude = ('version', 'imported_at')
 
 
 class LBEGroupInstanceForm(forms.Form):
@@ -205,7 +207,10 @@ class LBEGroupInstanceForm(forms.Form):
         values = backend.searchObjects(self.template)
         list = []
         for value in values:
-            list.append(value.displayName)
+            if value.changes['set'] == {}:
+                list.append(value.attributes[self.template.instanceNameAttribute.name][0])
+            else:
+                list.append(value.changes['set'][self.template.instanceNameAttribute.name][0])
         for value in self.cleaned_data['uniqueMember'].split('\0'):
             if not value == "":
                 if not value in list:
