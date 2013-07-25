@@ -39,8 +39,9 @@
         function multivalue(field, key, values) {
             tab = values.split("�");// [FIXME]: check for better value coded.
             fields = '';
+            begin = i;
             for (num in tab) {
-                if (i == 0)
+                if (i == begin)
                     $('#id_' + key).val(tab[num])
                 else {
                     if (tab[num] != '') {
