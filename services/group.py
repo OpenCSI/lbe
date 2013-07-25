@@ -72,3 +72,7 @@ class GroupInstanceHelper():
     def save(self):
         self._backend()
         self.backend.saveGroup(self.template,self.instance)
+
+    def remove(self):
+        self._backend()
+        return self.backend.removeGroup(self.template)

@@ -93,6 +93,9 @@ class BackendMongoImpl:
     def saveGroup(self, lbeGroupTemplate, lbeGroupInstance):
         return self.handler.saveGroup(lbeGroupTemplate, lbeGroupInstance)
 
+    def removeGroup(self, lbeGroupTemplate):
+        return self.handler.removeDocument(OBJECT_STATE_AWAITING_SYNC, "groups", lbeGroupTemplate.name)
+
     """
 		Used in Reconciliation:
     """

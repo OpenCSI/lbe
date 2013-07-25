@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% block content %}
+    <h3>{{ groupName }}</h3>
+    <table class="table">
+    <thead>
+        <th>User Name</th>
+    </thead>
+    <tbody>
+        {%  for instance in groupList %}
+            <tr><td><a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=object_id objectName=instance %}">{{ instance }}</a></td></tr>
+        {%  endfor %}
+    </tbody>
+    </table>
+{%  endblock %}

@@ -1,0 +1,9 @@
+{% if group.status == 0 %}
+    <span class='label label-success'>Ok</span>
+{% elif group.status == 1 %}
+    <span class='label label-info'>Awaiting sync</span>
+{% elif group.status == 2 %}
+    <span class='label label-info'>Awaiting approval</span>
+{% elif group.status == 4 %}
+    <span class='label label-important'>Deleted</span>
+{% endif %}

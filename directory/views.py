@@ -220,7 +220,23 @@ def viewAllGroup(request):
 
 @login_required
 def viewGroup(request, group_name):
-    return HttpResponse(group_name)
+    groupName = ''
+    groupList = []
+    object_id = -1
+    try:
+        lbeGroup = LBEGroup.objects.get(name__iexact=group_name)
+        groupInstance = GroupInstanceHelper(lbeGroup)
+        groupValues = groupInstance.get()
+        groupName = groupValues['name']
+        object_id = lbeGroup.objectTemplate.id
+        if groupValues['changes']['set']['uniqueMember'] == {}:
+            groupList = groupValues['attributes']['uniqueMember']
+        else:
+            groupList = groupValues['changes']['set']['uniqueMember']
+    except BaseException as e:
+        groupValues = []
+    return render_to_response('directory/default/group/view.html', {'groupName': groupName,'groupList': groupList, 'object_id': object_id },
+                               context_instance=RequestContext(request))
 
 
 @login_required
@@ -241,6 +257,19 @@ def manageGroup(request, group_name):
         print e
     return render_to_response('directory/default/group/manage.html',{'form': form, 'groupName': group_name},
                               context_instance=RequestContext(request))
+
+
+@login_required
+def deleteGroup(request, group_name):
+    try:
+        instanceHelper = GroupInstanceHelper(LBEGroup.objects.get(name__iexact=group_name))
+        instanceHelper.remove()
+        messages.add_message(request,messages.SUCCESS,"group '" + group_name + "' removed.")
+    except BaseException as e:
+        print e
+        pass
+    return HttpResponseRedirect('/directory/group')
+
 
 @login_required
 def viewUserObjectAJAX(request, group_name, name):
