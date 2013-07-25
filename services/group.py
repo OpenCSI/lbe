@@ -59,7 +59,14 @@ class GroupInstanceHelper():
                 data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
             else:
                 data[u'uniqueMember'] = self.instance.attributes['uniqueMember']
+        # remove empty value
+        try:
+            data[u'uniqueMember'].remove('')
+        except BaseException:
+            pass
+        # compress values
         data = self._compress(data[u'uniqueMember'])
+        # form
         return LBEGroupInstanceForm(self.template.objectTemplate, data)
 
     def save(self):
