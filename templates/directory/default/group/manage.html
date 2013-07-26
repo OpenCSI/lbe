@@ -28,7 +28,7 @@
             $('#' + attribute).autocomplete({
                 source: function(request,response){
                     $.ajax({
-                        url: '/ajax/directory/group/manage/user/{{ groupName }}/' + $('#'+attribute).val(),
+                        url: '/ajax/directory/group/manage/user/{{ group_id }}/' + $('#'+attribute).val(),
                         dataType: "json",
                         success: function( data ) {
                             response( $.map( data, function( item ) {

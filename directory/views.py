@@ -258,7 +258,7 @@ def manageGroup(request, group_id):
     except BaseException as e:
         print e
     return render_to_response('directory/default/group/manage.html', {'form': form, 'group_id': group_id,
-                              'attributeName': lbeGroup.objectTemplate.instanceDisplayNameAttribute.displayName},
+                              'attributeName': lbeGroup.objectTemplate.instanceNameAttribute.displayName},
                               context_instance=RequestContext(request))
 
 
@@ -276,9 +276,9 @@ def deleteGroup(request, group_id):
 
 
 @login_required
-def viewUserObjectAJAX(request, group_name, name):
+def viewUserObjectAJAX(request, group_id, name):
     if request.is_ajax():
-        group = LBEGroup.objects.get(name__iexact=group_name)
+        group = LBEGroup.objects.get(id=group_id)
         backend = BackendHelper()
         objects = backend.searchObjectsByPattern(group.objectTemplate, name)
         list = []

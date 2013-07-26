@@ -3,11 +3,14 @@ import django
 from django.conf import settings # LDAP settings
 
 from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT, \
-    OBJECT_CHANGE_UPDATE_OBJECT, LBEObjectInstance, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED
+    OBJECT_CHANGE_UPDATE_OBJECT, LBEObjectInstance, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED, \
+    LBEGroup, LBEGroupInstance
 from services.backend import BackendHelper
 from services.target import TargetHelper
 from services.object import LBEObjectInstanceHelper
-
+from services.group import GroupInstanceHelper
+import ldap
+from ldap import modlist
 
 class UpgradeTarget():
     def __init__(self):
@@ -34,7 +37,7 @@ class UpgradeTarget():
             print "    |-> Done."
 
     def _createParent(self, lbeObjectTemplate, objService):
-        base_dn = objService.callScriptMethod("base_dn")
+        base_dn = objService.callScriptClassMethod("base_dn")
         objectToCreate = base_dn.replace(settings.LDAP_SERVER['BASE_DN'], '')[:-1].split(',')
         objectToCreate.reverse()
         for i in range(0, len(objectToCreate)):
@@ -46,8 +49,8 @@ class UpgradeTarget():
             attrs['objectclass'] = ['top', 'organizationalUnit']
             # do not care if the ou already exists
             try:
-                self.target._createParent(dn, modlist.addModlist(attrs))
-            except:
+                self.target.createParent(dn, modlist.addModlist(attrs))
+            except BaseException:
                 pass
 
     def _createObject(self, objectTemplate, objectInstance):
@@ -105,7 +108,6 @@ class UpgradeTarget():
                         self._createObject(objectTemplate, objectInstance)
                     # TODO: We should have a target exception rather ldap
                     except ldap.ALREADY_EXISTS:
-                        logger.debug('Object "' + objectInstance.name + '" already exists')
                         print "    |-> Object '\033[35m" + objectInstance.displayName + "'\033[0m already exists"
                         pass
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
@@ -141,4 +143,5 @@ class UpgradeTarget():
                         # Synced object:
                         objectTemplate.synced_at = django.utils.timezone.now()
                         objectTemplate.save()
+        print ''
         print "   End."

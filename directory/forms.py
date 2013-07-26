@@ -192,7 +192,7 @@ class LBEReferenceForm(ModelForm):
 class LBEGroupForm(ModelForm):
     class Meta:
         model = LBEGroup
-        exclude = ('version', 'imported_at')
+        exclude = ('version', 'imported_at', 'approval', 'name', 'instanceNameAttribute')
 
 
 

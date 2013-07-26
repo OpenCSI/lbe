@@ -8,7 +8,7 @@
                     onChange="window.location.href=(window.location.pathname.substring(0,window.location.pathname.indexOf('manage/'))+'manage/'+$('select option:selected').val())">
                 {% for group in groups %}
                     <option value="{{ group.id }}" {% if group.id|stringformat:"s" == group_id %}
-                            selected="selected" {% endif %}>{{ group.name }}</option> {% endfor %}
+                            selected="selected" {% endif %}>{{ group.displayName }}</option> {% endfor %}
             </select></td>
         </tr>
     </table>

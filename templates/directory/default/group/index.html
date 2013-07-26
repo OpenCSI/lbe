@@ -17,6 +17,8 @@
         <td style='text-align: center;'>{% if group.attributes.uniqueMember|length == 0 and group.changes.set.uniqueMember|length == 0 %}True {% else %} False {% endif %}</td>
         <td style='text-align: center;'>{%  include 'directory/default/group/status.html' %}</td>
         {%  if user.is_staff %}<td><a href="{% url 'directory.views.manageGroup' group_id=group.template.id %}"><i class="icon-edit"></i></a> <a href="{% url 'directory.views.deleteGroup' group_id=group.template.id %}"><span class="label label-important">x</span></a></td>{% endif %}</tr>
+    {%  empty %}
+        <tr><td colspan="4"><i><center>No group found.</center></i></td></tr>
     {%  endfor %}
     </tbody>
 </table>

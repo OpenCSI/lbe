@@ -150,12 +150,15 @@ class LBEDirectoryACL(models.Model):
 
 
 class LBEGroup(models.Model):
-    name = models.CharField(max_length=25, blank=False,unique=True)
+    name = models.CharField(default='groups', max_length=10)
+    displayName = models.CharField(max_length=25, blank=False,unique=True)
     objectTemplate = models.ForeignKey(LBEObjectTemplate)
     version = models.SmallIntegerField(default=0)
     script = models.ForeignKey(LBEScript, default=1)
     imported_at = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
     synced_at = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
+    approval = models.SmallIntegerField(default=0)
+    instanceNameAttribute = models.ForeignKey(LBEAttribute, default=1) # 1= cn
     # Reconciliation Policy:
     reconciliation_object_missing_policy = models.IntegerField(default=0,
                                                                choices=CHOICE_RECONCILIATION_OBJECT_MISSING_POLICY)
@@ -218,7 +221,8 @@ class LBEObjectInstance(object):
 class LBEGroupInstance(LBEObjectInstance):
     def __init__(self, lbeGroupTemplate, *args, **kwargs):
         super(LBEGroupInstance, self).__init__(lbeGroupTemplate, args, kwargs)
-        self.name = self.displayName = self.template.name
+        self.name = self.template.displayName
+        self.displayName = self.template.displayName
 
     def __unicode__(self):
         return 'name: ' + self.template.name

@@ -39,19 +39,6 @@ def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):
         result_set.append(instance)
     return result_set
 
-def DocumentsToLBEGroupInstance(lbeGroupTemplate, documents):
-    result_set = []
-    for document in documents:
-        instance = LBEGroupInstance(lbeGroupTemplate,
-                                    name=document['_id'],
-                                    displayName=document['name'],
-                                    attributes=document['attributes'],
-                                    status=document['status'],
-                                    changes=document['changes']
-        )
-        result_set.append(instance)
-    return result_set
-
 
 class BackendMongoImpl:
     def __init__(self):
@@ -84,12 +71,6 @@ class BackendMongoImpl:
             return searchResult[0]
         return None
 
-    def getGroup(self, lbeGroupTemplate):
-        searchResult = self.handler.searchDocuments("groups", {'_id': lbeGroupTemplate.name})
-        if searchResult.count() > 0:
-            return DocumentsToLBEGroupInstance(lbeGroupTemplate, searchResult)[0]
-        return None
-
     def createObject(self, lbeObjectTemplate, lbeObjectInstance, Import=False):
         if not Import:
             if lbeObjectTemplate.approval:
@@ -100,17 +81,8 @@ class BackendMongoImpl:
             awaiting = OBJECT_STATE_IMPORTED
         return self.handler.createDocument(awaiting, lbeObjectTemplate.name, lbeObjectInstance.toDict())
 
-    def createGroup(self,lbeGroupTemplate):
-        return self.handler.createGroup(lbeGroupTemplate)
-
     def modifyGroup(self, lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate):
         return self.handler.modifyGroup(lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate)
-
-    def saveGroup(self, lbeGroupTemplate, lbeGroupInstance):
-        return self.handler.saveGroup(lbeGroupTemplate, lbeGroupInstance)
-
-    def removeGroup(self, lbeGroupTemplate):
-        return self.handler.removeDocument(OBJECT_STATE_AWAITING_SYNC, "groups", lbeGroupTemplate.name)
 
     """
 		Used in Reconciliation:

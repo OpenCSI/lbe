@@ -14,9 +14,8 @@ from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribu
 from services.backend import BackendObjectAlreadyExist
 
 
-class LBEObjectInstanceHelper():
+class LBEObjectInstanceHelper(object):
     def __init__(self, lbeObjectTemplate, lbeObjectInstance=None):
-        self.template = lbeObjectTemplate
         self.template = lbeObjectTemplate
         self.instance = lbeObjectInstance
         self.scriptInstance = None

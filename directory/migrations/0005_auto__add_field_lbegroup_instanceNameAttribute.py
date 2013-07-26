@@ -8,25 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'LBEGroup'
-        db.create_table(u'directory_lbegroup', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('displayName', self.gf('django.db.models.fields.CharField')(unique=True, max_length=25)),
-            ('objectTemplate', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['directory.LBEObjectTemplate'])),
-            ('version', self.gf('django.db.models.fields.SmallIntegerField')(default=0)),
-            ('script', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['directory.LBEScript'])),
-            ('imported_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0))),
-            ('synced_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0))),
-            ('approval', self.gf('django.db.models.fields.SmallIntegerField')(default=0)),
-            ('reconciliation_object_missing_policy', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('reconciliation_object_different_policy', self.gf('django.db.models.fields.IntegerField')(default=0)),
-        ))
-        db.send_create_signal(u'directory', ['LBEGroup'])
+        # Adding field 'LBEGroup.instanceNameAttribute'
+        db.add_column(u'directory_lbegroup', 'instanceNameAttribute',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['directory.LBEAttribute']),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'LBEGroup'
-        db.delete_table(u'directory_lbegroup')
+        # Deleting field 'LBEGroup.instanceNameAttribute'
+        db.delete_column(u'directory_lbegroup', 'instanceNameAttribute_id')
 
 
     models = {
@@ -66,6 +56,8 @@ class Migration(SchemaMigration):
             'displayName': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '25'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'imported_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(1970, 1, 1, 0, 0)'}),
+            'instanceNameAttribute': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['directory.LBEAttribute']"}),
+            'name': ('django.db.models.fields.CharField', [], {'default': "'groups'", 'max_length': '10'}),
             'objectTemplate': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['directory.LBEObjectTemplate']"}),
             'reconciliation_object_different_policy': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'reconciliation_object_missing_policy': ('django.db.models.fields.IntegerField', [], {'default': '0'}),

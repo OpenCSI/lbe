@@ -450,10 +450,12 @@ def checkACL_AJAX(request, query=None):
 @staff_member_required
 def addGroup(request):
     if request.method == "POST":
-        form = LBEGroupForm(request.POST)
+        POST = request.POST.copy()
+        POST['synced_at'] = django.utils.timezone.now()
+        form = LBEGroupForm(POST)
         if form.is_valid():
             # Create it to the Backend
-            groupHelper = GroupInstanceHelper(LBEGroupInstance(form.instance))
+            groupHelper = GroupInstanceHelper(form.instance, LBEGroupInstance(form.instance))
             groupHelper.createTemplate()
             # Save it to LBE
             form.save()
@@ -487,9 +489,9 @@ def manageGroup(request, group_id=None):
                 # Manage it to the Backend
                 groupHelper = GroupInstanceHelper(group, LBEGroupInstance(form.instance))
                 groupHelper.modifyTemplate(oldObjectTemplate, oldNameObjectTemplate)
-                messages.add_message(request,messages.SUCCESS, "Group saved")
+                messages.add_message(request, messages.SUCCESS, "Group saved")
             else:
-                messages.add_message(request,messages.ERROR, "Error to save the Group.")
+                messages.add_message(request, messages.ERROR, "Error to save the Group.")
         else:
             form = LBEGroupForm(instance=group)
     except BaseException as e:
