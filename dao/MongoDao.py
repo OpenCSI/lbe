@@ -59,14 +59,28 @@ class MongoService:
         except BaseException as e:
             print "Error to save the group: " + str(e)
 
+    def modifyGroup(self, lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate):
+        db = self.db["groups"]
+        try:
+            # check if objectTemplate is changed
+            if not oldObjectTemplate.id == lbeGroupTemplate.objectTemplate.id:
+                lbeGroupInstance.changes['set']['uniqueMember'] = []
+            # new name
+            if not oldNameObjectTemplate == lbeGroupInstance.name:
+                lbeGroupInstance.changes['set']['cn'] = lbeGroupInstance.name
+            print lbeGroupInstance.toDict()
+            #return db.update() # TODO
+        except BaseException as e:
+            print e
+
     def saveGroup(self, lbeGroupTemplate, lbeGroupInstance):
         db = self.db["groups"]
         try:
             if lbeGroupInstance.changes['set'] == {} and lbeGroupInstance.changes['set'] == lbeGroupInstance.attributes:
                 raise Exception("The Group does not need to be saved (not modified)")
             return db.update({'_id': lbeGroupTemplate.name}, {'$set': {'changes': {'set':
-                             lbeGroupInstance.changes['set'], 'type': OBJECT_CHANGE_UPDATE_OBJECT},
-                             'updated_at': datetime.datetime.now(utc), 'status': OBJECT_STATE_AWAITING_SYNC}})
+                                                                                       lbeGroupInstance.changes['set'], 'type': OBJECT_CHANGE_UPDATE_OBJECT},
+                                                                       'updated_at': datetime.datetime.now(utc), 'status': OBJECT_STATE_AWAITING_SYNC}})
         except BaseException as e:
             print e
 

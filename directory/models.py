@@ -191,8 +191,13 @@ class LBEObjectInstance(object):
         self.name = None
         self.displayName = None
 
-        for key, value in kwargs.iteritems():
-            setattr(self, key, value)
+        if not kwargs == {}:
+            for key, value in kwargs.iteritems():
+                setattr(self, key, value)
+        else:
+            for key, value in args[1].iteritems():
+                setattr(self, key, value)
+
 
     def __unicode__(self):
         return 'name: ' + self.name + ', displayName: ' + self.displayName + ', attributes: ' + self.attributes

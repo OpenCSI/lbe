@@ -25,10 +25,7 @@ class GroupInstanceHelper():
 
     def _getValues(self):
         self._backend()
-        values = self.backend.getGroup(self.template)
-        self.instance.status = values['status']
-        self.instance.attributes = values['attributes']
-        self.instance.changes = values['changes']
+        self.instance = self.backend.getGroup(self.template)
 
     def _backend(self):
         if self.backend is not None:
@@ -39,13 +36,13 @@ class GroupInstanceHelper():
         self._backend()
         return self.backend.getGroup(self.template)
 
-    def saveTemplate(self):
+    def createTemplate(self):
         self._backend()
         return self.backend.createGroup(self.template)
 
-    def modifyTemplate(self):
+    def modifyTemplate(self, oldObjectTemplate, oldNameObjectTemplate):
         self._backend()
-        return self.backend.modifyGroup(self.template)
+        return self.backend.modifyGroup(self.template, self.instance, oldObjectTemplate, oldNameObjectTemplate)
 
     def form(self, values=None):
         data = dict()
@@ -82,8 +79,8 @@ class GroupInstanceHelper():
         return self.backend.removeGroup(self.template)
 
     def changeIDObjects(self):
-        values = self.get()
-        listOldObjects = values['changes']['set']['uniqueMember'] or values['attributes']['uniqueMember']
+        self.instance = self.get()
+        listOldObjects = self.instance.changes['set']['uniqueMember'] or  self.instance.attributes['uniqueMember']
         listObjects = []
         for object in listOldObjects:
             try:

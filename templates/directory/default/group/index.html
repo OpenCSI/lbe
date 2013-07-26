@@ -11,12 +11,12 @@
     <tbody>
     <h3>Groups list</h3>
     {%  for group in groups %}
-        <tr><td>{% if group.attributes.uniqueMember|length != 0 or group.changes.set.uniqueMember|length != 0 %}<a href="{% url 'directory.views.viewGroup' group_name=group.name %}">{% endif %}
+        <tr><td>{% if group.attributes.uniqueMember|length != 0 or group.changes.set.uniqueMember|length != 0 %}<a href="{% url 'directory.views.viewGroup' group_id=group.template.id %}">{% endif %}
                 {{ group.name }}
                 {% if group.attributes.uniqueMember|length != 0 or group.changes.set.uniqueMember|length != 0 %}</a>{% endif %}</td>
         <td style='text-align: center;'>{% if group.attributes.uniqueMember|length == 0 and group.changes.set.uniqueMember|length == 0 %}True {% else %} False {% endif %}</td>
         <td style='text-align: center;'>{%  include 'directory/default/group/status.html' %}</td>
-        {%  if user.is_staff %}<td><a href="{% url 'directory.views.manageGroup' group_name=group.name %}"><i class="icon-edit"></i></a> <a href="{% url 'directory.views.deleteGroup' group_name=group.name %}"><span class="label label-important">x</span></a></td>{% endif %}</tr>
+        {%  if user.is_staff %}<td><a href="{% url 'directory.views.manageGroup' group_id=group.template.id %}"><i class="icon-edit"></i></a> <a href="{% url 'directory.views.deleteGroup' group_id=group.template.id %}"><span class="label label-important">x</span></a></td>{% endif %}</tr>
     {%  endfor %}
     </tbody>
 </table>

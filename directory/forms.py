@@ -195,6 +195,7 @@ class LBEGroupForm(ModelForm):
         exclude = ('version', 'imported_at')
 
 
+
 class LBEGroupInstanceForm(forms.Form):
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         super(LBEGroupInstanceForm, self).__init__(*args, **kwargs)

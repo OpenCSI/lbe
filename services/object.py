@@ -209,7 +209,7 @@ class LBEObjectInstanceHelper():
 
     def getValues(self, UID):
         """
-		Fonction enables to get values from attributes fields and
+		Function enables to get values from attributes fields and
 		changes.set fields, return the new values (changes.set > attributes)
         """
         try:

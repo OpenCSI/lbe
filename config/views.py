@@ -454,7 +454,7 @@ def addGroup(request):
         if form.is_valid():
             # Create it to the Backend
             groupHelper = GroupInstanceHelper(LBEGroupInstance(form.instance))
-            groupHelper.saveTemplate()
+            groupHelper.createTemplate()
             # Save it to LBE
             form.save()
             messages.add_message(request,messages.SUCCESS, "Group saved")
@@ -462,7 +462,12 @@ def addGroup(request):
             messages.add_message(request,messages.ERROR, "Error to save the Group.")
     else:
         form = LBEGroupForm()
-    return render_to_response('config/group/create.html',{'groupForm':form},
+    info_missing_policy = "Variable used for setting if the Object is deleted into the Target or <br> if we need to add "
+    info_missing_policy += " to the Backend"
+    info_different_policy = "Variable enables to set which Server, we need to upgrade values:<br> If the value is TARGET"
+    info_different_policy += ", then the Backend object will replace the Target object <br>else, the opposite."
+    return render_to_response('config/group/create.html', {'groupForm': form,'info_missing_policy': info_missing_policy,
+                                                          'info_different_policy': info_different_policy},
                               context_instance=RequestContext(request))
 
 
@@ -471,22 +476,36 @@ def manageGroup(request, group_id=None):
         form = []
         groups = LBEGroup.objects.all()
         group = LBEGroup.objects.get(id=group_id)
+        oldObjectTemplate = group.objectTemplate
+        oldNameObjectTemplate = group.name
         if request.method == "POST":
-            form = LBEGroupForm(request.POST, instance=group)
+            POST = request.POST.copy()
+            POST['synced_at'] = group.synced_at
+            form = LBEGroupForm(POST, instance=group)
             if form.is_valid():
                 form.save()
                 # Manage it to the Backend
-                #groupHelper = GroupInstanceHelper(LBEGroupInstance(form.instance))
-                #groupHelper.modifyTemplate()
+                groupHelper = GroupInstanceHelper(group, LBEGroupInstance(form.instance))
+                groupHelper.modifyTemplate(oldObjectTemplate, oldNameObjectTemplate)
                 messages.add_message(request,messages.SUCCESS, "Group saved")
             else:
                 messages.add_message(request,messages.ERROR, "Error to save the Group.")
         else:
             form = LBEGroupForm(instance=group)
-    except BaseException:
+    except BaseException as e:
+        print e
         try:
             form = LBEGroupForm(instance=groups[0])
+            group_id = groups[0].id
         except BaseException:
             pass
-    return render_to_response('config/group/modify.html',{'groupForm':form,'groups':groups,'group_id':group_id},
+    info_missing_policy = "Variable used for setting if the Object is deleted into the Target or <br> if we need to add "
+    info_missing_policy += " to the Backend"
+    info_different_policy = "Variable enables to set which Server, we need to upgrade values:<br> If the value is TARGET"
+    info_different_policy += ", then the Backend object will replace the Target object <br>else, the opposite."
+    info_change_object = "By changing the Object Template, all employees's group will be removed."
+    return render_to_response('config/group/modify.html',{'groupForm':form,'groups':groups,'group_id':group_id,
+                                                          'info_missing_policy': info_missing_policy,
+                                                          'info_different_policy': info_different_policy,
+                                                          'info_change_object': info_change_object},
                               context_instance=RequestContext(request))

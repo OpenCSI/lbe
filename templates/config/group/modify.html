@@ -12,7 +12,7 @@
             </select></td>
         </tr>
     </table>
-    <form method="POST">
+    <form method="POST" action='/config/group/manage/{{ group_id }}'>
         {% csrf_token %}
         {% include 'config/group/form.html' %}
     </form>

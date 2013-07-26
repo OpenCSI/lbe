@@ -7,7 +7,7 @@ from django.utils.timezone import utc
 from django.conf import settings
 
 from dao.MongoDao import MongoService
-from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED
+from directory.models import LBEObjectInstance,LBEGroupInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED
 
 
 class BackendConnectionError(Exception):
@@ -29,12 +29,25 @@ class BackendInvalidCredentials(Exception):
 def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):
     result_set = []
     for document in documents:
-        instance = LBEObjectInstance(lbeObjectInstance, \
-                                     name=document['_id'], \
-                                     displayName=document['displayName'], \
-                                     attributes=document['attributes'], \
-                                     status=document['status'], \
+        instance = LBEObjectInstance(lbeObjectInstance,
+                                     name=document['_id'],
+                                     displayName=document['displayName'],
+                                     attributes=document['attributes'],
+                                     status=document['status'],
                                      changes=document['changes']
+        )
+        result_set.append(instance)
+    return result_set
+
+def DocumentsToLBEGroupInstance(lbeGroupTemplate, documents):
+    result_set = []
+    for document in documents:
+        instance = LBEGroupInstance(lbeGroupTemplate,
+                                    name=document['_id'],
+                                    displayName=document['name'],
+                                    attributes=document['attributes'],
+                                    status=document['status'],
+                                    changes=document['changes']
         )
         result_set.append(instance)
     return result_set
@@ -74,7 +87,7 @@ class BackendMongoImpl:
     def getGroup(self, lbeGroupTemplate):
         searchResult = self.handler.searchDocuments("groups", {'_id': lbeGroupTemplate.name})
         if searchResult.count() > 0:
-            return searchResult[0]
+            return DocumentsToLBEGroupInstance(lbeGroupTemplate, searchResult)[0]
         return None
 
     def createObject(self, lbeObjectTemplate, lbeObjectInstance, Import=False):
@@ -89,6 +102,9 @@ class BackendMongoImpl:
 
     def createGroup(self,lbeGroupTemplate):
         return self.handler.createGroup(lbeGroupTemplate)
+
+    def modifyGroup(self, lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate):
+        return self.handler.modifyGroup(lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate)
 
     def saveGroup(self, lbeGroupTemplate, lbeGroupInstance):
         return self.handler.saveGroup(lbeGroupTemplate, lbeGroupInstance)

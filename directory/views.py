@@ -219,31 +219,32 @@ def viewAllGroup(request):
 
 
 @login_required
-def viewGroup(request, group_name):
-    groupName = ''
+def viewGroup(request, group_id):
     groupList = []
-    object_id = -1
+    groupName = ''
+    object_id = 0
     try:
-        lbeGroup = LBEGroup.objects.get(name__iexact=group_name)
+        lbeGroup = LBEGroup.objects.get(id=group_id)
         groupInstance = GroupInstanceHelper(lbeGroup)
         groupValues = groupInstance.get()
-        groupName = groupValues['name']
+        groupName = groupValues.name
         object_id = lbeGroup.objectTemplate.id
-        if groupValues['changes']['set']['uniqueMember'] == {}:
-            groupList = groupValues['attributes']['uniqueMember']
+        if groupValues.changes['set']['uniqueMember'] == {}:
+            groupList = groupValues.attributes['uniqueMember']
         else:
-            groupList = groupValues['changes']['set']['uniqueMember']
+            groupList = groupValues.changes['set']['uniqueMember']
     except BaseException as e:
+        print e
         groupValues = []
     return render_to_response('directory/default/group/view.html', {'groupName': groupName, 'groupList': groupList,
-                               'object_id': object_id },
+                               'group_id': group_id, 'object_id': object_id},
                                context_instance=RequestContext(request))
 
 
 @login_required
-def manageGroup(request, group_name):
+def manageGroup(request, group_id):
     try:
-        lbeGroup = LBEGroup.objects.get(name__iexact=group_name)
+        lbeGroup = LBEGroup.objects.get(id=group_id)
         groupInstance = GroupInstanceHelper(lbeGroup)
         if request.method == "POST":
             form = groupInstance.form(request.POST)
@@ -251,22 +252,23 @@ def manageGroup(request, group_name):
                 groupInstance.save()
                 messages.add_message(request, messages.SUCCESS, "The Group is successfully saved.")
             else:
-                messages.add_message(request, messages.ERROR, "Error to save the group '" + group_name + "'")
+                messages.add_message(request, messages.ERROR, "Error to save the group '" + lbeGroup.name + "'")
         else:
             form = groupInstance.form()
     except BaseException as e:
         print e
-    return render_to_response('directory/default/group/manage.html', {'form': form, 'groupName': group_name,
+    return render_to_response('directory/default/group/manage.html', {'form': form, 'group_id': group_id,
                               'attributeName': lbeGroup.objectTemplate.instanceDisplayNameAttribute.displayName},
                               context_instance=RequestContext(request))
 
 
 @login_required
-def deleteGroup(request, group_name):
+def deleteGroup(request, group_id):
     try:
-        instanceHelper = GroupInstanceHelper(LBEGroup.objects.get(name__iexact=group_name))
+        group = LBEGroup.objects.get(id=group_id)
+        instanceHelper = GroupInstanceHelper(group)
         instanceHelper.remove()
-        messages.add_message(request,messages.SUCCESS, "group '" + group_name + "' removed.")
+        messages.add_message(request,messages.SUCCESS, "group '" + group.name + "' removed.")
     except BaseException as e:
         print e
         pass
