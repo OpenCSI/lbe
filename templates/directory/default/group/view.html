@@ -9,6 +9,8 @@
     <tbody>
         {%  for instance in groupList %}
             <tr><td><a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=object_id objectName=instance %}">{{ instance }}</a></td></tr>
+        {%  empty %}
+            <tr><td style="text-align: center"><i>No members.</i></td></tr>
         {%  endfor %}
     </tbody>
     </table>
