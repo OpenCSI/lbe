@@ -10,7 +10,11 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
         if lbeGroupInstance is not None:
             self.instance = lbeGroupInstance
         else:
-            self.instance = LBEGroupInstance(self.template)
+            self._backend()
+            try:
+                self.instance = self.get()#LBEGroupInstance(self.template)
+            except BaseException:
+                self.instance = LBEGroupInstance(self.template)
 
     def _compress(self, data):
         if len(data) == 1:
@@ -41,7 +45,7 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
 
     def form(self, values=None):
         data = dict()
-        data[u'uniqueMember'] = ''
+        data[u'uniqueMember'] = []
         # get values
         if values is not None:
             self.instance.changes['set']['uniqueMember'] = values.getlist('uniqueMember')
