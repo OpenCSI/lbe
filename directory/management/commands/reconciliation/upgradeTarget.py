@@ -6,10 +6,12 @@ import django
 from django.conf import settings # LDAP settings
 
 from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT, \
-    OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED
+    OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED, LBEGroup
 from services.backend import BackendHelper
 from services.target import TargetHelper
 from services.object import LBEObjectInstanceHelper
+from services.group import GroupInstanceHelper
+
 
 
 class UpgradeTarget():
@@ -89,6 +91,21 @@ class UpgradeTarget():
         changes['synced_at'] = django.utils.timezone.now()
         self.backend.updateObject(objectTemplate, objectInstance, changes)
 
+    def _getRDN(self, objectTemplate, listID):
+        objectHelper = LBEObjectInstanceHelper(objectTemplate)
+        baseDN = objectHelper.callScriptClassMethod('base_dn')
+        listObjectID = []
+        for ID in listID:
+            dn = objectTemplate.instanceNameAttribute.name + '=' + ID + ',' + baseDN
+            listObjectID.append(dn)
+        return listObjectID
+
+    def _getID(self, listRDN):
+        listID = []
+        for rdn in listRDN:
+            listID.append(rdn.split('=')[1].split(',')[0])
+        return listID
+
     def start(self):
         print "   Upgrade the Target server with the Backend server..."
         for objectTemplate in LBEObjectTemplate.objects.all():
@@ -144,4 +161,61 @@ class UpgradeTarget():
                         objectTemplate.synced_at = django.utils.timezone.now()
                         objectTemplate.save()
         print ''
+        print "   Upgrade Groups Objects:"
+        for groupTemplate in LBEGroup.objects.all():
+            for groupInstance in self.backend.searchObjectsToUpdate(groupTemplate):
+                grp = GroupInstanceHelper(groupTemplate, groupInstance)
+                self._createParent(groupTemplate, grp)
+                if groupInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
+                    print "    |-> Group '\033[35m" + groupInstance.displayName + "\033[0m' is \033[34mcreating\033[0m..."
+                    try:
+                        groupInstance.changes['set']['uniqueMember'] = self._getRDN(groupTemplate.objectTemplate, groupInstance.changes['set']['uniqueMember'])
+                        self._createObject(groupTemplate, groupInstance)
+                        ###############################################
+                        #changes = {}
+                        #changes['changes'] = {}
+                        #changes['changes']['set'] = {}
+                        #changes['changes']['type'] = -1
+                        #groupInstance.changes['set'] = {}
+                        #groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.attributes['uniqueMember'])
+                        #groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
+                        #self.backend.updateObject(groupTemplate, groupInstance, changes)
+                        ###############################################
+                    except ldap.ALREADY_EXISTS:
+                        print "    |-> Group '\033[35m" + groupInstance.displayName + "'\033[0m already exists"
+                elif groupInstance.changes['type'] == OBJECT_CHANGE_UPDATE_OBJECT:
+                    try:
+                        print "    |-> Group '\033[35m" + groupInstance.displayName + "'\033[0m is \033[36mupdating\033[0m..."
+                        groupInstance.changes['set']['uniqueMember'] = self._getRDN(groupTemplate.objectTemplate, groupInstance.changes['set']['uniqueMember'])
+                        self._modifyObject(groupTemplate, groupInstance)
+                        ###############################################
+                        #changes = {}
+                        #changes['changes'] = {}
+                        #changes['changes']['set'] = {}
+                        #changes['changes']['type'] = -1
+                        #groupInstance.changes['set'] = {}
+                        #groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.attributes['uniqueMember'])
+                        #groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
+                        #self.backend.updateObject(groupTemplate, groupInstance, changes)
+                        ###############################################
+                    except BaseException as e:
+                        print e
+                        print "    |-> Group '\033[35m" + groupInstance.displayName + "' does not exist, being \033[34mcreated\033[0m..."
+                        groupInstance.changes['set']['uniqueMember'] = self._getRDN(groupTemplate.objectTemplate, groupInstance.changes['set']['uniqueMember'])
+                        self._createObject(groupTemplate, groupInstance)
+                        ###############################################
+                        #changes = {}
+                        #changes['changes'] = {}
+                        #changes['changes']['set'] = {}
+                        #changes['changes']['type'] = -1
+                        #groupInstance.changes['set'] = {}
+                        #groupInstance.changes['set']['uniqueMember'] = []
+                        #groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.attributes['uniqueMember'])
+                        #groupInstance.changes['set']['cn'] = []
+                        #groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
+                        #self.backend.updateObject(groupTemplate, groupInstance, changes)
+                        ###############################################
+                elif groupInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
+                    print "    |-> Group '\033[35m" + groupInstance.displayName + "' is \033[33mdeleting\033[0m..."
+                    self._deleteObject(groupTemplate, groupInstance)
         print "   End."

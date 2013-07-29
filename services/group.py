@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from directory.models import LBEGroupInstance
+from directory.models import LBEGroupInstance, OBJECT_CHANGE_CREATE_OBJECT
 from directory.forms import LBEGroupInstanceForm
 from services.object import LBEObjectInstanceHelper
 
@@ -12,7 +12,7 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
         else:
             self._backend()
             try:
-                self.instance = self.get()#LBEGroupInstance(self.template)
+                self.instance = self.get()
             except BaseException:
                 self.instance = LBEGroupInstance(self.template)
 
@@ -36,7 +36,9 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
     def createTemplate(self):
         self._backend()
         self.instance.changes['set']['uniqueMember'] = []
-        self.instance.changes['set']['cn'] = self.instance.name
+        self.instance.changes['set']['cn'] = [self.instance.name]
+        self.instance.attributes['cn'] = [self.instance.name]
+        self.instance.changes['type'] = OBJECT_CHANGE_CREATE_OBJECT
         return self.backend.createObject(self.template, self.instance)
 
     def modifyTemplate(self, oldObjectTemplate, oldNameObjectTemplate):
@@ -59,8 +61,8 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
                     data[u'uniqueMember'] = self.instance.attributes['uniqueMember']
             except BaseException:
                 pass
-        if not 'cn' in self.instance.changes['set']:
-            self.instance.changes['set']['cn'] = ''
+        if not 'cn' in self.instance.changes['set'] or self.instance.changes['set']['cn'] == '':
+            self.instance.changes['set']['cn'] = [self.instance.displayName]
         # remove empty value
         try:
             data[u'uniqueMember'].remove('')
