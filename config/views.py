@@ -198,7 +198,7 @@ def modifyAttributeToObject(request, obj_id, attr_id=None):
             reloadParent = '<script>window.opener.location.reload();window.close();</script>'
         else:
             reloadParent = ''
-            messages.add_message(request, messages.ERROR, 'Error while adding attribute.')
+            messages.add_message(request, messages.ERROR, 'Error while saving attribute.')
     else:
         if attr_id is None:
             messages.add_message(request, messages.INFO, 'Attribute id is missing.')

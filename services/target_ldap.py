@@ -2,11 +2,10 @@
 import ldap
 import logging
 import datetime
-import base64
 from ldap import modlist
 
 from dao.LdapDao import LDAPDAO
-from directory.models import LBEObjectTemplate, LBEObjectInstance, OBJECT_STATE_IMPORTED
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED
 from services.object import LBEObjectInstanceHelper
 
 

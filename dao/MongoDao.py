@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-import sys
 import logging
 
-from pymongo import Connection, errors
+from pymongo import Connection
 from django.conf import settings
 
-from directory.models import LBEObjectInstance, OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_DELETED, OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT
+from directory.models import OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT
 
 #from services.backend import BackendHelper
 

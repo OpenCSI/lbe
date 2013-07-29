@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
-import datetime
 
 from pymongo import errors
-from django.utils.timezone import utc
 from django.conf import settings
 
 from dao.MongoDao import MongoService
-from directory.models import LBEObjectInstance,LBEGroupInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED
+from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED
 
 
 class BackendConnectionError(Exception):

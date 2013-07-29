@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from directory.models import LBEGroupInstance
 from directory.forms import LBEGroupInstanceForm
-from services.backend import BackendHelper
-from django.http import QueryDict
-
 from services.object import LBEObjectInstanceHelper
 
 

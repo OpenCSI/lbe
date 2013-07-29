@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-from pygame.tests.scrap_tags import exclude
-import sys
 
 from django import forms
 from django.forms import ModelForm, ModelChoiceField
-from django.forms.util import ErrorList
 
 from directory.models import *
 from services.backend import BackendHelper
@@ -66,7 +63,7 @@ class LBEAttributeInstanceForm(ModelForm):
             widgetArgs = eval(self.cleaned_data['widgetArgs'])
             # Test if Widget arguments are correct:
             exec 'self.fields["test"] = ' + self.cleaned_data['widget'] + '(' + str(widgetArgs) + ')'
-            return widgetArgs
+            return self.cleaned_data['widgetArgs']
         except BaseException as e:
             raise forms.ValidationError(e)
 

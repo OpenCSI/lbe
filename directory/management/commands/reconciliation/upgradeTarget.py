@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
+import ldap
+from ldap import modlist
+
 import django
 from django.conf import settings # LDAP settings
 
 from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT, \
-    OBJECT_CHANGE_UPDATE_OBJECT, LBEObjectInstance, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED, \
-    LBEGroup, LBEGroupInstance
+    OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_STATE_SYNCED, OBJECT_STATE_DELETED
 from services.backend import BackendHelper
 from services.target import TargetHelper
 from services.object import LBEObjectInstanceHelper
-from services.group import GroupInstanceHelper
-import ldap
-from ldap import modlist
+
 
 class UpgradeTarget():
     def __init__(self):

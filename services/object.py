@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 import sys
 import logging
-
-from django.forms.formsets import formset_factory
-
 from services.backend import BackendHelper
 
 
 logger = logging.getLogger(__name__)
 from django.contrib import messages
 from django.http import QueryDict
-from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
+from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
 from services.backend import BackendObjectAlreadyExist
 
 
