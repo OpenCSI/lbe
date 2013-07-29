@@ -32,7 +32,7 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
     def createTemplate(self):
         self._backend()
         self.instance.changes['set']['uniqueMember'] = []
-        self.instance.changes['set']['cn'] = ''
+        self.instance.changes['set']['cn'] = self.instance.name
         return self.backend.createObject(self.template, self.instance)
 
     def modifyTemplate(self, oldObjectTemplate, oldNameObjectTemplate):
