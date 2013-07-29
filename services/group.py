@@ -55,6 +55,8 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
                     data[u'uniqueMember'] = self.instance.attributes['uniqueMember']
             except BaseException:
                 pass
+        if not 'cn' in self.instance.changes['set']:
+            self.instance.changes['set']['cn'] = ''
         # remove empty value
         try:
             data[u'uniqueMember'].remove('')

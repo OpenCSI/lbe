@@ -213,7 +213,11 @@ def viewAllGroup(request):
     groupsInstance = []
     for group in groups:
         groupInstance = GroupInstanceHelper(group)
-        groupsInstance.append(groupInstance.get())
+        try:
+            groupsInstance.append(groupInstance.get())
+        except BaseException as e:
+            print e
+            pass
     return render_to_response('directory/default/group/index.html', {'groups': groupsInstance},
                               context_instance=RequestContext(request))
 
