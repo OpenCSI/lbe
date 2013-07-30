@@ -233,10 +233,10 @@ def viewGroup(request, group_id):
         groupValues = groupInstance.get()
         groupName = groupValues.name
         object_id = lbeGroup.objectTemplate.id
-        if not 'uniqueMember' in groupValues.changes['set'] or groupValues.changes['set']['uniqueMember'] == []:
-            groupList = groupValues.attributes['uniqueMember']
+        if not groupInstance.attributeName in groupValues.changes['set'] or groupValues.changes['set'][groupInstance.attributeName] == []:
+            groupList = groupValues.attributes[groupInstance.attributeName]
         else:
-            groupList = groupValues.changes['set']['uniqueMember']
+            groupList = groupValues.changes['set'][groupInstance.attributeName]
     except BaseException as e:
         print e
         groupValues = []
@@ -262,7 +262,8 @@ def manageGroup(request, group_id):
     except BaseException as e:
         print e
     return render_to_response('directory/default/group/manage.html', {'form': form, 'group_id': group_id,
-                              'attributeName': lbeGroup.objectTemplate.instanceNameAttribute.displayName},
+                              'attributeName': lbeGroup.objectTemplate.instanceNameAttribute.displayName,
+                              'attributeMember': groupInstance.attributeName},
                               context_instance=RequestContext(request))
 
 

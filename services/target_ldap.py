@@ -7,7 +7,7 @@ from ldap import modlist
 from dao.LdapDao import LDAPDAO
 from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED
 from services.object import LBEObjectInstanceHelper
-
+from services.group import GroupInstanceHelper
 
 logger = logging.getLogger(__name__)
 
@@ -152,12 +152,13 @@ class TargetLDAPImplementation():
                     objectInstance.updated_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
                 result_set.append(objectInstance)
             except AttributeError:  # Group:
+                groupInstance = GroupInstanceHelper(lbeObjectTemplate)
                 objectInstance.displayName = entry['cn'][0]
                 objectInstance.attributes[u'cn'] = entry['cn']
-                if 'uniqueMember' in entry:
-                    objectInstance.attributes[u'uniqueMember'] = entry['uniqueMember']
+                if groupInstance.attributeName in entry:
+                    objectInstance.attributes[groupInstance.attributeName] = entry[groupInstance.attributeName]
                 else:
-                    objectInstance.attributes[u'uniqueMember'] = []
+                    objectInstance.attributes[groupInstance.attributeName] = []
                 objectInstance.status = OBJECT_STATE_IMPORTED
                 objectInstance.created_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
                 try:

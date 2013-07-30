@@ -53,6 +53,7 @@ class ImportTarget():
             print 'Checking for Groups which do not exist into LBE but in Target:'
             number = 0
             for groupTemplate in LBEGroup.objects.all():
+                groupInstance = GroupInstanceHelper(groupTemplate)
                 grpTarget = self.target.searchObjects(groupTemplate)
                 grpBackend = self.backend.searchObjects(groupTemplate)
                 for gt in grpTarget:
@@ -65,8 +66,8 @@ class ImportTarget():
                         number += 1
                         print 'Adding \033[95m' + gt.name + '\033[0m group into LBE Backend... '
                         try:
-                            if 'uniqueMember' in gt.attributes:
-                                gt.attributes['uniqueMember'] = self._getID(gt.attributes['uniqueMember'])
+                            if groupInstance.attributeName in gt.attributes:
+                                gt.attributes[groupInstance.attributeName] = self._getID(gt.attributes[groupInstance.attributeName])
                             groupHelper = GroupInstanceHelper(groupTemplate, gt)
                             groupHelper.createTemplate(True)
                             print "\033[92mDone.\033[0m"

@@ -15,12 +15,13 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
                 self.instance = self.get()
             except BaseException:
                 self.instance = LBEGroupInstance(self.template)
+        self.attributeName = self.callScriptClassMethod("attribute_name")
 
     def _compress(self, data):
         if len(data) == 1:
-            return {u'uniqueMember': data[0]}
+            return {self.attributeName: data[0]}
         else:
-            return {u'uniqueMember': '\0'.join(str(val) for val in data)}
+            return {self.attributeName: '\0'.join(str(val) for val in data)}
 
     def _decompress(self, data):
         return data.split('\0')
@@ -35,7 +36,7 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
 
     def createTemplate(self, Import=False):
         self._backend()
-        self.instance.changes['set']['uniqueMember'] = []
+        self.instance.changes['set'][self.attributeName] = []
         self.instance.changes['set']['cn'] = [self.instance.name]
         self.instance.attributes['cn'] = [self.instance.name]
         if not Import:
@@ -46,35 +47,35 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
 
     def modifyTemplate(self, oldObjectTemplate, oldNameObjectTemplate):
         self._backend()
-        return self.backend.modifyGroup(self.template, self.instance, oldObjectTemplate, oldNameObjectTemplate)
+        return self.backend.modifyGroup(self, oldObjectTemplate, oldNameObjectTemplate)
 
     def form(self, values=None):
         data = dict()
-        data[u'uniqueMember'] = []
+        data[self.attributeName] = []
         # get values
         if values is not None:
-            self.instance.changes['set']['uniqueMember'] = values.getlist('uniqueMember')
-            data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
+            self.instance.changes['set'][self.attributeName] = values.getlist(self.attributeName)
+            data[self.attributeName] = self.instance.changes['set'][self.attributeName]
         else:
             self._getValues()
             try:
-                if 'uniqueMember' in self.instance.changes['set'] and not self.instance.changes['set']['uniqueMember'] == []:
-                    data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
+                if self.attributeName in self.instance.changes['set'] and not self.instance.changes['set'][self.attributeName] == []:
+                    data[self.attributeName] = self.instance.changes['set'][self.attributeName]
                 else:
-                    data[u'uniqueMember'] = self.instance.attributes['uniqueMember']
+                    data[self.attributeName] = self.instance.attributes[self.attributeName]
             except BaseException:
                 pass
         if not 'cn' in self.instance.changes['set'] or self.instance.changes['set']['cn'] == '':
             self.instance.changes['set']['cn'] = [self.instance.displayName]
         # remove empty value
         try:
-            data[u'uniqueMember'].remove('')
+            data[self.attributeName].remove('')
         except BaseException:
             pass
         # compress values
-        data = self._compress(data[u'uniqueMember'])
+        data = self._compress(data[self.attributeName])
         # form
-        return LBEGroupInstanceForm(self.template.objectTemplate, data)
+        return LBEGroupInstanceForm(self, self.template.objectTemplate, data)
 
     def save(self):
         self._backend()
@@ -86,7 +87,7 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
 
     def changeIDObjects(self):
         self.instance = self.get()
-        listOldObjects = self.instance.changes['set']['uniqueMember'] or self.instance.attributes['uniqueMember']
+        listOldObjects = self.instance.changes['set'][self.attributeName] or self.instance.attributes[self.attributeName]
         listObjects = []
         for object in listOldObjects:
             try:
@@ -97,5 +98,5 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
             except BaseException:
                 pass
         if listObjects:
-            self.instance.changes['set']['uniqueMember'] = listObjects
+            self.instance.changes['set'][self.attributeName] = listObjects
             self.save()

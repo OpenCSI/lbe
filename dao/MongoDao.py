@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
+
 from pymongo import Connection
 from django.conf import settings
 
@@ -51,15 +52,15 @@ class MongoService:
         except BaseException as e:
             logger.error('Error while creating document: ' + e.__str__())
 
-    def modifyGroup(self, lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate):
+    def modifyGroup(self, groupInstanceHelper, oldObjectTemplate, oldNameObjectTemplate):
         db = self.db["groups"]
         try:
             # check if objectTemplate is changed
-            if not oldObjectTemplate.id == lbeGroupTemplate.objectTemplate.id:
-                lbeGroupInstance.changes['set']['uniqueMember'] = []
+            if not oldObjectTemplate.id == groupInstanceHelper.template.id:
+                groupInstanceHelper.instance.changes['set'][groupInstanceHelper.attributeName] = []
             # new name
-            if not oldNameObjectTemplate == lbeGroupInstance.name:
-                lbeGroupInstance.changes['set']['cn'] = lbeGroupInstance.name
+            if not oldNameObjectTemplate == groupInstanceHelper.template.displayName:
+                groupInstanceHelper.instance.changes['set']['cn'] = groupInstanceHelper.template.displayName
             #return db.update() # TODO
         except BaseException as e:
             print e

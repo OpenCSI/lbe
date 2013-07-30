@@ -194,12 +194,14 @@ class LBEGroupForm(ModelForm):
 
 
 class LBEGroupInstanceForm(forms.Form):
-    def __init__(self, lbeObjectTemplate, *args, **kwargs):
+    def __init__(self, groupHelper, lbeObjectTemplate, *args, **kwargs):
+        #from services.group import GroupInstanceHelper
         super(LBEGroupInstanceForm, self).__init__(*args, **kwargs)
         self.template = lbeObjectTemplate
-        self.fields["uniqueMember"] = forms.CharField()
+        self.groupHelper = groupHelper # for attribute class group
+        self.fields[self.groupHelper.attributeName] = forms.CharField()
 
-    def clean_uniqueMember(self):
+    def clean(self):
         tab = []
         backend = BackendHelper()
         values = backend.searchObjects(self.template)
@@ -209,7 +211,7 @@ class LBEGroupInstanceForm(forms.Form):
                 list.append(value.attributes[self.template.instanceNameAttribute.name][0])
             else:
                 list.append(value.changes['set'][self.template.instanceNameAttribute.name][0])
-        for value in self.cleaned_data['uniqueMember'].split('\0'):
+        for value in self.cleaned_data[self.groupHelper.attributeName].split('\0'):
             if not value == "":
                 if not value in list:
                     raise forms.ValidationError("'" + value + "' is not into " + self.template.displayName)
