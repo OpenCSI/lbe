@@ -202,21 +202,23 @@ class LBEGroupInstanceForm(forms.Form):
         self.fields[self.groupHelper.attributeName] = forms.CharField()
 
     def clean(self):
-        tab = []
-        backend = BackendHelper()
-        values = backend.searchObjects(self.template)
-        list = []
-        for value in values:
-            if value.changes['set'] == {}:
-                list.append(value.attributes[self.template.instanceNameAttribute.name][0])
-            else:
-                list.append(value.changes['set'][self.template.instanceNameAttribute.name][0])
-        for value in self.cleaned_data[self.groupHelper.attributeName].split('\0'):
-            if not value == "":
-                if not value in list:
-                    raise forms.ValidationError("'" + value + "' is not into " + self.template.displayName)
-                tab.append(value)
-        return tab
+        if not self.cleaned_data == {}: # no value 
+            tab = []
+            backend = BackendHelper()
+            values = backend.searchObjects(self.template)
+            list = []
+            for value in values:
+                if value.changes['set'] == {}:
+                    list.append(value.attributes[self.template.instanceNameAttribute.name][0])
+                else:
+                    list.append(value.changes['set'][self.template.instanceNameAttribute.name][0])
+            for value in self.cleaned_data[self.groupHelper.attributeName].split('\0'):
+                if not value == "":
+                    if not value in list:
+                        raise forms.ValidationError("'" + value + "' is not into " + self.template.displayName)
+                    tab.append(value)
+            return tab
+        return self.cleaned_data
 
 class LBEACLForm(ModelForm):
     class Meta:
