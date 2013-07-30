@@ -71,6 +71,7 @@
                         $add.attr("id", key + '_' + i)
                         $add.val(tab[num])
                         $('.' + key).append($add)
+                        addEvent_onKeyUp(key + '_' + i)
                         $('.' + key).append(' <a href="#" class="btn btn-inverse" id="btn_' + key + '_' + i
                                 + '" onClick="remove(\'' + key + '_' + i + '\');return false">-</a>')
                         $('.' + key).append('<br>')

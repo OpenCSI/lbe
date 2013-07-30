@@ -175,7 +175,7 @@ class UpgradeTarget():
                         if not groupInstance.changes['set'] == {}:
                             groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.changes['set']['uniqueMember'])
                             groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
-                            self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}}})
+                            self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}, 'type': -1}})
                         ###############################################
                     except ldap.ALREADY_EXISTS:
                         print "    |-> Group '\033[35m" + groupInstance.displayName + "'\033[0m already exists"
@@ -187,7 +187,7 @@ class UpgradeTarget():
                         ###############################################
                         groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.changes['set']['uniqueMember'])
                         groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
-                        self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}}})
+                        self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}, 'type': -1}})
                         ###############################################
                     except BaseException as e:
                         print e
@@ -197,7 +197,7 @@ class UpgradeTarget():
                         ###############################################
                         groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.changes['set']['uniqueMember'])
                         groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
-                        self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}}})
+                        self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}, 'type': -1}})
                         ###############################################
                 elif groupInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
                     print "    |-> Group '\033[35m" + groupInstance.displayName + "' is \033[33mdeleting\033[0m..."

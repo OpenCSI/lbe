@@ -55,7 +55,7 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
         else:
             self._getValues()
             try:
-                if not self.instance.changes['set'] == {}:
+                if 'uniqueMember' in self.instance.changes['set']:
                     data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
                 else:
                     data[u'uniqueMember'] = self.instance.attributes['uniqueMember']

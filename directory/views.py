@@ -233,7 +233,7 @@ def viewGroup(request, group_id):
         groupValues = groupInstance.get()
         groupName = groupValues.name
         object_id = lbeGroup.objectTemplate.id
-        if groupValues.changes['set'] == {}:
+        if not 'uniqueMember' in groupValues.changes['set']:
             groupList = groupValues.attributes['uniqueMember']
         else:
             groupList = groupValues.changes['set']['uniqueMember']
