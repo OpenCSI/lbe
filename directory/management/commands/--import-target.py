@@ -3,7 +3,9 @@ import django
 
 from services.backend import BackendHelper
 from services.target import TargetHelper
-from directory.models import LBEObjectTemplate
+from directory.models import LBEObjectTemplate, LBEGroup
+
+from services.group import GroupInstanceHelper
 
 
 class ImportTarget():
@@ -11,6 +13,12 @@ class ImportTarget():
         self.backend = BackendHelper()
         self.target = TargetHelper()
         self.start_date = django.utils.timezone.now()
+
+    def _getID(self, listRDN):
+        listID = []
+        for rdn in listRDN:
+            listID.append(rdn.split('=')[1].split(',')[0])
+        return listID
 
     def save(self):
         print 'Checking for Objects which do not exist into LBE but in LDAP Server:'
@@ -42,6 +50,36 @@ class ImportTarget():
             objectTemplate.synced_at = django.utils.timezone.now()
             objectTemplate.save()
             print '.........................'
+            print 'Checking for Groups which do not exist into LBE but in Target:'
+            number = 0
+            for groupTemplate in LBEGroup.objects.all():
+                grpTarget = self.target.searchObjects(groupTemplate)
+                grpBackend = self.backend.searchObjects(groupTemplate)
+                for gt in grpTarget:
+                    exist = False
+                    for gb in grpBackend:
+                        if gt.name == gb.name:
+                            exist = True
+                            break
+                    if not exist:
+                        number += 1
+                        print 'Adding \033[95m' + gt.name + '\033[0m group into LBE Backend... '
+                        try:
+                            if 'uniqueMember' in gt.attributes:
+                                gt.attributes['uniqueMember'] = self._getID(gt.attributes['uniqueMember'])
+                            groupHelper = GroupInstanceHelper(groupTemplate, gt)
+                            groupHelper.createTemplate(True)
+                            print "\033[92mDone.\033[0m"
+                        except BaseException as e:
+                            print "\033[91mFail.\033[0m"
+                            print "''''''''"
+                            print e
+                            print "''''''''"
+            if number == 0:
+                print '<None>'
+            # Synced group:
+            groupTemplate.synced_at = django.utils.timezone.now()
+            groupTemplate.save()
 
 
 class Command(BaseCommand):

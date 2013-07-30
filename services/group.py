@@ -33,13 +33,16 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
         self._backend()
         return self.backend.searchObjectsByPattern(self.template,self.template.displayName)[0]
 
-    def createTemplate(self):
+    def createTemplate(self, Import=False):
         self._backend()
         self.instance.changes['set']['uniqueMember'] = []
         self.instance.changes['set']['cn'] = [self.instance.name]
         self.instance.attributes['cn'] = [self.instance.name]
-        self.instance.changes['type'] = OBJECT_CHANGE_CREATE_OBJECT
-        return self.backend.createObject(self.template, self.instance)
+        if not Import:
+            self.instance.changes['type'] = OBJECT_CHANGE_CREATE_OBJECT
+        else:
+            self.instance.changes['type'] = -1
+        return self.backend.createObject(self.template, self.instance, Import)
 
     def modifyTemplate(self, oldObjectTemplate, oldNameObjectTemplate):
         self._backend()
@@ -55,7 +58,7 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
         else:
             self._getValues()
             try:
-                if 'uniqueMember' in self.instance.changes['set']:
+                if 'uniqueMember' in self.instance.changes['set'] and not self.instance.changes['set']['uniqueMember'] == []:
                     data[u'uniqueMember'] = self.instance.changes['set']['uniqueMember']
                 else:
                     data[u'uniqueMember'] = self.instance.attributes['uniqueMember']
