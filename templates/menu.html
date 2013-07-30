@@ -3,28 +3,11 @@
     <div class="row-fluid">
         <div class="well sidebar-nav">
             <ul class="nav nav-list">
-                <li class="nav-header">Admin</li>
                 <li><a href="/">Home</a></li>
-                <li><a href="{%  url 'directory.views.viewAllGroup' %}">Groups</a></li>
+                <li class="nav-header">Object</li>
                 <li><a href="/directory/object/add/1">Add employee</a></li>
-                <li class="nav-header">Group Management</li>
-                <li><a href="{%  url 'config.views.addGroup' %}">Add Group</a></li>
-                <li><a href="{%  url 'config.views.manageGroup' %}">Manage Groups</a></li>
-                <li class="nav-header">Object Management</li>
-                <li><a href="{% url 'config.views.addObject' %}">Add Object</a></li>
-                <li><a href="{% url 'config.views.listObjects' %}">List Objects</a></li>
-                <li class="nav-header">Attribute Management</li>
-                <li><a href="{% url 'config.views.addAttribute' %}">Add Attribute</a></li>
-                <li><a href="{% url 'config.views.modifyAttribute' %}">Manage Attribute</a></li>
-                <li class="nav-header">ACL Management</li>
-                <li><a href="{% url 'config.views.addACL' %}">Add ACL</a></li>
-                <li><a href="{% url 'config.views.manageACL' %}">Manage ACL</a></li>
-                <li class="nav-header">Script Management</li>
-                <li><a href="{% url 'config.views.addScript' %}">Add Script</a></li>
-                <li><a href="{% url 'config.views.manageScript' %}">Manage Script</a></li>
-                <li class="nav-header">Reference Management</li>
-                <li><a href="/config/reference/add/">Add Reference</a></li>
-                <li><a href="/config/reference/modify/">Modify Reference</a></li>
+                <li class="nav-header">Group</li>
+                <li><a href="{%  url 'directory.views.viewAllGroup' %}">Groups</a></li>
             </ul>
         </div>
     </div>
