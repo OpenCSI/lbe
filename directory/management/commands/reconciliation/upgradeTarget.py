@@ -172,9 +172,10 @@ class UpgradeTarget():
                         groupInstance.changes['set']['uniqueMember'] = self._getRDN(groupTemplate.objectTemplate, groupInstance.changes['set']['uniqueMember'])
                         self._createObject(groupTemplate, groupInstance)
                         ###############################################
-                        groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.attributes['uniqueMember'])
-                        groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
-                        self.backend.updateObject(groupTemplate, groupInstance, {})
+                        if not groupInstance.changes['set'] == {}:
+                            groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.changes['set']['uniqueMember'])
+                            groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
+                            self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}}})
                         ###############################################
                     except ldap.ALREADY_EXISTS:
                         print "    |-> Group '\033[35m" + groupInstance.displayName + "'\033[0m already exists"
@@ -184,9 +185,9 @@ class UpgradeTarget():
                         groupInstance.changes['set']['uniqueMember'] = self._getRDN(groupTemplate.objectTemplate, groupInstance.changes['set']['uniqueMember'])
                         self._modifyObject(groupTemplate, groupInstance)
                         ###############################################
-                        groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.attributes['uniqueMember'])
+                        groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.changes['set']['uniqueMember'])
                         groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
-                        self.backend.updateObject(groupTemplate, groupInstance, {})
+                        self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}}})
                         ###############################################
                     except BaseException as e:
                         print e
@@ -194,9 +195,9 @@ class UpgradeTarget():
                         groupInstance.changes['set']['uniqueMember'] = self._getRDN(groupTemplate.objectTemplate, groupInstance.changes['set']['uniqueMember'])
                         self._createObject(groupTemplate, groupInstance)
                         ###############################################
-                        groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.attributes['uniqueMember'])
+                        groupInstance.changes['set']['uniqueMember'] = self._getID(groupInstance.changes['set']['uniqueMember'])
                         groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
-                        self.backend.updateObject(groupTemplate, groupInstance, {})
+                        self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}}})
                         ###############################################
                 elif groupInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
                     print "    |-> Group '\033[35m" + groupInstance.displayName + "' is \033[33mdeleting\033[0m..."
