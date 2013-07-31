@@ -14,15 +14,6 @@
                 {{ field }}
             {% elif field.name == 'synced_at' %}
                 <input type="text" id="id_{{ field.name }}" name="{{ field.name }}" value="{{ field.value }}" disabled/>
-            {% elif field.name == 'reconciliation_object_missing_policy' %}
-                <a class="btn" href="#" data-placement="left" data-content="{{ info_missing_policy }}" data-html="true"
-                   title="Info" onMouseOver="$(this).popover('show')" onMouseOut="$(this).popover('hide')">?</a>
-                {{ field }}
-            {% elif field.name == 'reconciliation_object_different_policy' %}
-                <a class="btn" href="#" data-placement="left" data-content="{{ info_different_policy }}"
-                   data-html="true" title="Info" onMouseOver="$(this).popover('show')"
-                   onMouseOut="$(this).popover('hide')">?</a>
-                {{ field }}
             {% else %}
                 {{ field }}
             {% endif %}

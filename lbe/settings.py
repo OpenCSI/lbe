@@ -42,8 +42,8 @@ MONGODB_SERVER = {
 'PASSWORD': 'password',
 }
 
-# The PAGINATION Variabme enables to set the number of Objects
-# which are visible for 1 page used as weel for LBE and the Reconciliation.
+# The PAGINATION Variable enables to set the number of Objects
+# which are visible for 1 page used as well for LBE and the Reconciliation.
 PAGINATION = 25
 
 # Local time zone for this installation. Choices can be found here:

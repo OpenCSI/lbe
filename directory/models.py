@@ -158,11 +158,6 @@ class LBEGroup(models.Model):
     synced_at = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
     approval = models.SmallIntegerField(default=0)
     instanceNameAttribute = models.ForeignKey(LBEAttribute, default=1) # 1= cn
-    # Reconciliation Policy:
-    reconciliation_object_missing_policy = models.IntegerField(default=0,
-                                                               choices=CHOICE_RECONCILIATION_OBJECT_MISSING_POLICY)
-    reconciliation_object_different_policy = models.IntegerField(default=0,
-                                                                 choices=CHOICE_RECONCILIATION_OBJECT_DIFFERENT_POLICY)
 
 
 class log(models.Model):

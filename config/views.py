@@ -464,12 +464,7 @@ def addGroup(request):
             messages.add_message(request,messages.ERROR, "Error to save the Group.")
     else:
         form = LBEGroupForm()
-    info_missing_policy = "Variable used for setting if the Object is deleted into the Target or <br> if we need to add "
-    info_missing_policy += " to the Backend"
-    info_different_policy = "Variable enables to set which Server, we need to upgrade values:<br> If the value is TARGET"
-    info_different_policy += ", then the Backend object will replace the Target object <br>else, the opposite."
-    return render_to_response('config/group/create.html', {'groupForm': form,'info_missing_policy': info_missing_policy,
-                                                          'info_different_policy': info_different_policy},
+    return render_to_response('config/group/create.html', {'groupForm': form},
                               context_instance=RequestContext(request))
 
 
@@ -501,13 +496,7 @@ def manageGroup(request, group_id=None):
             group_id = groups[0].id
         except BaseException:
             pass
-    info_missing_policy = "Variable used for setting if the Object is deleted into the Target or <br> if we need to add "
-    info_missing_policy += " to the Backend"
-    info_different_policy = "Variable enables to set which Server, we need to upgrade values:<br> If the value is TARGET"
-    info_different_policy += ", then the Backend object will replace the Target object <br>else, the opposite."
     info_change_object = "By changing the Object Template, all employees's group will be removed."
     return render_to_response('config/group/modify.html',{'groupForm':form,'groups':groups,'group_id':group_id,
-                                                          'info_missing_policy': info_missing_policy,
-                                                          'info_different_policy': info_different_policy,
                                                           'info_change_object': info_change_object},
                               context_instance=RequestContext(request))
