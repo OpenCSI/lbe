@@ -182,10 +182,15 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/django/lbe.log',
+            },
     },
     'loggers': {
         '': {
-            'handlers': ['console'],
+            'handlers': ['console'], #, 'file'], # uncomment it if you want to log all error into file, you need to create the file & directory and check the right
             'level': 'ERROR',
             'propagate': True,
         },
