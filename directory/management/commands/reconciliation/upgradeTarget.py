@@ -126,6 +126,13 @@ class UpgradeTarget():
                     # TODO: We should have a target exception rather ldap
                     except ldap.ALREADY_EXISTS:
                         print "    |-> Object '\033[35m" + objectInstance.displayName + "'\033[0m already exists"
+                        changes = {}
+                        changes['status'] = OBJECT_STATE_SYNCED
+                        changes['changes'] = {}
+                        changes['changes']['set'] = {}
+                        changes['changes']['type'] = -1
+                        changes['synced_at'] = django.utils.timezone.now()
+                        self.backend.updateObject(objectTemplate, objectInstance, changes)
                         pass
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
                     try:
