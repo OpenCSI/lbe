@@ -182,11 +182,11 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/django/lbe.log',
-            },
+        #'file': {
+        #    'level': 'INFO',
+        #    'class': 'logging.FileHandler',
+        #    'filename': '/var/log/django/lbe.log',
+        #    },
     },
     'loggers': {
         '': {
