@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import sys
 import logging
 
-from pymongo import Connection, errors
+
+from pymongo import Connection
 from django.conf import settings
 
-from directory.models import LBEObjectInstance, OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_DELETED, OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT
+from directory.models import OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT
 
 #from services.backend import BackendHelper
 
@@ -19,7 +19,6 @@ class MongoService:
     def __init__(self):
         self.handler = Connection(settings.MONGODB_SERVER['HOST'], settings.MONGODB_SERVER['PORT'])
         self.db = self.handler[settings.MONGODB_SERVER['DATABASE']]
-        # [TODO]: Check for login & password to connect mongoDB Server.
         if not settings.MONGODB_SERVER['USER'] == '':
             try:
                 self.db.authenticate(settings.MONGODB_SERVER['USER'],settings.MONGODB_SERVER['PASSWORD'])
@@ -53,12 +52,25 @@ class MongoService:
         except BaseException as e:
             logger.error('Error while creating document: ' + e.__str__())
 
+    def modifyGroup(self, groupInstanceHelper, oldObjectTemplate, oldNameObjectTemplate):
+        db = self.db["groups"]
+        try:
+            # check if objectTemplate is changed
+            if not oldObjectTemplate.id == groupInstanceHelper.template.id:
+                groupInstanceHelper.instance.changes['set'][groupInstanceHelper.attributeName] = []
+            # new name
+            if not oldNameObjectTemplate == groupInstanceHelper.template.displayName:
+                groupInstanceHelper.instance.changes['set']['cn'] = groupInstanceHelper.template.displayName
+            #return db.update() # TODO
+        except BaseException as e:
+            print e
+
     def approvalDocument(self, collection, ID):
         db = self.db[collection]
         try:
             return db.update({'_id': ID}, {'$set': {'status': OBJECT_STATE_AWAITING_SYNC}})
         except BaseException as e:
-            logger.error('Error while approvaling document: ' + e.__str__())
+            logger.error('Error while approval document: ' + e.__str__())
 
     def update_id(self, collection, document, new_id):
         db = self.db[collection]

@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
 import sys
 import logging
-
-from django.forms.formsets import formset_factory
-
 from services.backend import BackendHelper
 
 
 logger = logging.getLogger(__name__)
 from django.contrib import messages
 from django.http import QueryDict
-from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, ATTRIBUTE_TYPE_REFERENCE, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
+from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
 from services.backend import BackendObjectAlreadyExist
 
 
-class LBEObjectInstanceHelper():
+class LBEObjectInstanceHelper(object):
     def __init__(self, lbeObjectTemplate, lbeObjectInstance=None):
-        self.template = lbeObjectTemplate
         self.template = lbeObjectTemplate
         self.instance = lbeObjectInstance
         self.scriptInstance = None
@@ -68,7 +64,7 @@ class LBEObjectInstanceHelper():
         for key in data:
             if len(data.getlist(key)) == 1:
                 query[key] = data[key]
-            else: # compress MultiValue:
+            else:  # compress MultiValue:
                 query[key] = '\0'.join(str(val) for val in data.getlist(key))
         return query
 
@@ -209,7 +205,7 @@ class LBEObjectInstanceHelper():
 
     def getValues(self, UID):
         """
-		Fonction enables to get values from attributes fields and
+		Function enables to get values from attributes fields and
 		changes.set fields, return the new values (changes.set > attributes)
         """
         try:
@@ -245,7 +241,7 @@ class LBEObjectInstanceHelper():
 
     def getValuesDecompressed(self, UID):
         """
-		Fonction enables to get values from attributes fields and
+		Function enables to get values from attributes fields and
 		changes.set fields, return the new values (changes.set > attributes)
         """
         self._backend()

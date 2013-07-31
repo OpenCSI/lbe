@@ -8,7 +8,7 @@
         i = 0;
         function addField(attribute, value) {
             value = value.replace('id="id_' + attribute + '"', 'id=' + attribute + '_' + i)
-            value = value.replace(/value=".*"/, 'value=""')
+            value = value.replace(/value=".*" /, 'value=""')
             $('.' + attribute).append('<span style="display:block;" class="span_' + attribute + '_' + i + '">' + value + ' <a href="#" class="btn btn-inverse" id="btn_' + attribute + '_' + i + '" onClick="remove(\'' + attribute + '_' + i + '\');return false">-</a></span>')
             i++
         }
@@ -66,6 +66,7 @@
                                                                                  onClick="addField('{{ mv }}',
                                                                                          '{% filter force_escape %}{% spaceless %}{{ field }}{% endspaceless %}{% endfilter %}');">+</a>
                 <div class="{{ mv }}"></div>
+
                 <script>multivalue("{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}", "{{mv}}", "{{field.data|default_if_none:""}}");</script>
             {% endif %} {% endfor %}
                 {% for error in field.errors %}

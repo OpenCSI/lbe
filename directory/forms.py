@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 
 from django import forms
 from django.forms import ModelForm, ModelChoiceField
-from django.forms.util import ErrorList
 
 from directory.models import *
 from services.backend import BackendHelper
@@ -23,7 +21,7 @@ class LBEObjectTemplateForm(ModelForm):
 
     class Meta:
         model = LBEObjectTemplate
-        exclude = ( 'attributes', 'imported_at', 'version', 'instanceNameBeforeAttribute', 'needReconciliationRDN' )
+        exclude = ( 'attributes', 'imported_at', 'version', 'instanceNameBeforeAttribute', 'needReconciliationRDN')
 
         # Implements validator for approval field (must >= 0)
     def clean_approval(self):
@@ -65,7 +63,7 @@ class LBEAttributeInstanceForm(ModelForm):
             widgetArgs = eval(self.cleaned_data['widgetArgs'])
             # Test if Widget arguments are correct:
             exec 'self.fields["test"] = ' + self.cleaned_data['widget'] + '(' + str(widgetArgs) + ')'
-            return widgetArgs
+            return self.cleaned_data['widgetArgs']
         except BaseException as e:
             raise forms.ValidationError(e)
 
@@ -111,6 +109,7 @@ class LBEScriptForm(ModelForm):
 class LBEScriptManageForm(forms.Form):
     script = LBEModelChoiceField(queryset=LBEScript.objects.all())
     test = forms.CharField(max_length=64)
+
     # script selected exists:
     def clean_script(self):
         value = self.cleaned_data['script']
@@ -186,6 +185,40 @@ class LBEReferenceForm(ModelForm):
             raise forms.ValidationError("This field must be an attribute own by the object.")
         return objectAttribute
 
+
+class LBEGroupForm(ModelForm):
+    class Meta:
+        model = LBEGroup
+        exclude = ('version', 'imported_at', 'approval', 'name', 'instanceNameAttribute')
+
+
+
+class LBEGroupInstanceForm(forms.Form):
+    def __init__(self, groupHelper, lbeObjectTemplate, *args, **kwargs):
+        #from services.group import GroupInstanceHelper
+        super(LBEGroupInstanceForm, self).__init__(*args, **kwargs)
+        self.template = lbeObjectTemplate
+        self.groupHelper = groupHelper # for attribute class group
+        self.fields[self.groupHelper.attributeName] = forms.CharField()
+
+    def clean(self):
+        if not self.cleaned_data == {}: # no value 
+            tab = []
+            backend = BackendHelper()
+            values = backend.searchObjects(self.template)
+            list = []
+            for value in values:
+                if value.changes['set'] == {}:
+                    list.append(value.attributes[self.template.instanceNameAttribute.name][0])
+                else:
+                    list.append(value.changes['set'][self.template.instanceNameAttribute.name][0])
+            for value in self.cleaned_data[self.groupHelper.attributeName].split('\0'):
+                if not value == "":
+                    if not value in list:
+                        raise forms.ValidationError("'" + value + "' is not into " + self.template.displayName)
+                    tab.append(value)
+            return tab
+        return self.cleaned_data
 
 class LBEACLForm(ModelForm):
     class Meta:

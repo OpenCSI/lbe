@@ -38,7 +38,7 @@ MONGODB_SERVER = {
 'HOST': 'localhost',
 'PORT': 27017,
 'DATABASE': 'lbe',
-'USER': '', # In order to not use the auth service, just put the USER value to blank.
+'USER': 'lbe', # In order to not use the auth service, just put the USER value to blank.
 'PASSWORD': 'password',
 }
 
@@ -126,6 +126,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
 
 ROOT_URLCONF = 'lbe.urls'
 

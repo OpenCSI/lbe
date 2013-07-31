@@ -1,3 +1,4 @@
+{% load url from future %}
 <div class="navbar">
     <div class="navbar-inner">
         <div class="container">
@@ -5,9 +6,45 @@
 
             <div class="nav-collapse">
 
-                <ul class="nav">
+                <ul class="nav nav-pills">
                     <li><a href="/">Index</a></li>
                     <li><a href="/admin/">Admin</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Object<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'config.views.addObject' %}">Add Object</a></li>
+                            <li><a href="{% url 'config.views.listObjects' %}">List Objects</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Group<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{%  url 'config.views.addGroup' %}">Add Group</a></li>
+                            <li><a href="{%  url 'config.views.manageGroup' %}">Manage Groups</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Attribute<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'config.views.addAttribute' %}">Add Attribute</a></li>
+                            <li><a href="{% url 'config.views.modifyAttribute' %}">Manage Attribute</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">ACLs<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'config.views.addACL' %}">Add ACL</a></li>
+                            <li><a href="{% url 'config.views.manageACL' %}">Manage ACL</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Script<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'config.views.addScript' %}">Add Script</a></li>
+                            <li><a href="{% url 'config.views.manageScript' %}">Manage Script</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Reference<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/config/reference/add/">Add Reference</a></li>
+                            <li><a href="/config/reference/modify/">Modify Reference</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <ul class="nav pull-right">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">

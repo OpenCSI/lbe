@@ -2,13 +2,12 @@
 import ldap
 import logging
 import datetime
-import base64
 from ldap import modlist
 
 from dao.LdapDao import LDAPDAO
-from directory.models import LBEObjectTemplate, LBEObjectInstance, OBJECT_STATE_IMPORTED
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED
 from services.object import LBEObjectInstanceHelper
-
+from services.group import GroupInstanceHelper
 
 logger = logging.getLogger(__name__)
 
@@ -135,22 +134,38 @@ class TargetLDAPImplementation():
             objectInstance = LBEObjectInstance(lbeObjectTemplate,
                                                name=entry[lbeObjectTemplate.instanceNameAttribute.name][0])
             # Add attributes defined in the template. Other ones are ignored
-            for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
+            try:  # Object
+                for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all():
+                    try:
+                        objectInstance.attributes[attributeInstance.lbeAttribute.name] = entry[
+                            attributeInstance.lbeAttribute.name]
+                    except KeyError, e:
+                        logger.warning(
+                            'The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in LDAP object: ' + dn)
+                    # Set displayName and few others attributes
+                objectInstance.displayName = entry[lbeObjectTemplate.instanceDisplayNameAttribute.name][0]
+                objectInstance.status = OBJECT_STATE_IMPORTED
+                objectInstance.created_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
                 try:
-                    objectInstance.attributes[attributeInstance.lbeAttribute.name] = entry[
-                        attributeInstance.lbeAttribute.name]
-                except KeyError, e:
-                    logger.warning(
-                        'The attribute ' + attributeInstance.lbeAttribute.name + ' does not exist in LDAP object: ' + dn)
-                # Set displayName and few others attributes
-            objectInstance.displayName = entry[lbeObjectTemplate.instanceDisplayNameAttribute.name][0]
-            objectInstance.status = OBJECT_STATE_IMPORTED
-            objectInstance.created_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
-            try:
-                objectInstance.updated_at = datetime.datetime.strptime(entry['modifyTimestamp'][0], '%Y%m%d%H%M%SZ')
-            except KeyError:
-                objectInstance.updated_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
-            result_set.append(objectInstance)
+                    objectInstance.updated_at = datetime.datetime.strptime(entry['modifyTimestamp'][0], '%Y%m%d%H%M%SZ')
+                except KeyError:
+                    objectInstance.updated_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
+                result_set.append(objectInstance)
+            except AttributeError:  # Group:
+                groupInstance = GroupInstanceHelper(lbeObjectTemplate)
+                objectInstance.displayName = entry['cn'][0]
+                objectInstance.attributes[u'cn'] = entry['cn']
+                if groupInstance.attributeName in entry:
+                    objectInstance.attributes[groupInstance.attributeName] = entry[groupInstance.attributeName]
+                else:
+                    objectInstance.attributes[groupInstance.attributeName] = []
+                objectInstance.status = OBJECT_STATE_IMPORTED
+                objectInstance.created_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
+                try:
+                    objectInstance.updated_at = datetime.datetime.strptime(entry['modifyTimestamp'][0], '%Y%m%d%H%M%SZ')
+                except KeyError:
+                    objectInstance.updated_at = datetime.datetime.strptime(entry['createTimestamp'][0], '%Y%m%d%H%M%SZ')
+                result_set.append(objectInstance)
         return result_set
 
     def create(self, lbeObjectTemplate, lbeObjectInstance):
@@ -185,7 +200,6 @@ class TargetLDAPImplementation():
         newDN = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]
         self.handler.changeRDN(dn, newDN.encode("utf-8"))
 
-
     def update(self, lbeObjectTemplate, lbeObjectInstance):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
         # RDN Attribute:
@@ -197,14 +211,14 @@ class TargetLDAPImplementation():
             0].attributes
         # Need to check if the RDN changed:
         if not lbeObjectInstance.attributes[rdnAttributeName][0] == lbeObjectInstance.changes['set'][rdnAttributeName][
-            0]:
+            0] and not lbeObjectInstance.changes['set'][rdnAttributeName][0] == '':
             newDN = rdnAttributeName + '=' + lbeObjectInstance.changes['set'][rdnAttributeName][0]
             self.handler.changeRDN(dn, newDN.encode("utf-8"))
             dn = newDN + ',' + objectHelper.callScriptClassMethod('base_dn')
             # Update:
         for key, value in lbeObjectInstance.changes['set'].items():
             noKey = not LDAPValues.has_key(key)# key exists into the object target?
-            if noKey or not value == LDAPValues[key]:
+            if noKey or not value == LDAPValues[key] and not value[0] == '':
                 # 1 value: Replace
                 if len(value) == 1:
                     if noKey:

@@ -2,7 +2,6 @@
 import re
 
 from django.shortcuts import render_to_response
-from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 
 from services.backend import BackendHelper

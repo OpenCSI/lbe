@@ -1,7 +1,5 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from directory import views
-from account import views
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -22,6 +20,10 @@ urlpatterns = patterns('',
                            'directory.views.viewObjectInstance'),
                        url(r'^directory/object/approval/(?P<lbeObject_id>\d+)/(?P<objectName>.+)$',
                            'directory.views.approvalObjectInstance'),
+                       url(r'^directory/group/?$','directory.views.viewAllGroup'),
+                       url(r'^directory/group/view/(?P<group_id>\d+)$','directory.views.viewGroup'),
+                       url(r'^directory/group/manage/(?P<group_id>\d+)$','directory.views.manageGroup'),
+                       url(r'^directory/group/delete/(?P<group_id>\d+)$','directory.views.deleteGroup'),
 
                        url(r'^config/?$', 'directory.views.index'),
                        url(r'^config/attribute/add/?$', 'config.views.addAttribute'),
@@ -51,9 +53,14 @@ urlpatterns = patterns('',
                        url(r'^config/script/add/?$', 'config.views.addScript'),
                        url(r'^config/script/manage/(?P<scriptId>\d+)?$', 'config.views.manageScript'),
 
+                       url(r'^config/group/add/?$', 'config.views.addGroup'),
+                       url(r'^config/group/manage/(?P<group_id>\d+)?$', 'config.views.manageGroup'),
+
                        url(r'^ajax/config/acl/check/(?P<query>.*)$', 'config.views.checkACL_AJAX'),
                        url(r'^ajax/config/object/showAttribute/(?P<attribute>\D+)?/(?P<value>\D+)?$',
                            'config.views.showAttributeAJAX'),
+                       url(r'^ajax/directory/group/manage/user/(?P<group_id>\d+)/(?P<name>.*)$',
+                           'directory.views.viewUserObjectAJAX'),
 
                        (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'auth/login.html'}),
                        (r'^accounts/logout/$', 'django.contrib.auth.views.logout',

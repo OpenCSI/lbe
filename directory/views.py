@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import math
+import json
 
 from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import SortedDict
@@ -7,13 +8,12 @@ from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib import messages
-from django.forms.formsets import formset_factory
 from django.conf import settings
-from django import forms
 
 from directory.models import *
 from directory.forms import *
 from services.object import LBEObjectInstanceHelper
+from services.group import GroupInstanceHelper
 from services.backend import BackendHelper, BackendObjectAlreadyExist
 
 
@@ -203,10 +203,93 @@ def searchAJAX(request, lbeObject_id, search):
         return HttpResponse('/')
     backend = BackendHelper()
     objects = backend.searchObjectsByPattern(LBEObjectTemplate.objects.get(id=lbeObject_id), search)
-    print objects
     return render_to_response('ajax/directory/search.html', {'lbeObjectId': lbeObject_id, 'objects': objects},
                               context_instance=RequestContext(request))
 
+
+@login_required
+def viewAllGroup(request):
+    groups = LBEGroup.objects.all()
+    groupsInstance = []
+    for group in groups:
+        groupInstance = GroupInstanceHelper(group)
+        try:
+            groupsInstance.append(groupInstance.get())
+        except BaseException as e:
+            print e
+            pass
+    return render_to_response('directory/default/group/index.html', {'groups': groupsInstance},
+                              context_instance=RequestContext(request))
+
+
+@login_required
+def viewGroup(request, group_id):
+    groupList = []
+    groupName = ''
+    object_id = 0
+    try:
+        lbeGroup = LBEGroup.objects.get(id=group_id)
+        groupInstance = GroupInstanceHelper(lbeGroup)
+        groupValues = groupInstance.get()
+        groupName = groupValues.name
+        object_id = lbeGroup.objectTemplate.id
+        if not groupInstance.attributeName in groupValues.changes['set'] or groupValues.changes['set'][groupInstance.attributeName] == []:
+            groupList = groupValues.attributes[groupInstance.attributeName]
+        else:
+            groupList = groupValues.changes['set'][groupInstance.attributeName]
+    except BaseException as e:
+        print e
+        groupValues = []
+    return render_to_response('directory/default/group/view.html', {'groupName': groupName, 'groupList': groupList,
+                               'group_id': group_id, 'object_id': object_id},
+                               context_instance=RequestContext(request))
+
+
+@login_required
+def manageGroup(request, group_id):
+    try:
+        lbeGroup = LBEGroup.objects.get(id=group_id)
+        groupInstance = GroupInstanceHelper(lbeGroup)
+        if request.method == "POST":
+            form = groupInstance.form(request.POST)
+            if form.is_valid():
+                groupInstance.save()
+                messages.add_message(request, messages.SUCCESS, "The Group is successfully saved.")
+            else:
+                messages.add_message(request, messages.ERROR, "Error to save the group '" + lbeGroup.name + "'")
+        else:
+            form = groupInstance.form()
+    except BaseException as e:
+        print e
+    return render_to_response('directory/default/group/manage.html', {'form': form, 'group_id': group_id,
+                              'attributeName': lbeGroup.objectTemplate.instanceNameAttribute.displayName,
+                              'attributeMember': groupInstance.attributeName},
+                              context_instance=RequestContext(request))
+
+
+@login_required
+def deleteGroup(request, group_id):
+    try:
+        group = LBEGroup.objects.get(id=group_id)
+        instanceHelper = GroupInstanceHelper(group)
+        instanceHelper.remove()
+        messages.add_message(request,messages.SUCCESS, "group '" + group.name + "' removed.")
+    except BaseException as e:
+        print e
+        pass
+    return HttpResponseRedirect('/directory/group')
+
+
+@login_required
+def viewUserObjectAJAX(request, group_id, name):
+    if request.is_ajax():
+        group = LBEGroup.objects.get(id=group_id)
+        backend = BackendHelper()
+        objects = backend.searchObjectsByPattern(group.objectTemplate, name)
+        list = []
+        for o in objects:
+            list.append(o.name)
+        return HttpResponse(json.dumps(list), mimetype="application/json")
 
 def page404(request):
     return render_to_response('error/request.html',

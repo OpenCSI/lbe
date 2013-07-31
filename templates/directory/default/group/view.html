@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% block content %}
+    <h3>{{ groupName }}</h3>
+    <table class="table">
+    <thead>
+        <th>User Name</th>
+    </thead>
+    <tbody>
+        {%  for instance in groupList %}
+            <tr><td><a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=object_id objectName=instance %}">{{ instance }}</a></td></tr>
+        {%  empty %}
+            <tr><td style="text-align: center"><i>No members.</i></td></tr>
+        {%  endfor %}
+    </tbody>
+    </table>
+    <center><a href="{% url 'directory.views.manageGroup' group_id=group_id %}" class="btn btn-primary">Modify</a></center>
+{%  endblock %}

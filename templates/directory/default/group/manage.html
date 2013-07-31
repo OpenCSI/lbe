@@ -1,0 +1,109 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% block content %}
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
+        i = 0;
+        function addField(attribute, value) {
+            value = value.replace('id="id_' + attribute + '"', 'id=' + attribute + '_' + i)
+            value = value.replace(/value=".*" /, 'value=""')
+            $('.' + attribute).append('<span style="display:block;" class="span_' + attribute + '_' + i + '">' + value + ' <a href="#" class="btn btn-inverse" id="btn_' + attribute + '_' + i + '" onClick="remove(\'' + attribute + '_' + i + '\');return false">-</a></span>')
+            addEvent_onKeyUp(attribute + '_' + i)
+            i++
+        }
+
+        function remove(key) {
+            $('#' + key).val('')
+            $('#' + key).hide()
+            $('#btn_' + key).hide()
+            $('.span_' + key).hide()
+        }
+
+        function addEvent_onKeyUp(attribute){
+            $('#' + attribute).attr("onKeyUp","auto_complete('"+attribute+"')")
+        }
+
+        function auto_complete(attribute){
+            $('#' + attribute).autocomplete({
+                source: function(request,response){
+                    $.ajax({
+                        url: '/ajax/directory/group/manage/user/{{ group_id }}/' + $('#'+attribute).val(),
+                        dataType: "json",
+                        success: function( data ) {
+                            response( $.map( data, function( item ) {
+                                return {
+                                    label: item,
+                                    value: item
+                                }
+                            }));
+                        }
+                    });
+                }
+            });
+        }
+
+        function clone(obj) {
+            // Handle the 3 simple types, and null or undefined
+            if (null == obj || "object" != typeof obj) return obj;
+
+            // Handle Object
+            if (obj instanceof Object) {
+                var copy = {};
+                for (var attr in obj) {
+                    if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+                }
+                return copy;
+            }
+
+            throw new Error("Unable to copy obj! Its type isn't supported.");
+        }
+
+        function multivalue(field, key, values) {
+            tab = values.split("�");// [FIXME]: check for better value coded.
+            fields = '';
+            for (num in tab) {
+                if (i == 0)
+                    $('#id_' + key).val(tab[num])
+                else {
+                    if (tab[num] != '') {
+                        $add = $('#id_' + key).clone()
+                        $add.attr("id", key + '_' + i)
+                        $add.val(tab[num])
+                        $('.' + key).append($add)
+                        addEvent_onKeyUp(key + '_' + i)
+                        $('.' + key).append(' <a href="#" class="btn btn-inverse" id="btn_' + key + '_' + i
+                                + '" onClick="remove(\'' + key + '_' + i + '\');return false">-</a>')
+                        $('.' + key).append('<br>')
+                    }
+                }
+                i++;
+            }
+        }
+    </script>
+
+<h3>{{ groupName }}</h3>
+    <div class="alert"><b>Attention:</b> In order to add <i>Employee</i> to the Group, you need to enter his <b>{{ attributeName }}</b>.</div>
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+    <form method="POST">
+    {% csrf_token %}
+    <table class="table">
+        {% for field in form.visible_fields %}
+    <tr>
+        <th>Employee</th>
+        <td>{{ field }}<script type="text/javascript">addEvent_onKeyUp('id_{{ field.name }}')</script>
+            <a class="btn btn-primary"
+               onClick="addField('{{ field.name }}','{% filter force_escape %}{% spaceless %}{{ field }}{% endspaceless %}{% endfilter %}');">+</a>
+            <div class="{{ attributeMember }}"></div>
+            <script>multivalue("{% filter force_escape %}{% spaceless %}{{field}}{% endspaceless %}{% endfilter %}", "{{ attributeMember }}", "{{field.data|default_if_none:""}}");</script>
+            {% for error in field.errors %}
+                <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+        </td>
+    </tr>
+        {% endfor %}
+    </table>
+        <center><input type="submit" class="btn"/></center>
+    </form>
+{% endblock %}

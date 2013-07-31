@@ -2,7 +2,6 @@
 import datetime
 
 from django.db import models
-from django import forms
 from django.utils.timezone import utc
 
 # Object status
@@ -149,6 +148,23 @@ class LBEDirectoryACL(models.Model):
     condition = models.CharField(max_length=100)
 
 
+class LBEGroup(models.Model):
+    name = models.CharField(default='groups', max_length=10)
+    displayName = models.CharField(max_length=25, blank=False,unique=True)
+    objectTemplate = models.ForeignKey(LBEObjectTemplate)
+    version = models.SmallIntegerField(default=0)
+    script = models.ForeignKey(LBEScript, default=1)
+    imported_at = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
+    synced_at = models.DateTimeField(default=datetime.datetime.fromtimestamp(0, utc))
+    approval = models.SmallIntegerField(default=0)
+    instanceNameAttribute = models.ForeignKey(LBEAttribute, default=1) # 1= cn
+    # Reconciliation Policy:
+    reconciliation_object_missing_policy = models.IntegerField(default=0,
+                                                               choices=CHOICE_RECONCILIATION_OBJECT_MISSING_POLICY)
+    reconciliation_object_different_policy = models.IntegerField(default=0,
+                                                                 choices=CHOICE_RECONCILIATION_OBJECT_DIFFERENT_POLICY)
+
+
 class log(models.Model):
     type = models.CharField(max_length=32)
     level = models.CharField(max_length=24)
@@ -159,7 +175,7 @@ class log(models.Model):
         return str(self.level + ': ' + self.message)
 
 # Fake model class, doesn't exists in the database. Used for abstraction
-class LBEObjectInstance:
+class LBEObjectInstance(object):
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
         # List of fields (useful for completion too)
         self.template = lbeObjectTemplate
@@ -177,8 +193,13 @@ class LBEObjectInstance:
         self.name = None
         self.displayName = None
 
-        for key, value in kwargs.iteritems():
-            setattr(self, key, value)
+        if not kwargs == {}:
+            for key, value in kwargs.iteritems():
+                setattr(self, key, value)
+        else:
+            for key, value in args[1].iteritems():
+                setattr(self, key, value)
+
 
     def __unicode__(self):
         return 'name: ' + self.name + ', displayName: ' + self.displayName + ', attributes: ' + self.attributes
@@ -193,3 +214,14 @@ class LBEObjectInstance:
                 'synced_at': self.synced_at,
                 'changes': {'type': self.changes['type'], 'set': self.changes['set']},
         }
+
+
+# Fake class too
+class LBEGroupInstance(LBEObjectInstance):
+    def __init__(self, lbeGroupTemplate, *args, **kwargs):
+        super(LBEGroupInstance, self).__init__(lbeGroupTemplate, args, kwargs)
+        self.name = self.template.displayName
+        self.displayName = self.template.displayName
+
+    def __unicode__(self):
+        return 'name: ' + self.template.name

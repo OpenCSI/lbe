@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+{% block content %}
+    <h4>Create a group:</h4>
+    <form method="POST">
+        {% csrf_token %}
+        {% include 'config/group/form.html' %}
+    </form>
+{%  endblock %}

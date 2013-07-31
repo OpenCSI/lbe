@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
-import datetime
 
 from pymongo import errors
-from django.utils.timezone import utc
 from django.conf import settings
 
 from dao.MongoDao import MongoService
@@ -29,11 +27,11 @@ class BackendInvalidCredentials(Exception):
 def DocumentsToLBEObjectInstance(lbeObjectInstance, documents):
     result_set = []
     for document in documents:
-        instance = LBEObjectInstance(lbeObjectInstance, \
-                                     name=document['_id'], \
-                                     displayName=document['displayName'], \
-                                     attributes=document['attributes'], \
-                                     status=document['status'], \
+        instance = LBEObjectInstance(lbeObjectInstance,
+                                     name=document['_id'],
+                                     displayName=document['displayName'],
+                                     attributes=document['attributes'],
+                                     status=document['status'],
                                      changes=document['changes']
         )
         result_set.append(instance)
@@ -80,6 +78,9 @@ class BackendMongoImpl:
         else:
             awaiting = OBJECT_STATE_IMPORTED
         return self.handler.createDocument(awaiting, lbeObjectTemplate.name, lbeObjectInstance.toDict())
+
+    def modifyGroup(self, lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate):
+        return self.handler.modifyGroup(lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate)
 
     """
 		Used in Reconciliation:
@@ -141,6 +142,16 @@ class BackendMongoImpl:
         else:
             value['status'] = {}
             value['status']['$gt'] = OBJECT_STATE_INVALID
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate,
+                                            self.handler.searchDocuments(lbeObjectTemplate.name, value, 0, 0))
+
+    def searchObjectsBy(self, lbeObjectTemplate, attributeName, pattern):
+        value = {}
+        _valid = {'status': {'$gt': OBJECT_STATE_INVALID}}
+        _search = {'attributes.' + attributeName: {'$regex': pattern}}
+        value['$and'] = []
+        value['$and'].insert(0, _search)
+        value['$and'].insert(1, _valid)
         return DocumentsToLBEObjectInstance(lbeObjectTemplate,
                                             self.handler.searchDocuments(lbeObjectTemplate.name, value, 0, 0))
 
