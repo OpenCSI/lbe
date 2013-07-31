@@ -181,7 +181,7 @@ class UpgradeTarget():
                         ###############################################
                         if not groupInstance.changes['set'] == {}:
                             groupInstance.changes['set'][grp.attributeName] = self._getID(groupInstance.changes['set'][grp.attributeName])
-                            groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
+                            groupInstance.attributes['cn'] = groupInstance.changes['set']['cn']
                             self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}, 'type': -1}})
                         ###############################################
                     except ldap.ALREADY_EXISTS:
@@ -193,7 +193,7 @@ class UpgradeTarget():
                         self._modifyObject(groupTemplate, groupInstance)
                         ###############################################
                         groupInstance.changes['set'][grp.attributeName] = self._getID(groupInstance.changes['set'][grp.attributeName])
-                        groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
+                        groupInstance.attributes['cn'] = groupInstance.changes['set']['cn']
                         self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}, 'type': -1}})
                         ###############################################
                     except BaseException as e:
@@ -203,7 +203,7 @@ class UpgradeTarget():
                         self._createObject(groupTemplate, groupInstance)
                         ###############################################
                         groupInstance.changes['set'][grp.attributeName] = self._getID(groupInstance.changes['set'][grp.attributeName])
-                        groupInstance.changes['set']['cn'] = groupInstance.attributes['cn']
+                        groupInstance.attributes['cn'] = groupInstance.changes['set']['cn']
                         self.backend.updateObject(groupTemplate, groupInstance, {'changes': {'set': {'cn': [groupInstance.displayName]}, 'type': -1}})
                         ###############################################
                 elif groupInstance.changes['type'] == OBJECT_CHANGE_DELETE_OBJECT:
