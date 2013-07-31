@@ -479,7 +479,7 @@ def manageGroup(request, group_id=None):
         groups = LBEGroup.objects.all()
         group = LBEGroup.objects.get(id=group_id)
         oldObjectTemplate = group.objectTemplate
-        oldNameObjectTemplate = group.name
+        oldNameObjectTemplate = group.displayName
         if request.method == "POST":
             POST = request.POST.copy()
             POST['synced_at'] = group.synced_at

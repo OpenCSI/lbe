@@ -5,7 +5,8 @@ import logging
 from pymongo import Connection
 from django.conf import settings
 
-from directory.models import OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_OBJECT, OBJECT_CHANGE_DELETE_OBJECT
+from directory.models import OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_OBJECT,\
+    OBJECT_CHANGE_DELETE_OBJECT, OBJECT_STATE_SYNCED, OBJECT_STATE_AWAITING_APPROVAL
 
 #from services.backend import BackendHelper
 
@@ -52,16 +53,35 @@ class MongoService:
         except BaseException as e:
             logger.error('Error while creating document: ' + e.__str__())
 
-    def modifyGroup(self, groupInstanceHelper, oldObjectTemplate, oldNameObjectTemplate):
+    def modifyGroup(self, groupInstanceHelper, oldObjectTemplate, oldNameGroup):
         db = self.db["groups"]
         try:
             # check if objectTemplate is changed
-            if not oldObjectTemplate.id == groupInstanceHelper.template.id:
+            if not oldObjectTemplate.id == groupInstanceHelper.template.objectTemplate.id:
                 groupInstanceHelper.instance.changes['set'][groupInstanceHelper.attributeName] = []
+            else:
+                # get the members changes.set value
+                documents = db.find({'_id': oldNameGroup})
+                for document in documents:
+                    try:
+                        if document['status'] == OBJECT_STATE_SYNCED:
+                            groupInstanceHelper.instance.changes['set'][groupInstanceHelper.attributeName] = document['attributes'][groupInstanceHelper.attributeName]
+                        else:
+                            groupInstanceHelper.instance.changes['set'][groupInstanceHelper.attributeName] = document['changes']['set'][groupInstanceHelper.attributeName]
+                        groupInstanceHelper.instance.attributes = document['attributes']
+                    except BaseException:  # no key value
+                        groupInstanceHelper.instance.changes['set'][groupInstanceHelper.attributeName] = []
             # new name
-            if not oldNameObjectTemplate == groupInstanceHelper.template.displayName:
-                groupInstanceHelper.instance.changes['set']['cn'] = groupInstanceHelper.template.displayName
-            #return db.update() # TODO
+            if not oldNameGroup == groupInstanceHelper.template.displayName:
+                groupInstanceHelper.instance.changes['set']['cn'] = [groupInstanceHelper.template.displayName]
+            db.update({'_id': oldNameGroup}, {
+                '$set': {'changes': {'set': groupInstanceHelper.instance.changes['set'], 'type': OBJECT_CHANGE_UPDATE_OBJECT},
+                         'displayName': groupInstanceHelper.template.displayName,
+                         'updated_at': datetime.datetime.now(utc), 'status': OBJECT_STATE_AWAITING_SYNC}})
+            groupInstanceHelper.instance.name = oldNameGroup
+            groupInstanceHelper.instance.status = OBJECT_STATE_AWAITING_SYNC
+            groupInstanceHelper.instance.changes['type'] = OBJECT_CHANGE_UPDATE_OBJECT
+            return self.update_id('groups', groupInstanceHelper.instance, groupInstanceHelper.template.displayName)
         except BaseException as e:
             print e
 

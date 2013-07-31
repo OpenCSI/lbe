@@ -49,38 +49,35 @@ class ImportTarget():
             # Synced object:
             objectTemplate.synced_at = django.utils.timezone.now()
             objectTemplate.save()
-            print '.........................'
-            print 'Checking for Groups which do not exist into LBE but in Target:'
-            number = 0
-            for groupTemplate in LBEGroup.objects.all():
-                groupInstance = GroupInstanceHelper(groupTemplate)
-                grpTarget = self.target.searchObjects(groupTemplate)
-                grpBackend = self.backend.searchObjects(groupTemplate)
-                for gt in grpTarget:
-                    exist = False
-                    for gb in grpBackend:
-                        if gt.name == gb.name:
-                            exist = True
-                            break
-                    if not exist:
-                        number += 1
-                        print 'Adding \033[95m' + gt.name + '\033[0m group into LBE Backend... '
-                        try:
-                            if groupInstance.attributeName in gt.attributes:
-                                gt.attributes[groupInstance.attributeName] = self._getID(gt.attributes[groupInstance.attributeName])
-                            groupHelper = GroupInstanceHelper(groupTemplate, gt)
-                            groupHelper.createTemplate(True)
-                            print "\033[92mDone.\033[0m"
-                        except BaseException as e:
-                            print "\033[91mFail.\033[0m"
-                            print "''''''''"
-                            print e
-                            print "''''''''"
-            if number == 0:
-                print '<None>'
+        print '.........................'
+        print 'Checking for Groups which do not exist into LBE but in Target:'
+        for groupTemplate in LBEGroup.objects.all():
+            groupInstance = GroupInstanceHelper(groupTemplate)
+            grpTarget = self.target.searchObjects(groupTemplate)
+            grpBackend = self.backend.searchObjects(groupTemplate)
+            for gt in grpTarget:
+                exist = False
+                for gb in grpBackend:
+                    if gt.name == gb.name:
+                        exist = True
+                        break
+                if not exist:
+                    print 'Adding \033[95m' + gt.name + '\033[0m group into LBE Backend... '
+                    try:
+                        if groupInstance.attributeName in gt.attributes:
+                            gt.attributes[groupInstance.attributeName] = self._getID(gt.attributes[groupInstance.attributeName])
+                        groupHelper = GroupInstanceHelper(groupTemplate, gt)
+                        groupHelper.createTemplate(True)
+                        print "\033[92mDone.\033[0m"
+                    except BaseException as e:
+                        print "\033[91mFail.\033[0m"
+                        print "''''''''"
+                        print e
+                        print "''''''''"
             # Synced group:
             groupTemplate.synced_at = django.utils.timezone.now()
             groupTemplate.save()
+        print "End."
 
 
 class Command(BaseCommand):

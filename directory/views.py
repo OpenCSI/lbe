@@ -291,6 +291,7 @@ def viewUserObjectAJAX(request, group_id, name):
             list.append(o.name)
         return HttpResponse(json.dumps(list), mimetype="application/json")
 
+
 def page404(request):
     return render_to_response('error/request.html',
                               {'title': '404 Not Found', 'content': 'The page you are looking for does not exist...'},

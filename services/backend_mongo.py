@@ -79,8 +79,8 @@ class BackendMongoImpl:
             awaiting = OBJECT_STATE_IMPORTED
         return self.handler.createDocument(awaiting, lbeObjectTemplate.name, lbeObjectInstance.toDict())
 
-    def modifyGroup(self, lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate):
-        return self.handler.modifyGroup(lbeGroupTemplate, lbeGroupInstance, oldObjectTemplate, oldNameObjectTemplate)
+    def modifyGroup(self, lbeGroupInstanceHelper, oldObjectTemplate, oldNameObjectTemplate):
+        return self.handler.modifyGroup(lbeGroupInstanceHelper, oldObjectTemplate, oldNameObjectTemplate)
 
     """
 		Used in Reconciliation:
