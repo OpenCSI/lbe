@@ -3,7 +3,7 @@
 {% block content %}
     <script type="text/javascript">
         function PopupWindow(strWindowToOpen) {
-            window.open(strWindowToOpen, 'Attribute', config = 'height=520, width=550, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
+            window.open(strWindowToOpen, 'Attribute', config = 'height=570, width=550, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
         }
     </script>
     <div class='row-fluid'>
@@ -44,7 +44,7 @@
                     <td> {{ instance.unique }} </td>
                     <td> {{ instance.reference.name }} </td>
                     <td><a href="#"
-                           onClick="PopupWindow('{% url 'config.views.modifyAttributeToObject' obj_id=lbeObject.id attr_id=instance.id %}');return false;">Modify </a>
+                           onClick="PopupWindow('{% url 'config.views.modifyAttributeToObject' obj_id=lbeObject.id attr_id=instance.id %}');return false;"><i class="icon-edit"></i></a>
                         <a href="#"
                            onClick="if(confirm('Do you want to remove \'{{ instance.lbeAttribute.name }}\' instance?'))window.location.href = '{% url 'config.views.removeInstanceAttribute' obj_id=lbeObject.id attr_id=instance.id %}';"
                            title="Remove from object">

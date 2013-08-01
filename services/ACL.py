@@ -28,10 +28,10 @@ class ACLHelper:
         return self.traceback
 
     """
-        Fonction enables to check if the syntax is correct.
+        Function enables to check if the syntax is correct.
         The query begins by : select from.
         after, it depends on the query:
-        -FROM [obect((,object)+)], example: select from RH,secretary [1]
+        -FROM [object((,object)+)], example: select from RH,secretary [1]
         -object(<type>)=[username((,username)+)], example: select from <object>(<type>)=cjoron,bbonfils [2]
         -Error : [-1]
     """
@@ -243,7 +243,7 @@ class ACLHelper:
                     return int(obj['attributes'][self.attribute][0]) >= self.number
             except:
                 # wrong key
-                self.traceback = "The key " + self.attribute + "does not exist to the Backend Server for " + userUID + "."
+                self.traceback = "The key " + self.attribute + "does not exist to the Backend Server for " + userID + "."
                 return False
         # number range:
         elif self.numberTo and self.numberFrom:
@@ -256,7 +256,7 @@ class ACLHelper:
                            self.numberFrom >= int(obj['attributes'][self.attribute][0])
             except:
                 # wrong key
-                self.traceback = "The key " + self.attribute + "does not exist to the Backend Server for " + userUID + "."
+                self.traceback = "The key " + self.attribute + "does not exist to the Backend Server for " + userID + "."
                 return False
         # not necessary:
         return False
