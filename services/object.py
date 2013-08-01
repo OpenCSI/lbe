@@ -239,6 +239,10 @@ class LBEObjectInstanceHelper(object):
             # Create part:
             return None
 
+    def getObject(self, UID):
+        self._backend()
+        return self.backend.searchObjectsByPattern(self.template, UID)[0]
+
     def getValuesDecompressed(self, UID):
         """
 		Function enables to get values from attributes fields and

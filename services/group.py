@@ -107,3 +107,13 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
         if listObjects:
             self.instance.changes['set'][self.attributeName] = listObjects
             self.save()
+
+    def updateMember(self, objectInstance):
+        objID = objectInstance.attributes[self.template.objectTemplate.instanceNameAttribute.name][0]
+        if objID in self.instance.attributes[self.attributeName] or \
+        (self.attributeName in self.instance.changes['set'] and objID in self.instance.changes['set'][self.attributeName]):
+            if not self.attributeName in self.instance.changes['set']:
+                self.instance.changes['set'][self.attributeName] = self.instance.attributes[self.attributeName]
+            self.instance.changes['set'][self.attributeName].remove(objID)
+            self.instance.changes['set'][self.attributeName].append(objectInstance.changes['set'][self.template.objectTemplate.instanceNameAttribute.name][0])
+            self.save()
