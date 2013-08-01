@@ -5,7 +5,7 @@
         <tr>
             <td style="width:20%">Choose the Object:</td>
             <td><select
-                    onChange="window.location.href=(window.location.pathname.split('/')[0]+'/'+$('select option:selected').val())">
+                    onChange="window.location.href=(window.location.pathname.split('/')[0]+'/directory/'+$('select option:selected').val() + '/1')">
                 {% for obj in lbeObjects %}
                     <option value="{{ obj.id }}"
                             {% if obj.id == lbeObjectId %}selected="selected"{% endif %}>{{ obj.displayName }}</option>  {% endfor %}
