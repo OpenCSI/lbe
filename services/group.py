@@ -87,7 +87,10 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
 
     def changeIDObjects(self):
         self.instance = self.get()
-        listOldObjects = self.instance.changes['set'][self.attributeName] or self.instance.attributes[self.attributeName]
+        if self.attributeName in self.instance.changes['set']:
+            listOldObjects = self.instance.changes['set'][self.attributeName]
+        else:
+            listOldObjects = self.instance.attributes[self.attributeName]
         listObjects = []
         for object in listOldObjects:
             try:
