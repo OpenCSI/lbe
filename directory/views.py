@@ -167,10 +167,6 @@ def manageObjectInstance(request, lbeObject_id, objectName, type):
             try:
                 instanceHelper.updateFromDict(objectName, form.clean())
                 instanceHelper.modify()
-                # Group
-                for group in LBEGroup.objects.all():
-                    if group.objectTemplate.id == int(lbeObject_id):
-                        GroupInstanceHelper(group).updateMember(instanceHelper.getObject(instanceHelper.instance.name))
                 messages.add_message(request, messages.SUCCESS, 'Object saved')
             except ValueError as e:
                 messages.add_message(request, messages.ERROR, e)

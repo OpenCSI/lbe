@@ -109,11 +109,18 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
             self.save()
 
     def updateMember(self, objectInstance):
+        # get object value
         objID = objectInstance.attributes[self.template.objectTemplate.instanceNameAttribute.name][0]
+        # check if the new attribute instance value has changed
+        if objID == objectInstance.changes['set'][self.template.objectTemplate.instanceNameAttribute.name][0]:
+            return
+        # check if the object is in the group
         if objID in self.instance.attributes[self.attributeName] or \
         (self.attributeName in self.instance.changes['set'] and objID in self.instance.changes['set'][self.attributeName]):
+            # Have changes.set ?
             if not self.attributeName in self.instance.changes['set']:
                 self.instance.changes['set'][self.attributeName] = self.instance.attributes[self.attributeName]
             self.instance.changes['set'][self.attributeName].remove(objID)
+            # upgrade
             self.instance.changes['set'][self.attributeName].append(objectInstance.changes['set'][self.template.objectTemplate.instanceNameAttribute.name][0])
             self.save()

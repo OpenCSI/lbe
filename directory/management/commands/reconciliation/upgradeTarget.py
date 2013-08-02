@@ -151,6 +151,10 @@ class UpgradeTarget():
                 elif objectInstance.changes['type'] == OBJECT_CHANGE_UPDATE_OBJECT:
                     try:
                         print "    |-> Object '\033[35m" + objectInstance.displayName + "'\033[0m is \033[36mupdating\033[0m..."
+                        # Group
+                        for group in LBEGroup.objects.all():
+                            if group.objectTemplate.id == objectTemplate.id:
+                                GroupInstanceHelper(group).updateMember(obj.getObject(obj.instance.name))
                         self._modifyObject(objectTemplate, objectInstance)
                     except BaseException as e:
                         print e

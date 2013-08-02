@@ -169,6 +169,7 @@ class log(models.Model):
     def __unicode__(self):
         return str(self.level + ': ' + self.message)
 
+
 # Fake model class, doesn't exists in the database. Used for abstraction
 class LBEObjectInstance(object):
     def __init__(self, lbeObjectTemplate, *args, **kwargs):
