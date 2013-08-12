@@ -7,7 +7,9 @@ from services.backend import BackendHelper
 logger = logging.getLogger(__name__)
 from django.contrib import messages
 from django.http import QueryDict
-from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, ATTRIBUTE_TYPE_VIRTUAL, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT
+from directory.models import LBEObjectInstance, LBEAttributeInstance, LBEAttribute, ATTRIBUTE_TYPE_FINAL, \
+    ATTRIBUTE_TYPE_VIRTUAL, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_CREATE_OBJECT, \
+    OBJECT_STATE_AWAITING_RECONCILIATION
 from services.backend import BackendObjectAlreadyExist
 
 
@@ -98,10 +100,16 @@ class LBEObjectInstanceHelper(object):
         self._checkUnique()
         self.backend.createObject(self.template, self.instance.changes['set'])
 
+    def getStatus(self, objectName):
+        return self.backend.getStatus(self.template, objectName)
+
     def modify(self):
         self._checkUnique()
-        self.backend.modifyObject(self.template, self.instance.name, self.instance.changes['set'],
+        if not self.backend.getStatus(self.template, self.instance.name) == OBJECT_STATE_AWAITING_RECONCILIATION:
+            self.backend.modifyObject(self.template, self.instance.name, self.instance.changes['set'],
                                   self.instance.displayName)
+        else:
+            raise TypeError("In order to change the Object, Your administrator needs to launch reconciliation first.")
 
     def remove(self, uid):
         self._backend()

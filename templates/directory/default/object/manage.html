@@ -2,6 +2,9 @@
 {% load url from future %}
 
 {% block content %}
+    {% if status == 3 %}
+        <div class="alert">You cannot change Object value when the Status is in <b>Reconciliation needed</b> mode.</div>
+    {% endif %}
     <h3>{{ uid }}</h3>
     <form method="post" action="">{% csrf_token %}
         {% include 'directory/default/object/form.html' %}

@@ -104,6 +104,12 @@ class BackendMongoImpl:
             awaiting = OBJECT_STATE_AWAITING_SYNC
         return self.handler.modifyDocument(awaiting, lbeObjectTemplate.name, ID, values, displayName)
 
+    def updateStatus(self, lbeObjectTemplate, ID):
+        return self.handler.updateStatus(lbeObjectTemplate.name, ID)
+
+    def getStatus(self,lbeObjectTemplate, ID):
+        return self.handler.searchDocuments(lbeObjectTemplate.name, {'_id': ID}, 0, 0)[0]['status']
+
     def removeObject(self, lbeObjectTemplate, ID):
         if lbeObjectTemplate.approval:
             awaiting = OBJECT_STATE_AWAITING_APPROVAL

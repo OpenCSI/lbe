@@ -29,10 +29,11 @@ class UpgradeTarget():
                 try:
                     self.target.changeRDN(objectTemplate, o, objectTemplate.instanceNameBeforeAttribute.name,
                                           o.attributes[objectTemplate.instanceNameBeforeAttribute.name][0])
+                    self.backend.updateStatus(objectTemplate, o.name)
                 except BaseException:
                     # if object does not exists into the Target Server
                     pass
-                # Update values for changing RDN attribute
+            # Update values for changing RDN attribute
             objectTemplate.instanceNameBeforeAttribute = None
             objectTemplate.needReconciliationRDN = False
             objectTemplate.save()

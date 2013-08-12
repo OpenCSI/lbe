@@ -22,7 +22,7 @@ class ImportTarget():
         return listID
 
     def save(self):
-        print 'Checking for Objects which do not exist into LBE but in LDAP Server:'
+        print 'Checking for Objects which do not exist into LBE Backend but in LDAP Server:'
         for objectTemplate in LBEObjectTemplate.objects.all():
             objectHelper = LBEObjectInstanceHelper(objectTemplate)
             filter = '(&'
@@ -56,7 +56,7 @@ class ImportTarget():
             objectTemplate.synced_at = django.utils.timezone.now()
             objectTemplate.save()
         print '.........................'
-        print 'Checking for Groups which do not exist into LBE but in Target:'
+        print 'Checking for Groups which do not exist into LBE Backend but in Target:'
         for groupTemplate in LBEGroup.objects.all():
             groupInstance = GroupInstanceHelper(groupTemplate)
             grpTarget = self.target.searchObjects(groupTemplate)

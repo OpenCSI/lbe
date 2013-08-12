@@ -6,7 +6,7 @@ from pymongo import Connection
 from django.conf import settings
 
 from directory.models import OBJECT_CHANGE_CREATE_OBJECT, OBJECT_STATE_AWAITING_SYNC, OBJECT_CHANGE_UPDATE_OBJECT,\
-    OBJECT_CHANGE_DELETE_OBJECT, OBJECT_STATE_SYNCED, OBJECT_STATE_AWAITING_APPROVAL
+    OBJECT_CHANGE_DELETE_OBJECT, OBJECT_STATE_SYNCED, OBJECT_STATE_AWAITING_RECONCILIATION, OBJECT_STATE_AWAITING_APPROVAL
 
 #from services.backend import BackendHelper
 
@@ -97,6 +97,7 @@ class MongoService:
         try:
             db.remove({'_id': document.name})
             document.name = new_id
+            document.status = OBJECT_STATE_AWAITING_RECONCILIATION
             db.insert(document.toDict())
         except BaseException as e:
             logger.error('Error while update _id"s document: ' + e.__str__())
@@ -152,6 +153,14 @@ class MongoService:
         # Do not apply attributes save if changes.set is empty:
         if not lbeObjectInstance.changes['set'] == {}:
             collection.update(filter, {'$set': attributes})
+
+    def updateStatus(self, collectionName, ID):
+        collection = self.db[collectionName]
+        object = self.searchDocuments(collectionName, {'_id': ID})[0]
+        status = OBJECT_STATE_SYNCED
+        if not object['changes']['set'] == {}:
+            status = OBJECT_CHANGE_UPDATE_OBJECT
+        return collection.update({'_id': ID}, {'$set': {'status': status}})
 
     def removeDocument(self, awaiting, collection, ID):
         db = self.db[collection]

@@ -178,7 +178,8 @@ def manageObjectInstance(request, lbeObject_id, objectName, type):
     # Show part:
     return render_to_response('directory/default/object/manage.html',
                               {'form': form, 'lbeObjectId': lbeObject_id, 'lbeAttribute': lbeAttribute,
-                               'uid': objectName, 'multivalue': multivalue}, context_instance=RequestContext(request))
+                               'uid': objectName, 'multivalue': multivalue, 'status': instanceHelper.getStatus(objectName)},
+                              context_instance=RequestContext(request))
 
 
 @login_required
