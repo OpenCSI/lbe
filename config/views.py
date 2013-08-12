@@ -117,12 +117,17 @@ def modifyObject(request, obj_id=None, instance_id=None):
     info_missing_policy += " to the Backend"
     info_different_policy = "Variable enables to set which Server, we need to upgrade values:<br> If the value is TARGET"
     info_different_policy += ", then the Backend object will replace the Target object <br>else, the opposite."
+    if lbeObjectTemplate.instanceNameBeforeAttribute is not None:
+        attributeBefore = lbeObjectTemplate.instanceNameBeforeAttribute.name
+    else:
+        attributeBefore = lbeObjectTemplate.instanceNameAttribute.name
     return render_to_response('config/object/modify.html',
                               {'attributeInstances': instances, 'lbeObject': lbeObjectTemplate,
                                'objectForm': objectForm, 'attributeForm': attForm, 'ajaxAttribute': ajaxAttribute,
                                'ajaxFunction': ajaxFunction, 'defaultValue': defaultValue,
                                'info_missing_policy': info_missing_policy,
-                               'info_different_policy': info_different_policy},
+                               'info_different_policy': info_different_policy,
+                               'attributeInstanceBefore': attributeBefore},
                               context_instance=RequestContext(request))
 
 

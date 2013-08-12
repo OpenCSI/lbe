@@ -5,10 +5,20 @@
         function PopupWindow(strWindowToOpen) {
             window.open(strWindowToOpen, 'Attribute', config = 'height=570, width=550, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
         }
+
+        function CheckInstanceAttribute(){
+            if ( '{{ attributeInstanceBefore }}' != $('#id_instanceNameAttribute').val()){
+                value = confirm('You have changed the Instance Attribute Value. Do you want to confirm this action?')
+                if (!value)
+                    $('#id_instanceNameAttribute').val('{{ attributeInstanceBefore }}')
+                return value
+            }
+            return true
+        }
     </script>
     <div class='row-fluid'>
         <div class='span6'>
-            <form action="{% url 'config.views.modifyObject' obj_id=lbeObject.id %}" method='POST'>{% csrf_token %}
+            <form action="{% url 'config.views.modifyObject' obj_id=lbeObject.id %}" method='POST' onclick="return CheckInstanceAttribute()">{% csrf_token %}
                 {% include 'config/object/form.html' %}
             </form>
         </div>
