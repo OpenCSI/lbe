@@ -6,6 +6,7 @@ from services.target import TargetHelper
 from directory.models import LBEObjectTemplate, LBEGroup
 
 from services.group import GroupInstanceHelper
+from services.object import LBEObjectInstanceHelper
 
 
 class ImportTarget():
@@ -23,7 +24,12 @@ class ImportTarget():
     def save(self):
         print 'Checking for Objects which do not exist into LBE but in LDAP Server:'
         for objectTemplate in LBEObjectTemplate.objects.all():
-            print '\033[91m' + objectTemplate.name + '\033[0m:'
+            objectHelper = LBEObjectInstanceHelper(objectTemplate)
+            filter = '(&'
+            for oc in objectHelper.callScriptClassMethod('object_classes'):
+                filter += '(objectClass=' + oc + ')'
+            filter += ')'
+            print '\033[91m' + objectTemplate.name + '\033[0m: (\033[95m' + objectHelper.callScriptClassMethod("base_dn") + '\033[0m) using \033[95m' + filter + '\033[0m'
             objTarget = self.target.searchObjects(objectTemplate)
             objBackend = self.backend.searchObjects(objectTemplate)
             number = 0
