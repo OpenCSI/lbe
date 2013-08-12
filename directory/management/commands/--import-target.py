@@ -67,6 +67,15 @@ class ImportTarget():
                         if groupInstance.attributeName in gt.attributes:
                             gt.attributes[groupInstance.attributeName] = self._getID(gt.attributes[groupInstance.attributeName])
                         groupHelper = GroupInstanceHelper(groupTemplate, gt)
+                        try:
+                            LBEGroup.objects.get(displayName__iexact=gt.displayName)
+                        except BaseException:
+                            print " >\033[91mThis group does not exists in LBE Configuration Group.\033[0m"
+                            print " >\033[91mIn order to see, manage it, please create it using some extra attribute:"
+                            print "  >\033[91m'Display Name': \033[95m" + gt.name + "\033[0m"
+                            print " >\033[91mInto the Script file:"
+                            print "  >'DN Attribute': \033[95m" + groupHelper.callScriptClassMethod("base_dn") + "\033[91m"
+                            print "  >'Attribute Name' & 'Object Classes': as you wish.\033[0m"
                         groupHelper.createTemplate(True)
                         print "\033[92mDone.\033[0m"
                     except BaseException as e:
