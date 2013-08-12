@@ -69,7 +69,7 @@ def modifyObject(request, obj_id=None, instance_id=None):
             else:
                 DN = False
             if changeID or DN:
-                if not lbeObjectTemplate.needReconciliationRDN:
+                if changeID is True:
                     objectForm.instance.instanceNameBeforeAttribute = LBEAttribute.objects.get(
                         name__iexact=oldNAttribute)
                     objectForm.instance.needReconciliationRDN = True
