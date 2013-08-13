@@ -9,6 +9,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.contrib import messages
 from django.conf import settings
+from django import template
+register = template.Library()
 
 from directory.models import *
 from directory.forms import *
@@ -16,10 +18,49 @@ from services.object import LBEObjectInstanceHelper
 from services.group import GroupInstanceHelper
 from services.backend import BackendHelper, BackendObjectAlreadyExist
 
+@login_required
+def index(request):
+    objects = LBEObjectTemplate.objects.all()
+    groups = LBEGroup.objects.all()
+    backend = BackendHelper()
+    # Objects
+    statObjects = []
+    for object in objects:
+        lbeObjects = backend.searchObjects(object)
+        ok = 0
+        approval = 0
+        needSync = 0
+        delete = 0
+        reconciliation = False
+        for lbeobject in lbeObjects:
+            if lbeobject.status == 0:
+                ok += 1
+            elif lbeobject.status == 1:
+                needSync += 1
+            elif lbeobject.status == 2:
+                approval += 1
+            elif lbeobject.status == 3:
+                reconciliation = True
+            elif lbeobject.status == 4:
+                delete += 1
+        statObjects.append({'name': object.displayName,'total':len(lbeObjects), 'ok': ok, 'approval': approval,
+                            'sync': needSync, 'reconciliation': reconciliation, 'delete': delete})
+    # Groups
+    statGroups = []
+    for group in groups:
+        groupHelper = GroupInstanceHelper(group, backend.searchObjects(group)[0])
+        if groupHelper.attributeName in groupHelper.instance.changes['set'] and not \
+        groupHelper.instance.changes['set'][groupHelper.attributeName] == []:
+            total = len(groupHelper.instance.changes['set'][groupHelper.attributeName])
+        else:
+            total = len(groupHelper.instance.attributes[groupHelper.attributeName])
+        statGroups.append({'name': group.displayName,'total': total, 'object': groupHelper.template.objectTemplate.displayName,
+                           'status': groupHelper.instance.status})
+    return render_to_response('directory/default/index.html', {'objects': statObjects, 'groups': statGroups}, context_instance=RequestContext(request))
 
 @login_required
 @ACLHelper.select
-def index(request, lbeObject_id=1, page=1):
+def listObjects(request, lbeObject_id=1, page=1):
     # init object:
     if lbeObject_id is None:
         lbeObject_id = 1
@@ -54,8 +95,8 @@ def index(request, lbeObject_id=1, page=1):
     tabSize.append(min)
     for i in range(min, max):
         tabSize.append(i + 1)
-    return render_to_response('directory/default/index.html',
-                              {'objects': objects, 'lbeObjectId': lbeObject.id, 'lbeObjects': lbeObjects,
+    return render_to_response('directory/default/object/listObjects.html',
+                              {'objects': objects, 'lbeObjectId': lbeObject.id, 'objectTemplateName': lbeObject.displayName, 'lbeObjects': lbeObjects,
                                'length': tabSize, 'page': int(page), 'minCPage': min, 'maxCPage': max, 'maxPage': size},
                               context_instance=RequestContext(request))
 
@@ -303,3 +344,4 @@ def page500(request):
     return render_to_response('error/request.html', {'title': '505 Error Page',
                                                      'content': 'They is an error with the page, please check it later.'},
                               context_instance=RequestContext(request))
+

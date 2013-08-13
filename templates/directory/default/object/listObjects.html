@@ -1,0 +1,73 @@
+{% extends "index.html" %}
+{% load url from future %}
+{% block content %}
+    <h3>{{ objectTemplateName }}</h3>
+    <center><a class="btn btn-primary" href="{% url 'directory.views.addObjectInstance' lbeObject_id=lbeObjectId %}">Add {{ objectTemplateName }}</a></center>
+    <table class='table'>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th style='text-align: center;'>Status</th>
+            <th style='text-align: center;'>Actions</th>
+        </tr>
+        </thead>
+        <tbody class="Tdata">
+        {% for object in objects %}
+            <tr>
+                {% if object.status == 2 %}
+                    <td>
+                        <a data-original-title={% if object.changes.type == 0 %} "New" {% elif object.changes.type == 1 %}
+                            "Update" {% else %} "Delete" {% endif %} class="id_{{ object.attributes.uid.0 }}"
+                        data-toggle="tooltip" data-placement="right"
+                        href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}">
+                        {{ object.displayName }} </a></td>
+                    <script type="text/javascript">
+                        $(function () {
+                            $(".id_{{object.attributes.uid.0}}").tooltip();
+                        });
+                    </script>
+                {% else %}
+                    <td>
+                        <a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}">{{ object.displayName }} </a>
+                    </td>
+                {% endif %}
+                <td style='text-align: center;'> {% include 'directory/default/status.html' %} </td>
+                <td style='text-align: center;'>
+                    {% if object.status == 2 %}
+                        <a href="{% url 'directory.views.approvalObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}"
+                           title="Approval" class="icon-check"></a>
+                    {% endif %}
+                    <a href="{% url 'directory.views.manageObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}"
+                       title="Modify" class="icon-edit"></a>
+                    <a href="{% url 'directory.views.deleteObjectInstance' lbeObject_id=lbeObjectId objectName=object.name %}"
+                       title="Delete">
+                        <span class='label label-important'>x</span>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination" style="text-align: center">
+        <ul>
+            <li {% if page == 1 %}class="disabled"{% endif %}><a
+                    href="{% if page == 1 %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=1 %}{% endif %}">First</a>
+            </li>
+            <li {% if minCPage == 1 %}class="disabled"{% endif %}><a
+                    href="{% if minCPage == 1 %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=minCPage %}{% endif %}"><</a>
+            </li>
+            {% for i in length %}
+                <li {% if i == page %}class="disabled"{% endif %}><a
+                        href="{% if i == page %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=i %}{% endif %}">{{ i }}</a>
+                </li>
+            {% endfor %}
+            <li {% if maxCPage == maxPage %}class="disabled"{% endif %}><a
+                    href="{% if maxCPage == maxPage %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=maxCPage %}{% endif %}">></a>
+            </li>
+            <li {% if page >= maxPage %}class="disabled"{% endif %}><a
+                    href="{% if page >= maxPage %}#{% else %}{% url 'directory.views.index' lbeObject_id=lbeObjectId page=maxPage %}{% endif %}">Last</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

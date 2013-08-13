@@ -5,9 +5,13 @@
             <ul class="nav nav-list">
                 <li><a href="/">Home</a></li>
                 <li class="nav-header">Object</li>
-                <li><a href="/directory/object/add/1">Add employee</a></li>
+                {% for object in objects %}
+                    <li><a href="/directory/{{ object.id }}/1">{{ object.displayName }}</a></li>
+                {% endfor %}
                 <li class="nav-header">Group</li>
-                <li><a href="{%  url 'directory.views.viewAllGroup' %}">Groups</a></li>
+                {% for group in groups %}
+                    <li><a href="/directory/group/view/{{ group.id }}">{{ group.displayName }}</a></li>
+                {% endfor %}
             </ul>
         </div>
     </div>
