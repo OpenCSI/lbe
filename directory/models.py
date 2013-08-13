@@ -65,7 +65,9 @@ CHOICE_RECONCILIATION_OBJECT_DIFFERENT_POLICY = (
 class LBEAttribute(models.Model):
     displayName = models.CharField(unique=True, max_length=64)
     name = models.CharField(unique=True, max_length=64)
-    # some fields (like syntax, max size) will be added later (not in LBEAttributeInstance ?)
+    regex = models.CharField(max_length=64, default='', blank=True)
+    errorMessage = models.CharField(max_length=64, blank=True)
+
     def __unicode__(self):
         return str(self.displayName + ":" + self.name)
 

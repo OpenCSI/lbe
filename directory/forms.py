@@ -3,6 +3,7 @@ import os
 
 from django import forms
 from django.forms import ModelForm, ModelChoiceField
+from django.core.validators import RegexValidator
 
 from directory.models import *
 from services.backend import BackendHelper
@@ -23,7 +24,7 @@ class LBEObjectTemplateForm(ModelForm):
         model = LBEObjectTemplate
         exclude = ( 'attributes', 'imported_at', 'version', 'instanceNameBeforeAttribute', 'needReconciliationRDN')
 
-        # Implements validator for approval field (must >= 0)
+    # Implements validator for approval field (must >= 0)
     def clean_approval(self):
         approval = self.cleaned_data['approval']
         if approval < 0:
@@ -126,8 +127,14 @@ class LBEObjectInstanceForm(forms.Form):
         for attributeInstance in lbeObjectTemplate.lbeattributeinstance_set.all().order_by('position'):
             # Display finals attributes
             if attributeInstance.attributeType == ATTRIBUTE_TYPE_FINAL:
-                # TODO: Find a better way than exec
-                exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + ')'
+                # Regex attribute value [for final attribute]
+                regex = ''
+                if not attributeInstance.lbeAttribute.regex == '':
+                    regex = ', validators=[RegexValidator(r"' + attributeInstance.lbeAttribute.regex
+                    if not attributeInstance.lbeAttribute.errorMessage == '':
+                        regex += '","' + attributeInstance.lbeAttribute.errorMessage
+                    regex += '","")]'
+                exec 'self.fields[attributeInstance.lbeAttribute.name] = ' + attributeInstance.widget + '(' + attributeInstance.widgetArgs + regex + ')'
                 try:
                     self.fields[attributeInstance.lbeAttribute.name].label = attributeInstance.lbeAttribute.displayName
                     self.fields[attributeInstance.lbeAttribute.name].required = bool(attributeInstance.mandatory)

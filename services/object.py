@@ -101,6 +101,7 @@ class LBEObjectInstanceHelper(object):
         self.backend.createObject(self.template, self.instance.changes['set'])
 
     def getStatus(self, objectName):
+        self._backend()
         return self.backend.getStatus(self.template, objectName)
 
     def modify(self):
