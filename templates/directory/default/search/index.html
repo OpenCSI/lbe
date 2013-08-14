@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+{%  block content %}
+<h3>Search:</h3>
+    <form class="input-append" onSubmit="querySearch(this);return false;">
+        {% csrf_token %}
+        <input type="text" name="query" id="query" placeholder="Search group, object"/>
+        <button class="btn"><i class="icon-search"></i></button>
+    </form>
+
+    <div class="research">
+    </div>
+    <script type="text/javascript">
+    function querySearch(form){
+        $.ajax({
+            type: "GET",
+            url: '/directory/search/result/' + form.elements.item(1).value,
+            success: function (data) {
+                $('.research').html(data);
+            }
+        });
+    }
+    </script>
+{% endblock %}

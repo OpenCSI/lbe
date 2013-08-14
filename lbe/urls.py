@@ -24,6 +24,8 @@ urlpatterns = patterns('',
                        url(r'^directory/group/view/(?P<group_id>\d+)$','directory.views.viewGroup'),
                        url(r'^directory/group/manage/(?P<group_id>\d+)$','directory.views.manageGroup'),
                        url(r'^directory/group/delete/(?P<group_id>\d+)$','directory.views.deleteGroup'),
+                       url(r'^directory/search/$','directory.views.search'),
+                       url(r'^directory/search/result/(?P<pattern>.*)$','directory.views.searchPattern'),
 
                        url(r'^config/?$', 'directory.views.index'),
                        url(r'^config/attribute/add/?$', 'config.views.addAttribute'),

@@ -1,0 +1,49 @@
+{% load url from future %}
+<div class="row">
+    <div class="span6">
+        <center><span class="label">Objects Template</span></center>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Object Name</th>
+                    <th style="text-align: center;">Pattern</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for object in objects %}
+                {% for o in object %}
+                    <tr>
+                        <td><a href="{% url 'directory.views.viewObjectInstance' lbeObject_id=o.object objectName=o.name %}">{{ o.displayName }}</a></td>
+                        <td>{{ o.values|safe }}</td>
+                    </tr>
+                {% endfor %}
+            {% empty %}
+                <tr><td colspan="2" style="text-align: center"><i>No Results</i></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="span6">
+        <center><span class="label">Groups Template</span></center>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Group Name</th>
+                <th style="text-align: center;">Pattern</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for group in groups %}
+                {% for g in group %}
+                    <tr>
+                        <td><a href="{% url 'directory.views.viewGroup' group_id=g.id %}">{{ g.displayName }}</a></td>
+                        <td>{{ g.values|safe }}</td>
+                    </tr>
+                {% endfor %}
+            {% empty %}
+                <tr><td colspan="2" style="text-align: center"><i>No Results</i></td></tr>
+            {% endfor %}
+            </tbody>
+         </table>
+    </div>
+</div>

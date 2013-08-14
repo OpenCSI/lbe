@@ -2,7 +2,7 @@
 import sys
 import logging
 from services.backend import BackendHelper
-
+import re
 
 logger = logging.getLogger(__name__)
 from django.contrib import messages
@@ -251,6 +251,31 @@ class LBEObjectInstanceHelper(object):
     def getObject(self, UID):
         self._backend()
         return self.backend.searchObjectsByPattern(self.template, UID)[0]
+
+    def searchPattern(self, pattern):
+        self._backend()
+        objects = self.backend.searchObjects(self.template)
+        tabResult = []
+
+        prog = re.compile(pattern, re.I)
+
+        for object in objects:
+            # check the status object & get its values
+            if object.status == OBJECT_STATE_AWAITING_SYNC:
+                objectValues = object.changes['set']
+            else:
+                objectValues = object.attributes
+            # check values and pattern corresponding
+            correspond = ''
+            for key, values in objectValues.items():
+                for cel in values:
+                    if prog.search(cel):
+                        attributeDisplayName = LBEAttribute.objects.get(name__iexact=key).displayName
+                        correspond += cel.lower().replace(pattern, '<b>' + pattern + '</b>') + ' (<i>' + attributeDisplayName + '</i>) '
+            if correspond:
+                tabResult.append({'object': self.template.id, "name": object.name, 'displayName': object.displayName,
+                                  "values": correspond})
+        return tabResult
 
     def getValuesDecompressed(self, UID):
         """

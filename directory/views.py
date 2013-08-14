@@ -345,3 +345,32 @@ def page500(request):
                                                      'content': 'They is an error with the page, please check it later.'},
                               context_instance=RequestContext(request))
 
+
+def search(request):
+    return render_to_response('directory/default/search/index.html', {},
+                              context_instance=RequestContext(request))
+
+def searchPattern(request, pattern):
+    if request.is_ajax():
+        if pattern == '':
+            return HttpResponse('Please enter a query.')
+
+        objectsTemplate = LBEObjectTemplate.objects.all()
+        resultObjects = []
+        groupsTemplate = LBEGroup.objects.all()
+        resultGroups = []
+
+        for ot in objectsTemplate:
+            objectHelper = LBEObjectInstanceHelper(ot)
+            result = objectHelper.searchPattern(pattern)
+            if result:
+                resultObjects.append(result)
+
+        for gt in groupsTemplate:
+            groupHelper = GroupInstanceHelper(gt)
+            result = groupHelper.searchPattern(pattern)
+            if result:
+                resultGroups.append(result)
+
+        return render_to_response("directory/default/search/result.html",{'objects': resultObjects, 'groups': resultGroups},
+                                  context_instance=RequestContext(request))

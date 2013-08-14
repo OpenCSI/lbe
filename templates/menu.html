@@ -4,6 +4,7 @@
         <div class="well sidebar-nav">
             <ul class="nav nav-list">
                 <li><a href="/">Home</a></li>
+                <hr>
                 <li class="nav-header">Object</li>
                 {% for object in objects %}
                     <li><a href="/directory/{{ object.id }}/1">{{ object.displayName }}</a></li>
@@ -12,6 +13,8 @@
                 {% for group in groups %}
                     <li><a href="/directory/group/view/{{ group.id }}">{{ group.displayName }}</a></li>
                 {% endfor %}
+                <hr>
+                <li><a href="/directory/search/">Search</a></li>
             </ul>
         </div>
     </div>

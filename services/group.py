@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from directory.models import LBEGroupInstance, OBJECT_CHANGE_CREATE_OBJECT
-from directory.forms import LBEGroupInstanceForm
+from directory.forms import LBEGroupInstanceForm, OBJECT_STATE_AWAITING_SYNC
 from services.object import LBEObjectInstanceHelper
+
+import re
 
 
 class GroupInstanceHelper(LBEObjectInstanceHelper):
@@ -33,6 +35,34 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
     def get(self):
         self._backend()
         return self.backend.searchObjectsByPattern(self.template, self.template.displayName)[0]
+
+    def searchPattern(self, pattern):
+        self._backend()
+        groups = self.backend.searchObjects(self.template)
+        tabResult = []
+
+        prog = re.compile(pattern, re.I)
+
+        for group in groups:
+            # check the status object & get its values
+            if group.status == OBJECT_STATE_AWAITING_SYNC:
+                groupValues = group.changes['set']
+            else:
+                groupValues = group.attributes
+                # check values and pattern corresponding
+            correspond = ''
+            for key, values in groupValues.items():
+                for cel in values:
+                    if prog.search(cel):
+                        if key == 'cn':
+                            keyValue = 'name'
+                        else:
+                            keyValue = 'member'
+                        correspond += cel.lower().replace(pattern, '<b>' + pattern + '</b>') + ' (<i>' + keyValue + '</i>) '
+            if correspond:
+                tabResult.append({'id': self.template.id, 'displayName': group.displayName,
+                                  "values": correspond})
+        return tabResult
 
     def createTemplate(self, Import=False):
         self._backend()
