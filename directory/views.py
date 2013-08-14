@@ -48,7 +48,8 @@ def index(request):
     # Groups
     statGroups = []
     for group in groups:
-        groupHelper = GroupInstanceHelper(group, backend.searchObjects(group)[0])
+        groupHelper = GroupInstanceHelper(group)
+        groupHelper.get()
         if groupHelper.attributeName in groupHelper.instance.changes['set'] and not \
         groupHelper.instance.changes['set'][groupHelper.attributeName] == []:
             total = len(groupHelper.instance.changes['set'][groupHelper.attributeName])
