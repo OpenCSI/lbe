@@ -5,7 +5,8 @@ from pymongo import errors
 from django.conf import settings
 
 from dao.MongoDao import MongoService
-from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC, OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED
+from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC,\
+    OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED, LBEGroup
 
 
 class BackendConnectionError(Exception):
@@ -163,5 +164,9 @@ class BackendMongoImpl:
 
     # Search objects with synced_at <= lbeObjectTemplate.synced_at
     def searchObjectsToUpdate(self, lbeObjectTemplate, index=0, size=0):
-        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name, {
-        'status': OBJECT_STATE_AWAITING_SYNC}, index, size))
+        if isinstance(lbeObjectTemplate, LBEGroup):
+            search = {'status': OBJECT_STATE_AWAITING_SYNC, '_id': lbeObjectTemplate.displayName}
+        else:
+            search = {'status': OBJECT_STATE_AWAITING_SYNC}
+        return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name,
+            search, index, size))

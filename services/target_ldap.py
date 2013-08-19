@@ -5,7 +5,7 @@ import datetime
 from ldap import modlist
 
 from dao.LdapDao import LDAPDAO
-from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED
+from directory.models import LBEObjectInstance, OBJECT_STATE_IMPORTED, LBEGroup
 from services.object import LBEObjectInstanceHelper
 from services.group import GroupInstanceHelper
 
@@ -189,7 +189,6 @@ class TargetLDAPImplementation():
             0] + ',' + objectHelper.callScriptClassMethod('base_dn')
 
         return self.handler.delete(dn)
-
 
     def changeRDN(self, lbeObjectTemplate, lbeObjectInstance, oldRDNAttribute, oldRDNValue):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
