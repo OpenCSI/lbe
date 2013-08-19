@@ -142,15 +142,6 @@ class LBEAttributeInstance(models.Model):
         return str(self.lbeObjectTemplate.name + ':' + self.lbeAttribute.name)
 
 
-class LBEDirectoryACL(models.Model):
-    object = models.ForeignKey(LBEObjectTemplate)
-    TYPE_CHOICE = (
-    ('select', 'Select'), ('create', 'Create'), ('update', 'Update'), ('approval', 'Approval'), ('delete', 'Delete'))
-    type = models.CharField(max_length=10, choices=TYPE_CHOICE, default="select")
-    attribut = models.ForeignKey(LBEAttributeInstance, default=None, null=True)
-    condition = models.CharField(max_length=100)
-
-
 class LBEGroup(models.Model):
     name = models.CharField(default='groups', max_length=10)
     displayName = models.CharField(max_length=25, blank=False,unique=True)
@@ -162,6 +153,18 @@ class LBEGroup(models.Model):
     approval = models.SmallIntegerField(default=0)
     instanceNameAttribute = models.ForeignKey(LBEAttribute, default=1) # 1= cn
 
+    def __unicode__(self):
+        return str(self.displayName)
+
+
+class LBEDirectoryACL(models.Model):
+    object = models.ForeignKey(LBEObjectTemplate, null=True, default=None, blank=True)
+    group = models.ForeignKey(LBEGroup, null=True, default=None, blank=True)
+    TYPE_CHOICE = (
+    ('select', 'Select'), ('create', 'Create'), ('update', 'Update'), ('approval', 'Approval'), ('delete', 'Delete'))
+    type = models.CharField(max_length=10, choices=TYPE_CHOICE, default="select")
+    attribut = models.ForeignKey(LBEAttributeInstance, default=None, null=True)
+    condition = models.CharField(max_length=100)
 
 class log(models.Model):
     type = models.CharField(max_length=32)

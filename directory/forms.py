@@ -237,3 +237,8 @@ class LBEACLForm(ModelForm):
         if acl.check() == -1:
             raise forms.ValidationError(acl.traceback)
         return self.cleaned_data['condition']
+
+    def clean_group(self):
+        if self.cleaned_data['object'] is None and self.cleaned_data['group'] is None:
+            raise forms.ValidationError('You must choose at least an object and/or group for the ACL.')
+        return self.cleaned_data["group"]

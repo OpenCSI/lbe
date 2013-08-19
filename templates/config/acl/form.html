@@ -14,6 +14,13 @@
             </td>
         </tr>
         <tr>
+            <th> Group</th>
+            <td> {{ aclForm.group }}
+                {% for error in aclForm.group.errors %}
+                    <div><span class='label label-important'>{{ error }}</span></div> {% endfor %}
+            </td>
+        </tr>
+        <tr>
             <th> Type</th>
             <td> {{ aclForm.type }}
                 {% for error in aclForm.type.errors %}

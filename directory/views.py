@@ -251,6 +251,7 @@ def searchAJAX(request, lbeObject_id, search):
 
 
 @login_required
+@ACLHelper.select
 def viewAllGroup(request):
     groups = LBEGroup.objects.all()
     groupsInstance = []
@@ -266,6 +267,7 @@ def viewAllGroup(request):
 
 
 @login_required
+@ACLHelper.select
 def viewGroup(request, group_id):
     groupList = []
     groupName = ''
@@ -289,6 +291,7 @@ def viewGroup(request, group_id):
 
 
 @login_required
+@ACLHelper.update
 def manageGroup(request, group_id):
     try:
         lbeGroup = LBEGroup.objects.get(id=group_id)
@@ -299,7 +302,7 @@ def manageGroup(request, group_id):
                 groupInstance.save()
                 messages.add_message(request, messages.SUCCESS, "The Group is successfully saved.")
             else:
-                messages.add_message(request, messages.ERROR, "Error to save the group '" + lbeGroup.name + "'")
+                messages.add_message(request, messages.ERROR, "Error to save the group '" + lbeGroup.displayName + "'")
         else:
             form = groupInstance.form()
     except BaseException as e:
@@ -311,6 +314,7 @@ def manageGroup(request, group_id):
 
 
 @login_required
+@ACLHelper.delete
 def deleteGroup(request, group_id):
     try:
         group = LBEGroup.objects.get(id=group_id)
@@ -324,6 +328,7 @@ def deleteGroup(request, group_id):
 
 
 @login_required
+@ACLHelper.select
 def viewUserObjectAJAX(request, group_id, name):
     if request.is_ajax():
         group = LBEGroup.objects.get(id=group_id)
@@ -350,6 +355,7 @@ def page500(request):
 def search(request):
     return render_to_response('directory/default/search/index.html', {},
                               context_instance=RequestContext(request))
+
 
 def searchPattern(request, pattern):
     if request.is_ajax():

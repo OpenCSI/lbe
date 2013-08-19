@@ -265,16 +265,25 @@ class ACLHelper:
     @staticmethod
     def select(view_func):
         def wraps(request, *args, **kwargs):
+            prog = re.compile("/directory/\d+/\d+")
             # test if the current user is the super admin:
             if request.user.is_superuser:
                 return view_func(request, *args, **kwargs)
             # get the current object:
-            try:
-                obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
-            except: # Or the First by default:
-                obj = LBEObjectTemplate.objects.get(id=1)
-            # get all ACLs:
-            acls = LBEDirectoryACL.objects.filter(object=obj, type="select")
+            if prog.match(request.META['PATH_INFO']):
+                try:
+                    obj = LBEObjectTemplate.objects.get(id=kwargs['lbeObject_id'])
+                except: # Or the First by default:
+                    obj = LBEObjectTemplate.objects.get(id=1)
+                # get all ACLs:
+                acls = LBEDirectoryACL.objects.filter(object=obj, type="select")
+            else: # group
+                try:
+                    obj = LBEObjectTemplate.objects.get(id=kwargs['group_id'])
+                except: # Or the First by default:
+                    obj = LBEObjectTemplate.objects.get(id=1)
+                    # get all ACLs:
+                acls = LBEDirectoryACL.objects.filter(group=obj, type="select")
             # Then, check for the current user:
             check = False
             for acl in acls:
