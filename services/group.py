@@ -38,29 +38,30 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
 
     def searchPattern(self, pattern):
         self._backend()
-        groups = self.backend.searchObjects(self.template)
+        group = self.backend.searchObjectsByPattern(self.template, self.template.displayName)[0]
         tabResult = []
 
         prog = re.compile(pattern, re.I)
 
-        for group in groups:
-            # check the status object & get its values
-            if group.status == OBJECT_STATE_AWAITING_SYNC:
-                groupValues = group.changes['set']
-            else:
-                groupValues = group.attributes
-                # check values and pattern corresponding
-            correspond = ''
-            for key, values in groupValues.items():
-                for cel in values:
-                    if prog.search(cel):
-                        if key == 'cn':
-                            keyValue = 'name'
-                        else:
-                            keyValue = 'member'
-                        correspond += cel.lower().replace(pattern, '<b>' + pattern + '</b>') + ' (<i>' + keyValue + '</i>) '
-            if correspond:
-                tabResult.append({'id': self.template.id, 'displayName': group.displayName,
+        # check the status object & get its values
+        if group.status == OBJECT_STATE_AWAITING_SYNC:
+            groupValues = group.changes['set']
+        else:
+            groupValues = group.attributes
+            # check values and pattern corresponding
+        correspond = ''
+        for key, values in groupValues.items():
+            for cel in values:
+                print cel
+                if prog.search(cel):
+                    if key == 'cn':
+                        keyValue = 'name'
+                    else:
+                        keyValue = 'member'
+                    correspond += cel.lower().replace(pattern, '<b>' + pattern + '</b>') + ' (<i>' + keyValue + '</i>) '
+
+        if correspond:
+            tabResult.append({'id': self.template.id, 'displayName': group.displayName,
                                   "values": correspond})
         return tabResult
 
