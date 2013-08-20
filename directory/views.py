@@ -114,7 +114,7 @@ def deleteObjectInstance(request, lbeObject_id, objectName):
     position = backend.positionObject(lbeObject.name, objectName)
     lengthMax = 10
     page = int(math.ceil(position / float(lengthMax)))
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/directory/' + lbeObject_id + "/1")
 
 
 @login_required
