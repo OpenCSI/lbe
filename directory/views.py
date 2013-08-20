@@ -352,11 +352,15 @@ def page500(request):
                               context_instance=RequestContext(request))
 
 
+@login_required
+@ACLHelper.select
 def search(request):
     return render_to_response('directory/default/search/index.html', {},
                               context_instance=RequestContext(request))
 
 
+@login_required
+@ACLHelper.select
 def searchPattern(request, pattern):
     if request.is_ajax():
         if pattern == '':

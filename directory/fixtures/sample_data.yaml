@@ -133,3 +133,11 @@
     script: 3
     reconciliation_object_missing_policy: 0
     reconciliation_object_different_policy: 0
+
+- model: auth.group
+  pk: 1
+  fields:
+    name: approver
+  pk: 2
+  fields:
+    name: watcher

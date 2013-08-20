@@ -261,12 +261,37 @@ class ACLHelper:
         # not necessary:
         return False
 
+    @staticmethod
+    def _checkGroup(request):
+        # user's groups:
+        groups = request.user.groups.all()
+        for group in groups:
+            if group.name == "watcher":
+                # Objects
+                if re.match('/directory/\d+/\d+$', request.META['PATH_INFO']) or \
+                   re.match('/directory/object/view/\d+/.+$', request.META['PATH_INFO']):
+                    return True
+                # Groups
+                elif re.match('/directory/group/$', request.META['PATH_INFO']) or \
+                     re.match('/directory/group/view/\d+$', request.META['PATH_INFO']):
+                    return True
+                # Search
+                elif re.match('/directory/search/$', request.META['PATH_INFO']) or \
+                     re.match('/directory/search/result/.*$', request.META['PATH_INFO']):
+                    return True
+            elif group.name == "approver":
+                if re.match('/directory/object/approval/\d+/.+$', request.META['PATH_INFO']):
+                    return True
+        return False
 
     @staticmethod
     def select(view_func):
         def wraps(request, *args, **kwargs):
             # test if the current user is the super admin:
             if request.user.is_superuser:
+                return view_func(request, *args, **kwargs)
+            # check if the user's group corresponds to the view page:
+            if ACLHelper._checkGroup(request):
                 return view_func(request, *args, **kwargs)
             prog = re.compile("/directory/\d+/\d+")
             # get the current object:
@@ -369,6 +394,9 @@ class ACLHelper:
         def wraps(request, *args, **kwargs):
             # test if the current user is the super admin:
             if request.user.is_superuser:
+                return view_func(request, *args, **kwargs)
+            # check if the user's group corresponds to the view page:
+            if ACLHelper._checkGroup(request):
                 return view_func(request, *args, **kwargs)
             prog = re.compile("/directory/\d+/\d+")
             # get the current object:
