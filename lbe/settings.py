@@ -7,8 +7,13 @@ SITE_ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# To prevent 500 error page when Debug value is False
+# just put your host name
+ALLOWED_HOSTS = ['localhost']
+
 ADMINS = (
-# ('Your Name', 'your_email@example.com'),
+#    Your name,       email
+ ('Adminstrator', 'admin@opencsi.com'),
 )
 
 MANAGERS = ADMINS

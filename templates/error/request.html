@@ -3,7 +3,7 @@
     <div class="alert alert-error">
         <b>{{ title }}</b>
 
-        <p>{{ content }}</p>
+        <p>{{ content | safe }}</p>
         <a href="#" onClick="history.back();">Go Back</a>
     </div>
 {% endblock %}

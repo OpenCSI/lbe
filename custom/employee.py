@@ -52,7 +52,7 @@ class EmployeePostConfig(LBEObjectInstanceForm):
             # Mono value:
             return [self.cleaned_data['givenName'].capitalize()]
         except:
-            raise forms.ValidationError("The field #" + str(i) + " must be a valid attribute.")
+            raise forms.ValidationError("The field must be a valid attribute.")
 
     def clean_telephoneNumber(self):
         try:

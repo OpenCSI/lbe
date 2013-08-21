@@ -340,18 +340,6 @@ def viewUserObjectAJAX(request, group_id, name):
         return HttpResponse(json.dumps(list), mimetype="application/json")
 
 
-def page404(request):
-    return render_to_response('error/request.html',
-                              {'title': '404 Not Found', 'content': 'The page you are looking for does not exist...'},
-                              context_instance=RequestContext(request))
-
-
-def page500(request):
-    return render_to_response('error/request.html', {'title': '505 Error Page',
-                                                     'content': 'They is an error with the page, please check it later.'},
-                              context_instance=RequestContext(request))
-
-
 @login_required
 @ACLHelper.select
 def search(request):
@@ -384,4 +372,23 @@ def searchPattern(request, pattern):
                 resultGroups.append(result)
 
         return render_to_response("directory/default/search/result.html",{'objects': resultObjects, 'groups': resultGroups},
+                                  context_instance=RequestContext(request))
+
+
+def page404(request):
+    return render_to_response('error/request.html',
+                              {'title': '404 Not Found', 'content': 'The page you are looking for does not exist...'},
+                              context_instance=RequestContext(request))
+
+
+def page500(request):
+    try:
+        return render_to_response('error/request.html', {'title': '505 Error Page',
+                                                     'content': 'A server error occurred, please contact the administrator ' +
+                                                                '<a href="mailto:' + settings.ADMINS[0][1] + '">' +
+                                                                settings.ADMINS[0][0] + "</a>"},
+                              context_instance=RequestContext(request))
+    except BaseException:
+        return render_to_response('error/request.html', {'title': '505 Error Page',
+                                                         'content': 'A server error occurred, please contact the administrator '},
                                   context_instance=RequestContext(request))

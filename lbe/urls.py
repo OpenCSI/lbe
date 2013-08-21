@@ -73,5 +73,5 @@ urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
 )
 
-#handler404 = views.page404
-#handler500 = views.page500
+handler404 = 'directory.views.page404'
+handler500 = 'directory.views.page500'
