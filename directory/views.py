@@ -128,7 +128,15 @@ def viewObjectInstance(request, lbeObject_id, objectName=None):
         objectInstance = SortedDict()
         attributesInstance = LBEAttributeInstance.objects.filter(lbeObjectTemplate=objectTemplate).order_by("position")
         for attribute in attributesInstance:
-            objectInstance[attribute.lbeAttribute.displayName] = obj[attribute.lbeAttribute.name]
+            if attribute.reference is not None:
+                try:
+                    ref = obj[attribute.lbeAttribute.name][0].split('=')[1].split(',')[0]
+                    objectInstance[attribute.lbeAttribute.displayName] = ['<a href="/directory/object/view/' +
+                                                                      str(attribute.reference.objectTemplate.id) + '/'+ref+'">'+ref+'</a>']
+                except BaseException:
+                    pass
+            else:
+                objectInstance[attribute.lbeAttribute.displayName] = obj[attribute.lbeAttribute.name]
         objectInstance['name'] = objectName
         objectInstance['displayName'] = obj[objectTemplate.instanceDisplayNameAttribute.name][0]
     except BaseException as e:
@@ -178,10 +186,6 @@ def addObjectInstance(request, lbeObject_id=None):
         return render_to_response('directory/default/object/add.html',
                                   {'form': form, 'lbeObjectId': lbeObject_id, 'multivalue': multivalue},
                                   context_instance=RequestContext(request))
-    else:
-        if lbeObject_id is None:
-            # TODO: Redirect to a form to choose which object to add
-            print 'error'
     form = helper.form(lbeObject)
     return render_to_response('directory/default/object/add.html',
                               {'form': form, 'lbeObjectId': lbeObject_id, 'multivalue': multivalue},

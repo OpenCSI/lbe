@@ -34,7 +34,10 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
 
     def get(self):
         self._backend()
-        return self.backend.searchObjectsByPattern(self.template, self.template.displayName)[0]
+        try:
+            return self.backend.searchObjectsByPattern(self.template, self.template.displayName)[0]
+        except BaseException:
+            return []
 
     def searchPattern(self, pattern):
         self._backend()

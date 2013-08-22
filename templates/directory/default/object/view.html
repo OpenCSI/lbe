@@ -7,7 +7,7 @@
             {% if key != 'name' and key != 'displayName' %}
                 <tr>
                     <th>{{ key }}</th>
-                    <td>{% for val in value %} {% if value|length > 1 %}<li>{% endif %} {{ val }} {% if value|length > 1 %}</li>{% endif %} {% endfor %}  </td>
+                    <td>{% for val in value %} {% if value|length > 1 %}<li>{% endif %} {{ val|safe }} {% if value|length > 1 %}</li>{% endif %} {% endfor %}  </td>
                 </tr>
             {% endif %}
         {% endfor %}

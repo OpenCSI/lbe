@@ -24,7 +24,7 @@ class MongoService:
             try:
                 self.db.authenticate(settings.MONGODB_SERVER['USER'],settings.MONGODB_SERVER['PASSWORD'])
             except BaseException as e:
-                raise Connection("Cannot connect to the Backend Server, please make sure the authentification data is correct.")
+                raise Connection("Cannot connect to the Backend Server, please make sure the authentication data is correct.")
 
     def searchDocuments(self, collection, filters={}, index=0, size=0):
         logger.debug('Performing MongoDB search on collection: ' + collection + ' with filter: ' + filters.__str__())
