@@ -103,6 +103,22 @@ class TargetLDAPImplementation():
                     result_set.append(aBuffer[4].replace('\'', ''))
         return result_set
 
+    def getInstanceObjectClasses(self, lbeObjectTemplate, lbeObjectInstance):
+        objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+
+        rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
+        dn = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][
+            0] + ',' + objectHelper.callScriptClassMethod('base_dn')
+
+        filter = '(objectClass=*)'
+
+        object = self.handler.search(dn, filter, ldap.SCOPE_SUBTREE)
+        if object == []:
+            return []
+        return object[0][1]["objectClass"]
+
+
+
     @classmethod
     def _ldap_date(cls, date):
         return date.strftime('%Y%m%d%H%M%SZ')
@@ -189,6 +205,9 @@ class TargetLDAPImplementation():
             0] + ',' + objectHelper.callScriptClassMethod('base_dn')
 
         return self.handler.delete(dn)
+
+    def changeObjectClasses(self, lbeObjectTemplate, oldObjectClasses, newObjectClasses):
+        modlist = [(ldap.MOD_REPLACE, oldObjectClasses, newObjectClasses)]
 
     def changeRDN(self, lbeObjectTemplate, lbeObjectInstance, oldRDNAttribute, oldRDNValue):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
@@ -292,3 +311,18 @@ class TargetLDAPImplementation():
                         for val in value:
                             modList = [(ldap.MOD_ADD, key.encode("utf-8"), val.encode("utf-8") )]
                             self.handler.update(dn, modList)
+
+    def changeClass(self,lbeObjectTemplate, lbeObjectInstance, newClass):
+        objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+        # RDN Attribute:
+        rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
+        dn = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][
+            0] + ',' + objectHelper.callScriptClassMethod('base_dn')
+        LDAPValues = self.searchObjects(lbeObjectTemplate,
+                                        rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0])[
+            0].attributes
+
+        for c in newClass:
+            if not c is None:
+                modList = [(ldap.MOD_REPLACE, "objectClass", c)]
+                self.handler.update(dn, modList)

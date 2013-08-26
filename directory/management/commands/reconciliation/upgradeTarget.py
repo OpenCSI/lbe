@@ -20,6 +20,21 @@ class UpgradeTarget():
         self.target = TargetHelper()
         self.start_date = django.utils.timezone.now()
 
+    def _changeClass(self, objectTemplate,objectInstance):
+        objHelper = LBEObjectInstanceHelper(objectTemplate)
+
+        oldClasses = self.target.getInstanceObjectClasses(objectTemplate, objectInstance)
+        newClasses = objHelper.callScriptClassMethod("object_classes")
+
+        if not sorted(oldClasses) == sorted(newClasses):
+            print "    |-> The object classes have changed for '\033[35m" + objectInstance.displayName + "\033[0m'"
+            try:
+                self.target.changeClass(objectTemplate, objectInstance, [val if not val in oldClasses else None for val in newClasses])
+            except BaseException:
+                print "    *\033[91mError to modify the object class " + str(newClasses) + ", skip it.\033[0m"
+
+
+
     def _changeRDN(self, objectTemplate):
         if objectTemplate.needReconciliationRDN:
             print "    |-> Upgrade the RDN Target server for \033[35m" + objectTemplate.name + "\033[0m..."
@@ -110,7 +125,7 @@ class UpgradeTarget():
     def start(self):
         print "   Upgrade the Target server with the Backend server..."
         for objectTemplate in LBEObjectTemplate.objects.all():
-            # need to check if we need to change before making reconciliation the RDN attribute
+            # need to check if we need to change (before making reconciliation) the RDN attribute
             self._changeRDN(objectTemplate)
             # We're looking for all objects with state = OBJECT_STATE_AWAITING_SYNC
             for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
@@ -119,6 +134,8 @@ class UpgradeTarget():
                 obj = LBEObjectInstanceHelper(objectTemplate, objectInstance)
                 self._createParent(objectTemplate, obj)
                 #obj.compute(objectInstance)
+                # check for new object Classes
+                self._changeClass(objectTemplate, objectInstance)
                 # then, upgrade:
                 if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
                     try:

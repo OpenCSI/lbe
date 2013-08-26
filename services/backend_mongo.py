@@ -6,7 +6,7 @@ from django.conf import settings
 
 from dao.MongoDao import MongoService
 from directory.models import LBEObjectInstance, OBJECT_STATE_INVALID, OBJECT_STATE_IMPORTED, OBJECT_STATE_AWAITING_SYNC,\
-    OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED, LBEGroup
+    OBJECT_STATE_AWAITING_APPROVAL, OBJECT_STATE_DELETED, LBEGroup, OBJECT_STATE_AWAITING_RECONCILIATION
 
 
 class BackendConnectionError(Exception):
@@ -167,6 +167,6 @@ class BackendMongoImpl:
         if isinstance(lbeObjectTemplate, LBEGroup):
             search = {'status': OBJECT_STATE_AWAITING_SYNC, '_id': lbeObjectTemplate.displayName}
         else:
-            search = {'status': OBJECT_STATE_AWAITING_SYNC}
+            search = {'$or':[{'status': OBJECT_STATE_AWAITING_SYNC}, {'status': OBJECT_STATE_AWAITING_RECONCILIATION}]}
         return DocumentsToLBEObjectInstance(lbeObjectTemplate, self.handler.searchDocuments(lbeObjectTemplate.name,
             search, index, size))
