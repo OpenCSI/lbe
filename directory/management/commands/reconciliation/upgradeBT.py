@@ -5,6 +5,7 @@ from directory.models import LBEObjectTemplate, OBJECT_ADD_BACKEND, OBJECT_DELET
     TARGET, BACKEND, OBJECT_STATE_SYNCED
 from services.backend import BackendHelper
 from services.target import TargetHelper
+from services.object import LBEObjectInstanceHelper
 
 
 class UpgradeBT():
@@ -38,7 +39,13 @@ class UpgradeBT():
                 print e
                 print "''''''''"
 
-    def _upgradeObject(self, objectTemplate, ot, ob):
+    def _upgradeObject(self, objectTemplate, objHelper, ot, ob):
+        # check and replace ignore attributes:
+        ignoreAttributes = objHelper.callScriptClassMethod("ignore_attributes")
+        for key, values in ot.attributes.items():
+            if key in ignoreAttributes:
+                ob.attributes[key] = ot.attributes[key]
+
         if not ot.attributes == ob.attributes:
             if objectTemplate.reconciliation_object_different_policy == TARGET:
                 # check if values are empty []:
@@ -77,7 +84,7 @@ class UpgradeBT():
                 print " ||-> Old Values: " + str(ob.attributes)
                 print " ||-> New Values: " + str(ot.attributes)
                 print " |-> -------------------------------------------- "
-                self._modifyObject(objectTemplate, ot)
+                self.backend.updateObject(objectTemplate, ob, ot)
 
     def start(self):
         print " Upgrade Server..."
@@ -85,12 +92,13 @@ class UpgradeBT():
             print " |-> \033[91m" + objectTemplate.name + '\033[0m:'
             objTarget = self.target.searchObjects(objectTemplate)
             objBackend = self.backend.searchObjects(objectTemplate)
+            objHelper = LBEObjectInstanceHelper(objectTemplate)
             # Target to Backend:
             for ot in objTarget:
                 exist = False
                 for ob in objBackend:
                     if ot.name == ob.name:
-                        self._upgradeObject(objectTemplate, ot, ob)
+                        self._upgradeObject(objectTemplate, objHelper, ot, ob)
                         exist = True
                         break
                 if not exist:

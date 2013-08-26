@@ -36,6 +36,10 @@ class EmployeePostConfig(LBEObjectInstanceForm):
 
         # END OF REQUIRED SECTION ----------------------------------------------------
 
+    # This method enables to ignore some attributes into reconciliation part
+    @classmethod
+    def ignore_attributes(cls):
+        return ['title']
 
     # TODO: Think about implements is_valid method here to be called by LBEObjectInstanceForm if possible    
     # def is_valid():

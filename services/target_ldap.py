@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import ldap
+import calendar
 import logging
 import datetime
 from ldap import modlist
@@ -48,7 +49,6 @@ def lbeObjectInstanceToAddModList(lbeObjectInstance, objectClasses):
         if len(values) == 1:
             encodedAttributes[key.encode('utf-8')] = values[0].encode('utf-8')
         else:
-            # TODO: probably need to decode each value
             encodedAttributes[key.encode('utf-8')] = []
             for value in values:
                 encodedAttributes[key.encode('utf-8')].append(value.encode('utf-8'))
@@ -125,8 +125,8 @@ class TargetLDAPImplementation():
             filter = '(&'
             for oc in objectHelper.callScriptClassMethod('object_classes'):
                 filter += '(objectClass=' + oc + ')'
-            filter += ')'
-
+            filter += ')'#(modifyTimestamp>'+str(calendar.timegm(lbeObjectTemplate.synced_at.utctimetuple()))+'Z))'
+        
         # Search in object's basedn TODO: let administrator define the scope in the object script
         for dn, entry in self.handler.search(objectHelper.callScriptClassMethod('base_dn'), filter, ldap.SCOPE_SUBTREE,
                                              ['*', '+']):
@@ -201,6 +201,10 @@ class TargetLDAPImplementation():
 
     def update(self, lbeObjectTemplate, lbeObjectInstance):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+        if not isinstance(lbeObjectTemplate, LBEGroup):
+            ignore_attributes = objectHelper.callScriptClassMethod("ignore_attributes")
+        else:
+            ignore_attributes = []
         # RDN Attribute:
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
         dn = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][
@@ -216,6 +220,8 @@ class TargetLDAPImplementation():
             dn = newDN + ',' + objectHelper.callScriptClassMethod('base_dn')
             # Update:
         for key, value in lbeObjectInstance.changes['set'].items():
+            if key in ignore_attributes:
+                continue
             noKey = not LDAPValues.has_key(key)# key exists into the object target?
             if noKey or not value == LDAPValues[key] and not value[0] == '':
                 # 1 value: Replace
@@ -245,6 +251,10 @@ class TargetLDAPImplementation():
 
     def upgrade(self, lbeObjectTemplate, lbeObjectInstance):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
+        if not isinstance(lbeObjectTemplate, LBEGroup):
+            ignore_attributes = objectHelper.callScriptClassMethod("ignore_attributes")
+        else:
+            ignore_attributes = []
         # RDN Attribute:
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
         dn = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][
@@ -254,6 +264,8 @@ class TargetLDAPImplementation():
             0].attributes
         # Update:
         for key, value in lbeObjectInstance.attributes.items():
+            if key in ignore_attributes:
+                continue
             noKey = not LDAPValues.has_key(key)# key exists into the object target?
             if noKey or not value == LDAPValues[key]:
                 # 1 value: Replace

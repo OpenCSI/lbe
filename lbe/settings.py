@@ -41,7 +41,7 @@ LDAP_SERVER = {
 
 MONGODB_SERVER = {
 'HOST': 'localhost',
-'PORT': 27020,
+'PORT': 27017,
 'DATABASE': 'lbe',
 'USER': '', # In order to not use the auth service, just put the USER value to blank.
 'PASSWORD': 'password',
