@@ -20,19 +20,24 @@ class UpgradeTarget():
         self.target = TargetHelper()
         self.start_date = django.utils.timezone.now()
 
-    def _changeClass(self, objectTemplate,objectInstance):
+    def _changeClass(self, objectTemplate):
         objHelper = LBEObjectInstanceHelper(objectTemplate)
 
-        oldClasses = self.target.getInstanceObjectClasses(objectTemplate, objectInstance)
-        newClasses = objHelper.callScriptClassMethod("object_classes")
-
-        if not sorted(oldClasses) == sorted(newClasses):
-            print "    |-> The object classes have changed for '\033[35m" + objectInstance.displayName + "\033[0m'"
+        ob = self.backend.searchObjects(objectTemplate)
+        for objectInstance in ob:
             try:
-                self.target.changeClass(objectTemplate, objectInstance, oldClasses, newClasses)
-            except ldap.OBJECT_CLASS_VIOLATION as e:
-                print "    *\033[91mError to modify the object class " + str(newClasses) + ", skip it.\033[0m"
-                print "    *\033[91m" + e[0]['info'] + "\033[0m"
+                oldClasses = self.target.getInstanceObjectClasses(objectTemplate, objectInstance)
+            except ldap.NO_SUCH_OBJECT:
+                continue
+            newClasses = objHelper.callScriptClassMethod("object_classes")
+
+            if not sorted(oldClasses) == sorted(newClasses):
+                print "    |-> The object classes have changed for '\033[35m" + objectInstance.displayName + "\033[0m'"
+                try:
+                    self.target.changeClass(objectTemplate, objectInstance, oldClasses, newClasses)
+                except ldap.OBJECT_CLASS_VIOLATION as e:
+                    print "    *\033[91mError to modify the object class " + str(newClasses) + ", skip it.\033[0m"
+                    print "    *\033[91m" + e[0]['info'] + "\033[0m"
 
 
 
@@ -128,6 +133,8 @@ class UpgradeTarget():
         for objectTemplate in LBEObjectTemplate.objects.all():
             # need to check if we need to change (before making reconciliation) the RDN attribute
             self._changeRDN(objectTemplate)
+            # And the objects class
+            self._changeClass(objectTemplate)
             # We're looking for all objects with state = OBJECT_STATE_AWAITING_SYNC
             for objectInstance in self.backend.searchObjectsToUpdate(objectTemplate):
             # First of all, applies all changes stored in backend [ such Virtual attributes ]
@@ -135,8 +142,6 @@ class UpgradeTarget():
                 obj = LBEObjectInstanceHelper(objectTemplate, objectInstance)
                 self._createParent(objectTemplate, obj)
                 #obj.compute(objectInstance)
-                # check for new object Classes
-                self._changeClass(objectTemplate, objectInstance)
                 # then, upgrade:
                 if objectInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
                     try:
