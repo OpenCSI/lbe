@@ -312,7 +312,7 @@ class TargetLDAPImplementation():
                             modList = [(ldap.MOD_ADD, key.encode("utf-8"), val.encode("utf-8") )]
                             self.handler.update(dn, modList)
 
-    def changeClass(self,lbeObjectTemplate, lbeObjectInstance, newClass):
+    def changeClass(self,lbeObjectTemplate, lbeObjectInstance, oldClasses, newClasses):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
         # RDN Attribute:
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
@@ -322,7 +322,14 @@ class TargetLDAPImplementation():
                                         rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0])[
             0].attributes
 
-        for c in newClass:
-            if not c is None:
-                modList = [(ldap.MOD_REPLACE, "objectClass", c)]
+        # Add new classes
+        for n in newClasses:
+            if n not in oldClasses:
+                modList = [(ldap.MOD_ADD, "objectClass", n)]
+                self.handler.update(dn, modList)
+
+        # remove old classes
+        for o in oldClasses:
+            if o not in newClasses:
+                modList = [(ldap.MOD_DELETE, "objectClass", o)]
                 self.handler.update(dn, modList)

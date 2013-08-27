@@ -29,9 +29,10 @@ class UpgradeTarget():
         if not sorted(oldClasses) == sorted(newClasses):
             print "    |-> The object classes have changed for '\033[35m" + objectInstance.displayName + "\033[0m'"
             try:
-                self.target.changeClass(objectTemplate, objectInstance, [val if not val in oldClasses else None for val in newClasses])
-            except BaseException:
+                self.target.changeClass(objectTemplate, objectInstance, oldClasses, newClasses)
+            except ldap.OBJECT_CLASS_VIOLATION as e:
                 print "    *\033[91mError to modify the object class " + str(newClasses) + ", skip it.\033[0m"
+                print "    *\033[91m" + e[0]['info'] + "\033[0m"
 
 
 
