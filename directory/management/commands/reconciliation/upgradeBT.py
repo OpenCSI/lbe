@@ -66,25 +66,31 @@ class UpgradeBT():
                 print " ||-> New Values: " + str(ob.attributes)
                 print " |-> -------------------------------------------- "
                 # Remove & Add in order to add new attributes:
-                # Remove:
-                self.target.delete(objectTemplate, ob)
-                # Add
-                self.target.create(objectTemplate, ob)
-                # Synced:
-                changes = {}
-                changes['status'] = OBJECT_STATE_SYNCED
-                changes['changes'] = {}
-                changes['changes']['set'] = {}
-                changes['changes']['type'] = -1
-                changes['synced_at'] = django.utils.timezone.now()
-                self.backend.updateObject(objectTemplate, ob, changes)
+                try:
+                    # Remove:
+                    self.target.delete(objectTemplate, ob)
+                    # Add
+                    self.target.create(objectTemplate, ob)
+                    # Synced:
+                    changes = {}
+                    changes['status'] = OBJECT_STATE_SYNCED
+                    changes['changes'] = {}
+                    changes['changes']['set'] = {}
+                    changes['changes']['type'] = -1
+                    changes['synced_at'] = django.utils.timezone.now()
+                    self.backend.updateObject(objectTemplate, ob, changes)
+                except BaseException as e:
+                    print e
             elif objectTemplate.reconciliation_object_different_policy == BACKEND:
                 print " |-> Upgrade Object '\033[35m" + ob.displayName + "\033[0m' into Backend..."
                 print " |-> -------------------------------------------- "
                 print " ||-> Old Values: " + str(ob.attributes)
                 print " ||-> New Values: " + str(ot.attributes)
                 print " |-> -------------------------------------------- "
-                self.backend.updateObject(objectTemplate, ob, ot)
+                try:
+                    self.backend.updateObject(objectTemplate, ob, ot)
+                except BaseException as e:
+                    print e
 
     def start(self):
         print " Upgrade Server..."

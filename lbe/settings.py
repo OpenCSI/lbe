@@ -34,7 +34,7 @@ LDAP_SERVER = {
 'PROTOCOL': 'ldap://',
 'HOST': 'localhost',
 'PORT': 1389,
-'BASE_DN': 'dc=marly,dc=priv',
+'BASE_DN': 'dc=opencsi,dc=com',
 'BIND_DN': 'cn=Directory Manager',
 'BIND_PWD': 'root'
 }
