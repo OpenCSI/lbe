@@ -119,6 +119,15 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
         self._backend()
         return self.backend.removeObject(self.template, self.template.displayName)
 
+    def removeObjectInstance(self, objectTemplate, objectInstanceID):
+        if self.attributeName in self.instance.changes['set'] and \
+                        objectInstanceID in self.instance.changes['set'][self.attributeName]:
+            self.instance.changes['set'][self.attributeName].remove(objectInstanceID)
+        elif objectInstanceID in self.instance.attributes[self.attributeName]:
+            self.instance.changes['set'][self.attributeName] = list(self.instance.attributes[self.attributeName])
+            self.instance.changes['set'][self.attributeName].remove(objectInstanceID)
+        self.save()
+
     def changeIDObjects(self):
         try:
             self.instance = self.get()

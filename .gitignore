@@ -4,3 +4,5 @@
 /.vi*
 /.idea
 /lbe/local_settings.py
+custom/employee.py
+custom/group.py

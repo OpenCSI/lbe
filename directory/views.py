@@ -54,7 +54,10 @@ def index(request):
         groupHelper.instance.changes['set'][groupHelper.attributeName] == []:
             total = len(groupHelper.instance.changes['set'][groupHelper.attributeName])
         else:
-            total = len(groupHelper.instance.attributes[groupHelper.attributeName])
+			try:
+				total = len(groupHelper.instance.attributes[groupHelper.attributeName])
+			except BaseException:
+				total = 0
         statGroups.append({'name': group.displayName,'total': total, 'object': groupHelper.template.objectTemplate.displayName,
                            'status': groupHelper.instance.status})
     return render_to_response('directory/default/index.html', {'objects': statObjects, 'groups': statGroups}, context_instance=RequestContext(request))
@@ -109,6 +112,16 @@ def deleteObjectInstance(request, lbeObject_id, objectName):
     lbeObject = LBEObjectTemplate.objects.get(id=lbeObject_id)
     # change status code user:
     instanceHelper = LBEObjectInstanceHelper(lbeObject)
+
+    # Remove the object from groups if exists:
+    for group in LBEGroup.objects.all():
+        groupHelper = GroupInstanceHelper(group)
+        try:
+            groupHelper.removeObjectInstance(lbeObject, objectName)
+        except KeyError:
+            pass # same values
+
+    # Set to Delete for object Instance
     instanceHelper.remove(objectName)
     # Current page from the object deleted:
     position = backend.positionObject(lbeObject.name, objectName)

@@ -242,7 +242,14 @@ class TargetLDAPImplementation():
             if key in ignore_attributes:
                 continue
             noKey = not LDAPValues.has_key(key)# key exists into the object target?
-            if noKey or not value == LDAPValues[key] and not value[0] == '':
+            if isinstance(lbeObjectTemplate, LBEGroup) and value == []:
+                objectHelper = GroupInstanceHelper(lbeObjectTemplate, lbeObjectInstance)
+                modList = [(ldap.MOD_DELETE, key.encode("utf-8"), LDAPValues[objectHelper.attributeName][0].encode("utf-8") )]
+                try:
+                    self.handler.update(dn, modList)
+                except BaseException:
+                    pass # do not care if object does not exist
+            elif noKey or not value == LDAPValues[key] and not value[0] == '':
                 # 1 value: Replace
                 if len(value) == 1:
                     if noKey:
