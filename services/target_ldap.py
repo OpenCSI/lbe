@@ -103,7 +103,7 @@ class TargetLDAPImplementation():
                     result_set.append(aBuffer[4].replace('\'', ''))
         return result_set
 
-    def getInstanceObjectClasses(self, lbeObjectTemplate, lbeObjectInstance):
+    def getInstanceObjectClasses(self, lbeObjectTemplate, lbeObjectInstance, SCOPE):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
 
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
@@ -112,7 +112,7 @@ class TargetLDAPImplementation():
 
         filter = '(objectClass=*)'
 
-        object = self.handler.search(dn, filter, ldap.SCOPE_SUBTREE)
+        object = self.handler.search(dn, filter, SCOPE)
         if object == []:
             return []
         return object[0][1]["objectClass"]
@@ -123,17 +123,17 @@ class TargetLDAPImplementation():
     def _ldap_date(cls, date):
         return date.strftime('%Y%m%d%H%M%SZ')
 
-    def searchNewObjects(self, lbeObjectTemplate, start=0, page=0):
+    def searchNewObjects(self, lbeObjectTemplate, SCOPE, start=0, page=0):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
         filter = '(&(createTimeStamp>=' + self._ldap_date(lbeObjectTemplate.imported_at) + ')'
         for oc in objectHelper.callScriptClassMethod('object_classes'):
             filter += '(objectClass=' + oc + ')'
         filter += ')'
 
-        return self.searchObjects(lbeObjectTemplate, filter, start, page)
+        return self.searchObjects(lbeObjectTemplate, SCOPE, filter, start, page)
 
     # TODO: add a parameter to get all ldap attributes, used for reconciliation task
-    def searchObjects(self, lbeObjectTemplate, filter=None, start=0, page=0):
+    def searchObjects(self, lbeObjectTemplate, SCOPE, filter=None, start=0, page=0):
         result_set = []
         # Call methods from object's script to get basedn and objectClass
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
@@ -142,9 +142,12 @@ class TargetLDAPImplementation():
             for oc in objectHelper.callScriptClassMethod('object_classes'):
                 filter += '(objectClass=' + oc + ')'
             filter += ')'#(modifyTimestamp>'+str(calendar.timegm(lbeObjectTemplate.synced_at.utctimetuple()))+'Z))'
-        
-        # Search in object's basedn TODO: let administrator define the scope in the object script
-        for dn, entry in self.handler.search(objectHelper.callScriptClassMethod('base_dn'), filter, ldap.SCOPE_SUBTREE,
+
+        # Search in object's basedn
+        if SCOPE != 0 and SCOPE != 1 and SCOPE != 2:
+            SCOPE = 0 # BASE
+
+        for dn, entry in self.handler.search(objectHelper.callScriptClassMethod('base_dn'), filter, SCOPE,
                                              ['*', '+']):
             # Create an empty instance
             objectInstance = LBEObjectInstance(lbeObjectTemplate,
@@ -218,7 +221,7 @@ class TargetLDAPImplementation():
         newDN = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0]
         self.handler.changeRDN(dn, newDN.encode("utf-8"))
 
-    def update(self, lbeObjectTemplate, lbeObjectInstance):
+    def update(self, lbeObjectTemplate, lbeObjectInstance, SCOPE):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
         if not isinstance(lbeObjectTemplate, LBEGroup):
             ignore_attributes = objectHelper.callScriptClassMethod("ignore_attributes")
@@ -228,7 +231,7 @@ class TargetLDAPImplementation():
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
         dn = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][
             0] + ',' + objectHelper.callScriptClassMethod('base_dn')
-        LDAPValues = self.searchObjects(lbeObjectTemplate,
+        LDAPValues = self.searchObjects(lbeObjectTemplate, SCOPE,
                                         rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0])[
             0].attributes
         # Need to check if the RDN changed:
@@ -237,7 +240,7 @@ class TargetLDAPImplementation():
             newDN = rdnAttributeName + '=' + lbeObjectInstance.changes['set'][rdnAttributeName][0]
             self.handler.changeRDN(dn, newDN.encode("utf-8"))
             dn = newDN + ',' + objectHelper.callScriptClassMethod('base_dn')
-            # Update:
+        # Update:
         for key, value in lbeObjectInstance.changes['set'].items():
             if key in ignore_attributes:
                 continue
@@ -275,7 +278,7 @@ class TargetLDAPImplementation():
                             modList = [(ldap.MOD_ADD, key.encode("utf-8"), val.encode("utf-8") )]
                             self.handler.update(dn, modList)
 
-    def upgrade(self, lbeObjectTemplate, lbeObjectInstance):
+    def upgrade(self, lbeObjectTemplate, lbeObjectInstance, SCOPE):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
         if not isinstance(lbeObjectTemplate, LBEGroup):
             ignore_attributes = objectHelper.callScriptClassMethod("ignore_attributes")
@@ -285,7 +288,7 @@ class TargetLDAPImplementation():
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
         dn = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][
             0] + ',' + objectHelper.callScriptClassMethod('base_dn')
-        LDAPValues = self.searchObjects(lbeObjectTemplate,
+        LDAPValues = self.searchObjects(lbeObjectTemplate, SCOPE,
                                         rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0])[
             0].attributes
         # Update:
@@ -319,13 +322,13 @@ class TargetLDAPImplementation():
                             modList = [(ldap.MOD_ADD, key.encode("utf-8"), val.encode("utf-8") )]
                             self.handler.update(dn, modList)
 
-    def changeClass(self,lbeObjectTemplate, lbeObjectInstance, oldClasses, newClasses):
+    def changeClass(self,lbeObjectTemplate, lbeObjectInstance,SCOPE, oldClasses, newClasses):
         objectHelper = LBEObjectInstanceHelper(lbeObjectTemplate)
         # RDN Attribute:
         rdnAttributeName = lbeObjectTemplate.instanceNameAttribute.name
         dn = rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][
             0] + ',' + objectHelper.callScriptClassMethod('base_dn')
-        LDAPValues = self.searchObjects(lbeObjectTemplate,
+        LDAPValues = self.searchObjects(lbeObjectTemplate, SCOPE,
                                         rdnAttributeName + '=' + lbeObjectInstance.attributes[rdnAttributeName][0])[
             0].attributes
 

@@ -4,6 +4,7 @@ from directory.models import LBEObjectTemplate, OBJECT_CHANGE_CREATE_OBJECT, OBJ
 from services.backend import BackendHelper
 from services.target import TargetHelper
 from services.group import GroupInstanceHelper
+from services.object import LBEObjectInstanceHelper
 
 
 class DebugTarget():
@@ -82,7 +83,12 @@ class DebugTarget():
         print '  Checking for Objects which do not exist into LBE but in LDAP Server:'
         for objectTemplate in LBEObjectTemplate.objects.all():
             print "  - \033[35m" + objectTemplate.name + '\033[0m...'
-            objTarget = self.target.searchObjects(objectTemplate)
+            objHelper = LBEObjectInstanceHelper(objectTemplate)
+            try:
+                scope = objHelper.callScriptClassMethod("search_scope")
+            except BaseException:
+                scope = 0
+            objTarget = self.target.searchObjects(objectTemplate, scope)
             objBackend = self.backend.searchObjects(objectTemplate)
             number = 0
             for ot in objTarget:
@@ -100,7 +106,12 @@ class DebugTarget():
         print '  Checking for Groups which do not exist into LBE but in LDAP Server:'
         number = 0
         for groupTemplate in LBEGroup.objects.all():
-            grpTarget = self.target.searchObjects(groupTemplate, '(cn=' + groupTemplate.displayName + ')')
+            grpHelper = GroupInstanceHelper(groupTemplate)
+            try:
+                scope = grpHelper.callScriptClassMethod("search_scope")
+            except BaseException:
+                scope = 0
+            grpTarget = self.target.searchObjects(groupTemplate, scope, '(cn=' + groupTemplate.displayName + ')')
             grpBackend = self.backend.searchObjectsByPattern(groupTemplate, groupTemplate.displayName)
             if not grpBackend:
                 print "   - \033[36m" + groupTemplate.displayName + "\033[0m does not exists."

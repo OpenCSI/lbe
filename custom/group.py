@@ -15,6 +15,10 @@ class GROUPPostConfig:
     def object_classes(cls):
         return ['top', 'groupOfUniqueNames']
 
+    @classmethod
+    def search_scope(cls):
+        return 2
+
     # The group's attribute name for the groupOfUniqueNames class
     @classmethod
     def attribute_name(cls):

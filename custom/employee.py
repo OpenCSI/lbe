@@ -33,6 +33,10 @@ class EmployeePostConfig(LBEObjectInstanceForm):
     @classmethod
     def object_classes(cls):
         return ['top', 'person', 'organizationalPerson', 'inetOrgPerson']
+
+    @classmethod
+    def search_scope(cls):
+        return 2
  
         # END OF REQUIRED SECTION ----------------------------------------------------
  

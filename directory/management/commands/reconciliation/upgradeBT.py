@@ -96,9 +96,13 @@ class UpgradeBT():
         print " Upgrade Server..."
         for objectTemplate in LBEObjectTemplate.objects.all():
             print " |-> \033[91m" + objectTemplate.name + '\033[0m:'
-            objTarget = self.target.searchObjects(objectTemplate)
-            objBackend = self.backend.searchObjects(objectTemplate)
             objHelper = LBEObjectInstanceHelper(objectTemplate)
+            try:
+                scope = objHelper.callScriptClassMethod("search_scope")
+            except BaseException:
+                scope = 0
+            objTarget = self.target.searchObjects(objectTemplate, scope)
+            objBackend = self.backend.searchObjects(objectTemplate)
             # Target to Backend:
             for ot in objTarget:
                 exist = False

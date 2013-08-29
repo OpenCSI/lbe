@@ -30,6 +30,10 @@ class BASEPostConfig(LBEObjectInstanceForm):
     def object_classes(cls):
         return ['top', 'person', 'organizationalPerson', 'inetOrgPerson']
 
+    @classmethod
+    def search_scope(cls):
+        return 2
+
         # END OF REQUIRED SECTION ----------------------------------------------------
 
     # Validators methods are used to alter, verify, compute the values of an attribute

@@ -152,6 +152,9 @@ class GroupInstanceHelper(LBEObjectInstanceHelper):
             self.save()
 
     def updateMember(self, objectInstance):
+        if not self.instance:
+            print "  WARNING: The group " + self.template.displayName + " does not EXIST into the Backend."
+            return
         # get object value
         objID = objectInstance.attributes[self.template.objectTemplate.instanceNameAttribute.name][0]
         # check if the new attribute instance value has changed

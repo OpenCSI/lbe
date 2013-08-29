@@ -47,19 +47,21 @@ def index(request):
                             'sync': needSync, 'reconciliation': reconciliation, 'delete': delete})
     # Groups
     statGroups = []
-    for group in groups:
-        groupHelper = GroupInstanceHelper(group)
-        groupHelper.get()
-        if groupHelper.attributeName in groupHelper.instance.changes['set'] and not \
-        groupHelper.instance.changes['set'][groupHelper.attributeName] == []:
-            total = len(groupHelper.instance.changes['set'][groupHelper.attributeName])
-        else:
-			try:
-				total = len(groupHelper.instance.attributes[groupHelper.attributeName])
-			except BaseException:
-				total = 0
-        statGroups.append({'name': group.displayName,'total': total, 'object': groupHelper.template.objectTemplate.displayName,
-                           'status': groupHelper.instance.status})
+    try:
+        for group in groups:
+            groupHelper = GroupInstanceHelper(group)
+            groupHelper.get()
+            if groupHelper.attributeName in groupHelper.instance.changes['set'] and not \
+            groupHelper.instance.changes['set'][groupHelper.attributeName] == []:
+                total = len(groupHelper.instance.changes['set'][groupHelper.attributeName])
+            else:
+                total = len(groupHelper.instance.attributes[groupHelper.attributeName])
+        status = groupHelper.instance.status
+    except BaseException as e:
+        total = 0
+        status = -1
+    statGroups.append({'name': group.displayName,'total': total, 'object': groupHelper.template.objectTemplate.displayName,
+                           'status': status})
     return render_to_response('directory/default/index.html', {'objects': statObjects, 'groups': statGroups}, context_instance=RequestContext(request))
 
 @login_required

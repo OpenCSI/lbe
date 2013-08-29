@@ -25,12 +25,16 @@ class ImportTarget():
         print 'Checking for Objects which do not exist into LBE Backend but in LDAP Server:'
         for objectTemplate in LBEObjectTemplate.objects.all():
             objectHelper = LBEObjectInstanceHelper(objectTemplate)
+            try:
+                scope = objectHelper.callScriptClassMethod("search_scope")
+            except BaseException:
+                scope = 0
             filter = '(&'
             for oc in objectHelper.callScriptClassMethod('object_classes'):
                 filter += '(objectClass=' + oc + ')'
             filter += ')'
             print '\033[91m' + objectTemplate.name + '\033[0m: (\033[95m' + objectHelper.callScriptClassMethod("base_dn") + '\033[0m) using \033[95m' + filter + '\033[0m'
-            objTarget = self.target.searchObjects(objectTemplate)
+            objTarget = self.target.searchObjects(objectTemplate, scope)
             objBackend = self.backend.searchObjects(objectTemplate)
             number = 0
             for ot in objTarget:
@@ -59,7 +63,11 @@ class ImportTarget():
         print 'Checking for Groups which do not exist into LBE Backend but in Target:'
         for groupTemplate in LBEGroup.objects.all():
             groupInstance = GroupInstanceHelper(groupTemplate)
-            grpTarget = self.target.searchObjects(groupTemplate)
+            try:
+                scope = groupInstance.callScriptClassMethod("search_scope")
+            except BaseException:
+                scope = 0
+            grpTarget = self.target.searchObjects(groupTemplate, scope)
             grpBackend = self.backend.searchObjects(groupTemplate)
             for gt in grpTarget:
                 exist = False

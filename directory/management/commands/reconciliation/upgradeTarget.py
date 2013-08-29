@@ -22,11 +22,15 @@ class UpgradeTarget():
 
     def _changeClass(self, objectTemplate):
         objHelper = LBEObjectInstanceHelper(objectTemplate)
+        try:
+            scope = objHelper.callScriptClassMethod("scope_search")
+        except BaseException:
+            scope = 0
 
         ob = self.backend.searchObjects(objectTemplate)
         for objectInstance in ob:
             try:
-                oldClasses = self.target.getInstanceObjectClasses(objectTemplate, objectInstance)
+                oldClasses = self.target.getInstanceObjectClasses(objectTemplate, objectInstance, scope)
             except ldap.NO_SUCH_OBJECT:
                 continue
             newClasses = objHelper.callScriptClassMethod("object_classes")
@@ -88,9 +92,9 @@ class UpgradeTarget():
         changes['synced_at'] = django.utils.timezone.now()
         self.backend.updateObject(objectTemplate, objectInstance, changes)
 
-    def _modifyObject(self, objectTemplate, objectInstance):
+    def _modifyObject(self, objectTemplate, objectInstance, SCOPE):
         rdnAttributeName = objectTemplate.instanceNameAttribute.name
-        self.target.update(objectTemplate, objectInstance)
+        self.target.update(objectTemplate, objectInstance, SCOPE)
         if not objectInstance.attributes[rdnAttributeName][0] == objectInstance.changes['set'][rdnAttributeName][0]:
             self.backend.update_id(objectTemplate, objectInstance, objectInstance.changes['set'][rdnAttributeName][0])
             # Update Backend value:
@@ -140,6 +144,10 @@ class UpgradeTarget():
             # First of all, applies all changes stored in backend [ such Virtual attributes ]
             # & create the parent DN if not exist:
                 obj = LBEObjectInstanceHelper(objectTemplate, objectInstance)
+                try:
+                    scope = obj.callScriptClassMethod("search_scope")
+                except BaseException:
+                    scope = 0
                 self._createParent(objectTemplate, obj)
                 #obj.compute(objectInstance)
                 # then, upgrade:
@@ -179,7 +187,7 @@ class UpgradeTarget():
                         for group in LBEGroup.objects.all():
                             if group.objectTemplate.id == objectTemplate.id:
                                 GroupInstanceHelper(group).updateMember(obj.getObject(obj.instance.name))
-                        self._modifyObject(objectTemplate, objectInstance)
+                        self._modifyObject(objectTemplate, objectInstance, scope)
                     except BaseException as e:
                         print e
                         print "    |-> Object '\033[35m" + objectInstance.displayName + "' does not exist, being \033[34mcreated\033[0m..."
@@ -200,6 +208,10 @@ class UpgradeTarget():
         for groupTemplate in LBEGroup.objects.all():
             for groupInstance in self.backend.searchObjectsToUpdate(groupTemplate):
                 grp = GroupInstanceHelper(groupTemplate, groupInstance)
+                try:
+                    scope = grp.callScriptClassMethod("search_scope")
+                except BaseException:
+                    scope = 0
                 self._createParent(groupTemplate, grp)
                 if groupInstance.changes['type'] == OBJECT_CHANGE_CREATE_OBJECT:
                     print "    |-> Group '\033[35m" + groupInstance.displayName + "\033[0m' is \033[34mcreating\033[0m..."
@@ -218,7 +230,7 @@ class UpgradeTarget():
                     try:
                         print "    |-> Group '\033[35m" + groupInstance.displayName + "'\033[0m is \033[36mupdating\033[0m..."
                         groupInstance.changes['set'][grp.attributeName] = self._getRDN(groupTemplate.objectTemplate, groupInstance.changes['set'][grp.attributeName])
-                        self._modifyObject(groupTemplate, groupInstance)
+                        self._modifyObject(groupTemplate, groupInstance, scope)
                         ###############################################
                         groupInstance.changes['set'][grp.attributeName] = self._getID(groupInstance.changes['set'][grp.attributeName])
                         groupInstance.attributes['cn'] = groupInstance.changes['set']['cn']
