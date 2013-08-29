@@ -45,10 +45,11 @@ class ImportTarget():
                         break
                 if not exist:
                     number += 1
-                    print 'Adding \033[95m' + ot.name + '\033[0m object into LBE Backend... '
+                    print '=> Adding \033[95m' + ot.name + '\033[0m object into LBE Backend... '
+                    print " values: " + str(ot.attributes)
                     try:
                         self.backend.createObject(objectTemplate, ot, True)
-                        print "\033[92mDone.\033[0m"
+                        print "\033[92mDone.\033[0m\n"
                     except BaseException as e:
                         print "\033[91mFail.\033[0m"
                         print "''''''''"
@@ -81,7 +82,8 @@ class ImportTarget():
                         LBEGroup.objects.get(displayName__iexact=gt.displayName)
                     except BaseException:
                         continue
-                    print 'Adding \033[95m' + gt.name + '\033[0m group into LBE Backend... '
+                    print '=> Adding \033[95m' + gt.name + '\033[0m group into LBE Backend... '
+                    print " values: " + str(gt.attributes)
                     try:
                         if groupInstance.attributeName in gt.attributes:
                             gt.attributes[groupInstance.attributeName] = self._getID(gt.attributes[groupInstance.attributeName])
@@ -93,9 +95,9 @@ class ImportTarget():
                             #print " >\033[91mInto the Script file:"
                             #print "  >'DN Attribute': \033[95m" + groupHelper.callScriptClassMethod("base_dn") + "\033[91m"
                             #print "  >'Attribute Name' & 'Object Classes': as you wish.\033[0m"
-                        print "\033[92mDone.\033[0m"
+                        print "\033[92mDone.\033[0m\n"
                     except BaseException as e:
-                        print "\033[91mFail.\033[0m"
+                        print "\033[91mFail.\033[0m\n"
                         print "''''''''"
                         print e
                         print "''''''''"

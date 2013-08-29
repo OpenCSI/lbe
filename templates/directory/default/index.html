@@ -61,6 +61,8 @@
                             <span class='label label-info'>Reconciliation needed</span>
                         {% elif group.status == 4 %}
                             <span class='label label-important'>Deleted</span>
+                        {% elif group.status == -1 %}
+                            <span class='label label-important'>Not Exists</span>
                         {% endif %}
                         </td>
                     </tr>
